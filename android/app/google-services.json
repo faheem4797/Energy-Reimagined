@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "578505393903",
+    "project_id": "energy-re-imagined",
+    "storage_bucket": "energy-re-imagined.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578505393903:android:023cdda8958ef3be3b3d1a",
+        "android_client_info": {
+          "package_name": "com.energy.re.imagined"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMegezdaVQpxGRKgDOJMpZe8Ja-caGdjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578505393903:android:803c80c68fad72de3b3d1a",
+        "android_client_info": {
+          "package_name": "com.energy.re_imagined"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMegezdaVQpxGRKgDOJMpZe8Ja-caGdjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

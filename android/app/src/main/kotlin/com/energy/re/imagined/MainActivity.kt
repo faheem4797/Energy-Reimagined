@@ -1,4 +1,4 @@
-package com.example.energy_reimagined
+package com.energy.re.imagined
 
 import io.flutter.embedding.android.FlutterActivity
 
