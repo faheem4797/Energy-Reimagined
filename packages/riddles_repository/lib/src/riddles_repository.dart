@@ -83,12 +83,13 @@ class RiddlesRepository {
 
   Future<List<int>> getRiddleTimeData(String userId) async {
     try {
-      final userDoc = await usersCollection
-          .doc(userId)
-          .get()
-          .then((value) => UserModel.fromMap(value.data()!));
+      // final userDoc = await usersCollection
+      //     .doc(userId)
+      //     .get()
+      //     .then((value) => UserModel.fromMap(value.data()!));
 
-      return userDoc.riddleTime;
+      // return userDoc.riddleTime;
+      return [];
     } catch (e) {
       log(e.toString());
       rethrow;

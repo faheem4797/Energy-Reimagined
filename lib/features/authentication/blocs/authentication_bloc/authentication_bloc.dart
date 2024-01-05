@@ -27,24 +27,35 @@ class AuthenticationBloc
 
   FutureOr<void> _authenticationUserChanged(AuthenticationUserChanged event,
       Emitter<AuthenticationState> emit) async {
-    //TODO: GET CURRENT USER DATA FROM FIREBASE HERE
     try {
       if (event.user != null) {
-        if (event.user!.uid == 'adminUid') {
-          emit(AuthenticationState.adminauthenticated(event.user!));
-        } else {
-          try {
-            final currentUser =
-                await _authenticationRepository.getUser(event.user!.uid);
-            emit(AuthenticationState.authenticated(
-                event.user!, currentUser, null));
-          } catch (e) {
-            log(e.toString());
-            emit(const AuthenticationState.unauthenticated());
+        try {
+          final currentUser =
+              await _authenticationRepository.getUser(event.user!.uid);
+          String role = currentUser.role;
+          bool isRestricted = currentUser.isRestricted;
+          if (isRestricted) {
+            emit(const AuthenticationState.unauthenticated(
+                'Your account is restricted'));
+          } else if (role == 'admin') {
+            emit(AuthenticationState.adminAuthenticated(
+                event.user!, currentUser));
+          } else if (role == 'manager') {
+            emit(AuthenticationState.managerAuthenticated(
+                event.user!, currentUser));
+          } else if (role == 'technician') {
+            emit(AuthenticationState.technicianAuthenticated(
+                event.user!, currentUser));
           }
+
+          emit(AuthenticationState.technicianAuthenticated(
+              event.user!, currentUser));
+        } catch (e) {
+          log(e.toString());
+          emit(const AuthenticationState.unauthenticated(null));
         }
       } else {
-        emit(const AuthenticationState.unauthenticated());
+        emit(const AuthenticationState.unauthenticated(null));
       }
     } catch (e) {
       log(e.toString());

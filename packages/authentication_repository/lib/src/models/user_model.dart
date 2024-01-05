@@ -4,65 +4,80 @@ import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
   final String id;
-  final String name;
+  final String firstName;
+  final String lastName;
+  final bool isRestricted;
   final String email;
-  final List<int> riddleTime;
-  final bool huntEnded;
-  final int userScore;
+  final String employeeNumber;
+  final String role;
+  final int createdAt;
+
   const UserModel({
     required this.id,
-    required this.name,
+    required this.firstName,
+    required this.lastName,
+    required this.isRestricted,
     required this.email,
-    required this.riddleTime,
-    required this.huntEnded,
-    required this.userScore,
+    required this.employeeNumber,
+    required this.role,
+    required this.createdAt,
   });
 
   static const empty = UserModel(
       id: '',
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
-      riddleTime: [],
-      huntEnded: false,
-      userScore: 0);
+      isRestricted: false,
+      employeeNumber: '',
+      role: '',
+      createdAt: 0);
 
   UserModel copyWith({
     String? id,
-    String? name,
+    String? firstName,
+    String? lastName,
+    bool? isRestricted,
     String? email,
-    List<int>? riddleTime,
-    bool? huntEnded,
-    int? userScore,
+    String? employeeNumber,
+    String? role,
+    int? createdAt,
   }) {
     return UserModel(
       id: id ?? this.id,
-      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      isRestricted: isRestricted ?? this.isRestricted,
       email: email ?? this.email,
-      riddleTime: riddleTime ?? this.riddleTime,
-      huntEnded: huntEnded ?? this.huntEnded,
-      userScore: userScore ?? this.userScore,
+      employeeNumber: employeeNumber ?? this.employeeNumber,
+      role: role ?? this.role,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
+      'firstName': firstName,
+      'lastName': lastName,
+      'isRestricted': isRestricted,
       'email': email,
-      'riddleTime': riddleTime,
-      'huntEnded': huntEnded,
-      'userScore': userScore,
+      'employeeNumber': employeeNumber,
+      'role': role,
+      'createdAt': createdAt,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      riddleTime: List<int>.from(map['riddleTime']),
-      huntEnded: map['huntEnded'] as bool,
-      userScore: map['userScore'] as int,
+      id: map['id'] ?? '',
+      firstName: map['firstName'] ?? '',
+      lastName: map['lastName'] ?? '',
+      isRestricted: map['isRestricted'] ?? false,
+      email: map['email'] ?? '',
+      employeeNumber: map['employeeNumber'] ?? '',
+      role: map['role'] ?? '',
+      createdAt: map['createdAt']?.toInt() ?? 0,
     );
   }
 
@@ -76,9 +91,21 @@ class UserModel extends Equatable {
   bool get isNotEmpty => this != UserModel.empty;
 
   @override
-  String toString() =>
-      'UserModel(id: $id, name: $name, email: $email, riddleTime: $riddleTime, huntEnded: $huntEnded, userscore: $userScore)';
+  String toString() {
+    return 'UserModel(id: $id, firstName: $firstName, lastName: $lastName, isRestricted: $isRestricted, email: $email, employeeNumber: $employeeNumber, role: $role, createdAt: $createdAt)';
+  }
 
   @override
-  List<Object> get props => [id, name, email, riddleTime, huntEnded, userScore];
+  List<Object> get props {
+    return [
+      id,
+      firstName,
+      lastName,
+      isRestricted,
+      email,
+      employeeNumber,
+      role,
+      createdAt,
+    ];
+  }
 }

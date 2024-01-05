@@ -15,9 +15,9 @@ class AuthenticationRepository {
     return _firebaseAuth.authStateChanges().map((user) => user);
   }
 
-  Stream<DocumentSnapshot> getUserDocumentStream(String userId) {
-    return usersCollection.doc(userId).snapshots();
-  }
+  // Stream<DocumentSnapshot> getUserDocumentStream(String userId) {
+  //   return usersCollection.doc(userId).snapshots();
+  // }
 
   Future<UserModel> signUp({
     required UserModel myUser,

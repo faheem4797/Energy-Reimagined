@@ -56,36 +56,31 @@ class CustomTextFormField extends StatelessWidget {
 
           onChanged: onChange,
           decoration: InputDecoration(
-            floatingLabelBehavior: FloatingLabelBehavior.never,
+            //floatingLabelBehavior: FloatingLabelBehavior.never,
             errorText: errorText,
             prefixIcon: prefixIcon,
             //fillColor: kTextFieldColor,
-            filled: true,
+            //filled: true,
             hintText: hintText,
             labelText: labelText,
+
             //errorStyle: kErrorTextStyle,
-            enabledBorder: OutlineInputBorder(
-                //borderSide: const BorderSide(color: kTextFieldColor),
-                borderRadius: BorderRadius.all(
-              Radius.circular(0.r),
-            )),
-            border: OutlineInputBorder(
-                //borderSide: const BorderSide(color: kTextFieldColor),
-                borderRadius: BorderRadius.all(
-              Radius.circular(0.r),
-            )),
-            focusedBorder: OutlineInputBorder(
-              //borderSide: const BorderSide(color: kTextFieldColor),
-              borderRadius: BorderRadius.circular(0.r),
+
+            border: const OutlineInputBorder(),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black54, width: 2.0),
             ),
-            errorBorder: OutlineInputBorder(
-              //borderSide: const BorderSide(color: kTextFieldColor),
-              borderRadius: BorderRadius.circular(0.r),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black38, width: 2.0),
             ),
-            focusedErrorBorder: OutlineInputBorder(
-              //borderSide: const BorderSide(color: kTextFieldColor),
-              borderRadius: BorderRadius.circular(0.r),
-            ),
+            // errorBorder: OutlineInputBorder(
+            //   //borderSide: const BorderSide(color: kTextFieldColor),
+            //   borderRadius: BorderRadius.circular(0.r),
+            // ),
+            // focusedErrorBorder: OutlineInputBorder(
+            //   //borderSide: const BorderSide(color: kTextFieldColor),
+            //   borderRadius: BorderRadius.circular(0.r),
+            // ),
           ),
         ),
       ),

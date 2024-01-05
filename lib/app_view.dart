@@ -1,10 +1,11 @@
 import 'package:energy_reimagined/constants/strings.dart';
+import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
 import 'package:energy_reimagined/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 // import 'package:riddles_with_bloc/blocs/authentication_bloc/authentication_bloc.dart';
 // import 'package:riddles_with_bloc/blocs/riddle_time_bloc/riddle_time_bloc.dart';
 // import 'package:riddles_with_bloc/blocs/user_bloc/user_bloc.dart';
@@ -35,30 +36,32 @@ class AppView extends StatelessWidget {
           textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Poppins'),
           useMaterial3: true,
         ),
-        home: const SplashScreen(),
-        // BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        //     builder: (context, state) {
-        //   if (state.status == AuthenticationStatus.authenticated) {
-        //     return MultiBlocProvider(
-        //       providers: [
-        //         // BlocProvider(
-        //         //   //lazy: false,
-        //         //   create: (context) => UserBloc(
-        //         //     userDataRepository: UserDataRepository(
-        //         //         userId:
-        //         //             context.read<AuthenticationBloc>().state.user!.uid),
-        //         //   ),
-        //         //   child: const HomeScreen(),
-        //         // ),
-        //       ],
-        //       child: const HomeScreen(),
-        //     );
-        //   } else if (state.status == AuthenticationStatus.adminauthenticated) {
-        //     return const AdminHomeScreen();
-        //   } else {
-        //     return const WelcomeScreen();
-        //   }
-        // }),
+        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+          if (state.status == AuthenticationStatus.authenticated) {
+            return const Center(child: Text('AUTHENTICATED'));
+            // return MultiBlocProvider(providers: [
+            //   BlocProvider(
+            //     lazy: false,
+            //     create: (context) => UserBloc(
+            //       userDataRepository: UserDataRepository(
+            //           userId:
+            //               context.read<AuthenticationBloc>().state.user!.uid),
+            //     ),
+            //     child: const HomeScreen(),
+            //   ),
+            // ], child: Container()
+            //     //const HomeScreen(),
+            //     );
+          } else if (state.status == AuthenticationStatus.adminauthenticated) {
+            return const Center(child: Text('ADMIN AUTHENTICATED'));
+            // const AdminHomeScreen();
+          } else if (state.status == AuthenticationStatus.unauthenticated) {
+            return const WelcomeScreen();
+          } else {
+            return const SplashScreen();
+          }
+        }),
       ),
     );
   }

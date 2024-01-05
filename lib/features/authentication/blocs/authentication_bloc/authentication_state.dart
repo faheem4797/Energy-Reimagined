@@ -1,8 +1,9 @@
 part of 'authentication_bloc.dart';
 
 enum AuthenticationStatus {
-  authenticated,
-  adminauthenticated,
+  technicianAuthenticated,
+  adminAuthenticated,
+  managerAuthenticated,
   unauthenticated,
   unknown
 }
@@ -21,18 +22,28 @@ class AuthenticationState extends Equatable {
 
   const AuthenticationState.unknown() : this._();
 
-  const AuthenticationState.authenticated(
-      User user, UserModel userModel, String? errorMessage)
+  const AuthenticationState.technicianAuthenticated(
+      User user, UserModel userModel)
       : this._(
-            status: AuthenticationStatus.authenticated,
+            status: AuthenticationStatus.technicianAuthenticated,
             user: user,
-            userModel: userModel,
-            errorMessage: errorMessage);
-  const AuthenticationState.adminauthenticated(User user)
-      : this._(status: AuthenticationStatus.adminauthenticated, user: user);
+            userModel: userModel);
+  const AuthenticationState.adminAuthenticated(User user, UserModel userModel)
+      : this._(
+            status: AuthenticationStatus.adminAuthenticated,
+            user: user,
+            userModel: userModel);
+  const AuthenticationState.managerAuthenticated(User user, UserModel userModel)
+      : this._(
+            status: AuthenticationStatus.adminAuthenticated,
+            user: user,
+            userModel: userModel);
 
-  const AuthenticationState.unauthenticated()
-      : this._(status: AuthenticationStatus.unauthenticated);
+  const AuthenticationState.unauthenticated(String? errorMessage)
+      : this._(
+          status: AuthenticationStatus.unauthenticated,
+          errorMessage: errorMessage,
+        );
 
   @override
   List<Object?> get props => [status, user, userModel, errorMessage];
