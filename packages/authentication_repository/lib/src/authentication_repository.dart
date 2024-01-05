@@ -24,6 +24,18 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
+      //TODO: INITIALIZE NEW FIREBASE APP
+      // FirebaseApp secondaryApp = await Firebase.initializeApp(
+      //     name: "secondary", options: Firebase.app().options);
+
+      // UserCredential user = await FirebaseAuth.instanceFor(app: secondaryApp)
+      //     .createUserWithEmailAndPassword(
+      //   email: myUser.email,
+      //   password: password,
+      // );
+
+      // await secondaryApp.delete();
+
       UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
         email: myUser.email,
         password: password,

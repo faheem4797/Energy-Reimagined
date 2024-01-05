@@ -60,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 20.w),
                           child: Text(
-                            'Name',
+                            'First Name',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24.sp,
@@ -69,15 +69,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         BlocBuilder<SignUpBloc, SignUpState>(
                           buildWhen: (previous, current) =>
-                              previous.user.name != current.user.name,
+                              previous.user.firstName != current.user.firstName,
                           builder: (context, state) {
                             return SizedBox(
                               width: 250.w,
                               child: CustomTextFormField(
-                                onChange: (name) {
-                                  context
-                                      .read<SignUpBloc>()
-                                      .add(NameChanged(name: name));
+                                onChange: (firstName) {
+                                  context.read<SignUpBloc>().add(
+                                      FirstNameChanged(firstName: firstName));
                                 },
                                 textInputType: TextInputType.name,
                                 errorText: state.displayError,

@@ -1,6 +1,8 @@
 import 'package:energy_reimagined/constants/strings.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
+import 'package:energy_reimagined/features/manager/managerdashboard.dart';
+import 'package:energy_reimagined/features/technician/techniciandashboard.dart';
 import 'package:energy_reimagined/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,8 +40,8 @@ class AppView extends StatelessWidget {
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             builder: (context, state) {
-          if (state.status == AuthenticationStatus.authenticated) {
-            return const Center(child: Text('AUTHENTICATED'));
+          if (state.status == AuthenticationStatus.technicianAuthenticated) {
+            return const TechnicianDashboard();
             // return MultiBlocProvider(providers: [
             //   BlocProvider(
             //     lazy: false,
@@ -53,9 +55,12 @@ class AppView extends StatelessWidget {
             // ], child: Container()
             //     //const HomeScreen(),
             //     );
-          } else if (state.status == AuthenticationStatus.adminauthenticated) {
+          } else if (state.status == AuthenticationStatus.adminAuthenticated) {
             return const Center(child: Text('ADMIN AUTHENTICATED'));
             // const AdminHomeScreen();
+          } else if (state.status == AuthenticationStatus.adminAuthenticated) {
+            return const ManagerDashbaord();
+            // const ManagerHomeScreen();
           } else if (state.status == AuthenticationStatus.unauthenticated) {
             return const WelcomeScreen();
           } else {
