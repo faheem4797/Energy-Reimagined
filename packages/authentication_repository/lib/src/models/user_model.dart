@@ -30,7 +30,7 @@ class UserModel extends Equatable {
       email: '',
       isRestricted: false,
       employeeNumber: '',
-      role: '',
+      role: 'technician',
       createdAt: 0);
 
   UserModel copyWith({

@@ -14,7 +14,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       : _authenticationRepository = authenticationRepository,
         super(const SignUpState()) {
     on<SignUpWithEmailAndPassword>(_signUpWithEmailAndPassword);
-    on<NameChanged>(_nameChanged);
+    on<FirstNameChanged>(_firstNameChanged);
+    on<LastNameChanged>(_lastNameChanged);
+    on<EmployeeNumberChanged>(_employeeNumberChanged);
+    on<RoleChanged>(_roleChanged);
     on<EmailChanged>(_emailChanged);
     on<PasswordChanged>(_passwordChanged);
   }
@@ -51,14 +54,44 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
-  FutureOr<void> _nameChanged(NameChanged event, Emitter<SignUpState> emit) {
-    final NameValidationStatus nameValidationStatus = _validateName(event.name);
+  FutureOr<void> _firstNameChanged(
+      FirstNameChanged event, Emitter<SignUpState> emit) {
+    final FirstNameValidationStatus firstNameValidationStatus =
+        _validateFirstName(event.firstName);
     emit(
       state.copyWith(
-        user: state.user.copyWith(name: event.name),
-        isValid: _validate(event.name, state.password, state.user.email),
-        displayError: nameValidationStatus == NameValidationStatus.empty
-            ? 'Please enter a name'
+        user: state.user.copyWith(firstName: event.firstName),
+        isValid: _validate(
+            firstName: event.firstName,
+            lastName: state.user.lastName,
+            password: state.password,
+            email: state.user.email,
+            employeeNumber: state.user.employeeNumber,
+            role: state.user.role),
+        displayError:
+            firstNameValidationStatus == FirstNameValidationStatus.empty
+                ? 'Please enter a first name'
+                : null,
+      ),
+    );
+  }
+
+  FutureOr<void> _lastNameChanged(
+      LastNameChanged event, Emitter<SignUpState> emit) {
+    final LastNameValidationStatus lastNameValidationStatus =
+        _validateLastName(event.lastName);
+    emit(
+      state.copyWith(
+        user: state.user.copyWith(lastName: event.lastName),
+        isValid: _validate(
+            firstName: state.user.firstName,
+            lastName: event.lastName,
+            password: state.password,
+            email: state.user.email,
+            employeeNumber: state.user.employeeNumber,
+            role: state.user.role),
+        displayError: lastNameValidationStatus == LastNameValidationStatus.empty
+            ? 'Please enter a last name'
             : null,
       ),
     );
@@ -71,7 +104,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         user: state.user.copyWith(email: event.email),
-        isValid: _validate(state.user.name, state.password, event.email),
+        isValid: _validate(
+            firstName: state.user.firstName,
+            lastName: state.user.lastName,
+            password: state.password,
+            email: event.email,
+            employeeNumber: state.user.employeeNumber,
+            role: state.user.role),
         displayError: emailValidationStatus == EmailValidationStatus.empty
             ? 'Please enter an email'
             : emailValidationStatus == EmailValidationStatus.invalid
@@ -89,7 +128,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         password: event.password,
-        isValid: _validate(state.user.name, event.password, state.user.email),
+        isValid: _validate(
+            firstName: state.user.firstName,
+            lastName: state.user.lastName,
+            password: event.password,
+            email: state.user.email,
+            employeeNumber: state.user.employeeNumber,
+            role: state.user.role),
         displayError: passwordValidationStatus == PasswordValidationStatus.empty
             ? 'Please enter a password'
             : passwordValidationStatus == PasswordValidationStatus.invalid
@@ -99,15 +144,89 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     );
   }
 
-  bool _validate(String name, String password, String email) {
+  FutureOr<void> _employeeNumberChanged(
+      EmployeeNumberChanged event, Emitter<SignUpState> emit) {
+    final EmployeeNumberValidationStatus employeeNumberValidationStatus =
+        _validateEmployeeNumber(event.employeeNumber);
+    emit(
+      state.copyWith(
+        user: state.user.copyWith(employeeNumber: event.employeeNumber),
+        isValid: _validate(
+            firstName: state.user.firstName,
+            lastName: state.user.lastName,
+            password: state.password,
+            email: state.user.email,
+            employeeNumber: event.employeeNumber,
+            role: state.user.role),
+        displayError: employeeNumberValidationStatus ==
+                EmployeeNumberValidationStatus.empty
+            ? 'Please enter an employee number'
+            : null,
+      ),
+    );
+  }
+
+  FutureOr<void> _roleChanged(RoleChanged event, Emitter<SignUpState> emit) {
+    final RoleValidationStatus roleValidationStatus = _validateRole(event.role);
+    emit(
+      state.copyWith(
+        user: state.user.copyWith(role: event.role),
+        isValid: _validate(
+            firstName: state.user.firstName,
+            lastName: state.user.lastName,
+            password: state.password,
+            email: state.user.email,
+            employeeNumber: state.user.employeeNumber,
+            role: event.role),
+        displayError: roleValidationStatus == RoleValidationStatus.empty
+            ? 'Please enter some role'
+            : null,
+      ),
+    );
+  }
+
+  bool _validate({
+    required firstName,
+    required String lastName,
+    required String password,
+    required String email,
+    required String employeeNumber,
+    required String role,
+  }) {
+    final FirstNameValidationStatus firstNameValidationStatus =
+        _validateFirstName(firstName);
+    final LastNameValidationStatus lastNameValidationStatus =
+        _validateLastName(lastName);
     final PasswordValidationStatus passwordValidationStatus =
         _validatePassword(password);
     final EmailValidationStatus emailValidationStatus = _validateEmail(email);
-    final NameValidationStatus nameValidationStatus = _validateName(name);
+    final EmployeeNumberValidationStatus employeeNumberValidationStatus =
+        _validateEmployeeNumber(employeeNumber);
+    final RoleValidationStatus roleValidationStatus = _validateRole(role);
 
     return passwordValidationStatus == PasswordValidationStatus.valid &&
         emailValidationStatus == EmailValidationStatus.valid &&
-        nameValidationStatus == NameValidationStatus.valid;
+        firstNameValidationStatus == FirstNameValidationStatus.valid &&
+        lastNameValidationStatus == LastNameValidationStatus.valid &&
+        employeeNumberValidationStatus ==
+            EmployeeNumberValidationStatus.valid &&
+        roleValidationStatus == RoleValidationStatus.valid;
+  }
+
+  FirstNameValidationStatus _validateFirstName(String firstName) {
+    if (firstName.isEmpty) {
+      return FirstNameValidationStatus.empty;
+    } else {
+      return FirstNameValidationStatus.valid;
+    }
+  }
+
+  LastNameValidationStatus _validateLastName(String lastName) {
+    if (lastName.isEmpty) {
+      return LastNameValidationStatus.empty;
+    } else {
+      return LastNameValidationStatus.valid;
+    }
   }
 
   EmailValidationStatus _validateEmail(String email) {
@@ -130,11 +249,20 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
-  NameValidationStatus _validateName(String name) {
-    if (name.isEmpty) {
-      return NameValidationStatus.empty;
+  EmployeeNumberValidationStatus _validateEmployeeNumber(
+      String employeeNumber) {
+    if (employeeNumber.isEmpty) {
+      return EmployeeNumberValidationStatus.empty;
     } else {
-      return NameValidationStatus.valid;
+      return EmployeeNumberValidationStatus.valid;
+    }
+  }
+
+  RoleValidationStatus _validateRole(String role) {
+    if (role.isEmpty) {
+      return RoleValidationStatus.empty;
+    } else {
+      return RoleValidationStatus.valid;
     }
   }
 }
@@ -143,4 +271,10 @@ enum EmailValidationStatus { empty, invalid, valid }
 
 enum PasswordValidationStatus { empty, invalid, valid }
 
-enum NameValidationStatus { empty, valid }
+enum FirstNameValidationStatus { empty, valid }
+
+enum LastNameValidationStatus { empty, valid }
+
+enum EmployeeNumberValidationStatus { empty, valid }
+
+enum RoleValidationStatus { empty, valid }
