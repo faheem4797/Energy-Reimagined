@@ -178,7 +178,7 @@ class SignInWithEmailAndPasswordFailure implements Exception {
         );
       case 'user-not-found':
         return const SignInWithEmailAndPasswordFailure(
-          'Email is not found, please create an account.',
+          'Email not found, please create an account.',
         );
       case 'wrong-password':
         return const SignInWithEmailAndPasswordFailure(

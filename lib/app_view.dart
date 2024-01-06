@@ -57,7 +57,7 @@ class AppView extends StatelessWidget {
             //     //const HomeScreen(),
             //     );
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
-            return const AdminDashbaord();
+            return const AdminDashboard();
             // const AdminHomeScreen();
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
             return const ManagerDashbaord();

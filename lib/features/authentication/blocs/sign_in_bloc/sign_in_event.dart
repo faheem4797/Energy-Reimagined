@@ -10,6 +10,8 @@ sealed class SignInEvent extends Equatable {
 
 final class SignInWithEmailAndPassword extends SignInEvent {}
 
+final class SendSupportEmail extends SignInEvent {}
+
 final class EmailChanged extends SignInEvent {
   final String email;
   const EmailChanged({required this.email});

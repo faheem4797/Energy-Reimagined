@@ -5,6 +5,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';
@@ -15,6 +16,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       : _authenticationRepository = authenticationRepository,
         super(const SignInState()) {
     on<SignInWithEmailAndPassword>(_logInWithEmailAndPassword);
+    on<SendSupportEmail>(_sendSupportEmail);
     on<EmailChanged>(_emailChanged);
     on<PasswordChanged>(_passwordChanged);
   }
@@ -46,6 +48,13 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       emit(state.copyWith(status: SignInStatus.failure));
       emit(state.copyWith(status: SignInStatus.initial));
     }
+  }
+
+  FutureOr<void> _sendSupportEmail(
+      SendSupportEmail event, Emitter<SignInState> emit) {
+    final Uri emailLaunchUri = Uri(
+        scheme: 'mailto', path: 'support@gmail.com', query: 'subject=Re: app');
+    launchUrl(emailLaunchUri);
   }
 
   FutureOr<void> _emailChanged(EmailChanged event, Emitter<SignInState> emit) {
