@@ -1,5 +1,5 @@
 name: user_data_repository
-description: Dart package that manages stream of user data.
+description: Dart package that manages stream of users.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

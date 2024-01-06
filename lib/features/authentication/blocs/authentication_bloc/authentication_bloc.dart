@@ -20,7 +20,8 @@ class AuthenticationBloc
         super(const AuthenticationState.unknown()) {
     _userSubscription = _authenticationRepository.user.listen((authUser) {
       if (state.status == AuthenticationStatus.unknown) {
-        Future.delayed(const Duration(seconds: 3), () {
+        //TODO: INCREASE DURATION TO 3 SECONDS
+        Future.delayed(const Duration(seconds: 0), () {
           add(AuthenticationUserChanged(authUser));
         });
       } else {

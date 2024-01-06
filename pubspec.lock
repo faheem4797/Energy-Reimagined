@@ -604,6 +604,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  user_data_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/user_data_repository"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   vector_math:
     dependency: transitive
     description:

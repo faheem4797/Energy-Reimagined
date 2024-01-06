@@ -73,8 +73,7 @@ class _ManagerDashbaordState extends State<ManagerDashbaord> {
           child: Text(
             'Welcome, Manager this is underdevelopment.',
             style: TextStyle(
-              color: Colors.black,
-              fontFamily: 'Poppins',
+              color: ConstColors.blackColor,
             ),
           ),
         ),

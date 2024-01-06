@@ -1,3 +1,4 @@
+import 'package:energy_reimagined/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class WillPopScoopService {
@@ -10,19 +11,17 @@ class WillPopScoopService {
           title: const Text(
             'Are you sure?',
             style: TextStyle(
-              fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Colors.black,
+              color: ConstColors.blackColor,
             ),
           ),
           content: const Text(
             'Do you want to exit the app?',
             style: TextStyle(
-              fontFamily: 'Poppins',
               fontWeight: FontWeight.w200,
               fontSize: 16,
-              color: Colors.black,
+              color: ConstColors.blackColor,
             ),
           ),
           actions: <Widget>[
@@ -31,10 +30,9 @@ class WillPopScoopService {
               child: const Text(
                 'No',
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.black,
+                  color: ConstColors.blackColor,
                 ),
               ),
             ),
@@ -43,10 +41,9 @@ class WillPopScoopService {
               child: const Text(
                 'Yes',
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.green,
+                  color: ConstColors.greenColor,
                 ),
               ),
             ),
@@ -68,19 +65,17 @@ class WillPopScoopService {
           title: const Text(
             'Are you sure?',
             style: TextStyle(
-              fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Colors.black,
+              color: ConstColors.blackColor,
             ),
           ),
           content: const Text(
             'Do you want to logout?',
             style: TextStyle(
-              fontFamily: 'Poppins',
               fontWeight: FontWeight.w200,
               fontSize: 16,
-              color: Colors.black,
+              color: ConstColors.blackColor,
             ),
           ),
           actions: <Widget>[
@@ -89,10 +84,9 @@ class WillPopScoopService {
               child: const Text(
                 'No',
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.black,
+                  color: ConstColors.blackColor,
                 ),
               ),
             ),
@@ -101,10 +95,9 @@ class WillPopScoopService {
               child: const Text(
                 'Yes',
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.green,
+                  color: ConstColors.greenColor,
                 ),
               ),
             ),

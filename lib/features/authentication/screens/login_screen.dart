@@ -29,8 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text(
           'Sign In',
           style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Poppins',
+            color: ConstColors.whiteColor,
           ),
         ),
         backgroundColor: ConstColors.backgroundDarkColor,
@@ -150,8 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               text:
                                   "If you have any complaints or suggestions?\nContact us at ",
                               style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Poppins',
+                                color: ConstColors.blackColor,
                                 fontWeight: FontWeight.w200,
                                 fontSize: 16.0,
                               ),
@@ -159,8 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 TextSpan(
                                   text: 'sample@gmail.com',
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: 'Poppins',
+                                    color: ConstColors.blackColor,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16.0,
                                   ),

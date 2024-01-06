@@ -24,18 +24,19 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
         title: const Text(
           'Technician Screen',
           style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Poppins',
+            color: ConstColors.whiteColor,
           ),
         ),
         backgroundColor: ConstColors.backgroundDarkColor,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(
+          color: ConstColors.whiteColor,
+        ),
         actions: <Widget>[
           //if (_user != null)
           IconButton(
             icon: const Icon(
               Icons.exit_to_app,
-              color: Colors.white,
+              color: ConstColors.whiteColor,
             ),
             onPressed: () async {
               var logout = await WillPopScoopService()
@@ -75,8 +76,7 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
           child: Text(
             'Welcome, Technician this is underdevelopment.',
             style: TextStyle(
-              color: Colors.black,
-              fontFamily: 'Poppins',
+              color: ConstColors.blackColor,
             ),
           ),
         ),

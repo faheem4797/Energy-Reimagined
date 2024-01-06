@@ -1,5 +1,7 @@
 import 'package:energy_reimagined/constants/strings.dart';
-import 'package:energy_reimagined/features/admin/admin_dashboard.dart';
+import 'package:energy_reimagined/features/admin/admin_bottom_navbar.dart';
+import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
+import 'package:energy_reimagined/features/admin/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
 import 'package:energy_reimagined/features/manager/managerdashboard.dart';
@@ -8,6 +10,7 @@ import 'package:energy_reimagined/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:user_data_repository/user_data_repository.dart';
 
 // import 'package:riddles_with_bloc/blocs/authentication_bloc/authentication_bloc.dart';
 // import 'package:riddles_with_bloc/blocs/riddle_time_bloc/riddle_time_bloc.dart';
@@ -57,7 +60,18 @@ class AppView extends StatelessWidget {
             //     //const HomeScreen(),
             //     );
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
-            return const AdminDashboard();
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => AdminNavBloc(),
+                ),
+                BlocProvider(
+                  create: (context) =>
+                      UsersStreamBloc(userDataRepository: UserDataRepository()),
+                ),
+              ],
+              child: const AdminBottomNavBar(),
+            );
             // const AdminHomeScreen();
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
             return const ManagerDashbaord();

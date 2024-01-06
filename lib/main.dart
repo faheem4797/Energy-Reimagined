@@ -13,8 +13,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Bloc.observer = AppBlocObserver();
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
 

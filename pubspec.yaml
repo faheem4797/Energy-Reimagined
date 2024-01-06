@@ -55,8 +55,8 @@ dependencies:
   # riddles_repository:
   #   path: packages/riddles_repository
 
-  # user_data_repository:
-  #   path: packages/user_data_repository
+  user_data_repository:
+    path: packages/user_data_repository
 
 dev_dependencies:
   flutter_test:
