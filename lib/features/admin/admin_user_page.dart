@@ -1,20 +1,14 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/admin/admin_create_user_page.dart';
+import 'package:energy_reimagined/features/admin/blocs/create_user_bloc/create_user_bloc.dart';
 import 'package:energy_reimagined/features/admin/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminUserPage extends StatelessWidget {
-  AdminUserPage({super.key});
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Stream<QuerySnapshot> getUsersStream() {
-    return _firestore
-        .collection('users')
-        // .where('role', isNotEqualTo: 'admin')
-        .snapshots();
-  }
+  const AdminUserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +50,17 @@ class AdminUserPage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => CreateUserScreen(
-                      //       createUser: _createUser,
-                      //     ),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => CreateUserBloc(
+                                authenticationRepository:
+                                    context.read<AuthenticationRepository>()),
+                            child: const AdminCreateUserPage(),
+                          ),
+                        ),
+                      );
                     },
                     child: const Text(
                       "Create User",

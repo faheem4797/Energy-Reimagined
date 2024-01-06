@@ -15,12 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // void _sendEmail() {
-  //   final Uri emailLaunchUri = Uri(
-  //       scheme: 'mailto', path: 'support@gmail.com', query: 'subject=Re: app');
-  //   launchUrl(emailLaunchUri);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

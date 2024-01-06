@@ -1,34 +1,31 @@
-part of 'sign_up_bloc.dart';
+part of 'edit_user_bloc.dart';
 
-enum SignUpStatus { initial, inProgress, success, failure }
+enum EditUserStatus { initial, inProgress, success, failure }
 
-final class SignUpState extends Equatable {
-  const SignUpState({
-    this.user = UserModel.empty,
-    this.password = '',
+final class EditUserState extends Equatable {
+  const EditUserState({
+    //this.user = UserModel.empty,
+    required this.user,
     this.isValid = false,
-    this.status = SignUpStatus.initial,
+    this.status = EditUserStatus.initial,
     this.errorMessage,
     this.displayError,
   });
   final UserModel user;
-  final String password;
   final bool isValid;
-  final SignUpStatus status;
+  final EditUserStatus status;
   final String? errorMessage;
   final String? displayError;
 
-  SignUpState copyWith({
+  EditUserState copyWith({
     UserModel? user,
-    String? password,
     bool? isValid,
-    SignUpStatus? status,
+    EditUserStatus? status,
     String? errorMessage,
     String? displayError,
   }) {
-    return SignUpState(
+    return EditUserState(
       user: user ?? this.user,
-      password: password ?? this.password,
       isValid: isValid ?? this.isValid,
       status: status ?? this.status,
       errorMessage: errorMessage,
@@ -38,5 +35,5 @@ final class SignUpState extends Equatable {
 
   @override
   List<Object?> get props =>
-      [user, password, isValid, status, errorMessage, displayError];
+      [user, isValid, status, errorMessage, displayError];
 }

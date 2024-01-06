@@ -18,7 +18,7 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
 ];
 
 List<Widget> bottomNavScreen = <Widget>[
-  AdminUserPage(),
+  const AdminUserPage(),
   const Text('Index 1: Tools'),
 ];
 

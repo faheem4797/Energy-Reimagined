@@ -5,15 +5,15 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-part 'sign_up_event.dart';
-part 'sign_up_state.dart';
+part 'create_user_event.dart';
+part 'create_user_state.dart';
 
-class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
+class CreateUserBloc extends Bloc<CreateUserEvent, CreateUserState> {
   final AuthenticationRepository _authenticationRepository;
-  SignUpBloc({required AuthenticationRepository authenticationRepository})
+  CreateUserBloc({required AuthenticationRepository authenticationRepository})
       : _authenticationRepository = authenticationRepository,
-        super(const SignUpState()) {
-    on<SignUpWithEmailAndPassword>(_signUpWithEmailAndPassword);
+        super(const CreateUserState()) {
+    on<CreateUserWithEmailAndPassword>(_createUserWithEmailAndPassword);
     on<FirstNameChanged>(_firstNameChanged);
     on<LastNameChanged>(_lastNameChanged);
     on<EmployeeNumberChanged>(_employeeNumberChanged);
@@ -27,15 +27,16 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   //final passwordRegExp =RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   //Add a proper password regexp for validation
 
-  FutureOr<void> _signUpWithEmailAndPassword(
-      SignUpWithEmailAndPassword event, Emitter<SignUpState> emit) async {
+  FutureOr<void> _createUserWithEmailAndPassword(
+      CreateUserWithEmailAndPassword event,
+      Emitter<CreateUserState> emit) async {
     if (!state.isValid) {
       emit(state.copyWith(
-          status: SignUpStatus.failure, errorMessage: 'Invalid Form Data'));
-      emit(state.copyWith(status: SignUpStatus.initial));
+          status: CreateUserStatus.failure, errorMessage: 'Invalid Form Data'));
+      emit(state.copyWith(status: CreateUserStatus.initial));
       return;
     }
-    emit(state.copyWith(status: SignUpStatus.inProgress));
+    emit(state.copyWith(status: CreateUserStatus.inProgress));
     try {
       UserModel authUser = await _authenticationRepository.signUp(
           myUser: state.user, password: state.password);
@@ -45,20 +46,20 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
       await _authenticationRepository.setUserData(newUser);
 
-      emit(state.copyWith(status: SignUpStatus.success));
+      emit(state.copyWith(status: CreateUserStatus.success));
     } on SignUpWithEmailAndPasswordFailure catch (e) {
       emit(state.copyWith(
-          status: SignUpStatus.failure, errorMessage: e.message));
-      emit(state.copyWith(status: SignUpStatus.initial));
+          status: CreateUserStatus.failure, errorMessage: e.message));
+      emit(state.copyWith(status: CreateUserStatus.initial));
     } catch (e) {
       log(e.toString());
-      emit(state.copyWith(status: SignUpStatus.failure));
-      emit(state.copyWith(status: SignUpStatus.initial));
+      emit(state.copyWith(status: CreateUserStatus.failure));
+      emit(state.copyWith(status: CreateUserStatus.initial));
     }
   }
 
   FutureOr<void> _firstNameChanged(
-      FirstNameChanged event, Emitter<SignUpState> emit) {
+      FirstNameChanged event, Emitter<CreateUserState> emit) {
     final FirstNameValidationStatus firstNameValidationStatus =
         _validateFirstName(event.firstName);
     emit(
@@ -80,7 +81,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   FutureOr<void> _lastNameChanged(
-      LastNameChanged event, Emitter<SignUpState> emit) {
+      LastNameChanged event, Emitter<CreateUserState> emit) {
     final LastNameValidationStatus lastNameValidationStatus =
         _validateLastName(event.lastName);
     emit(
@@ -100,7 +101,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     );
   }
 
-  FutureOr<void> _emailChanged(EmailChanged event, Emitter<SignUpState> emit) {
+  FutureOr<void> _emailChanged(
+      EmailChanged event, Emitter<CreateUserState> emit) {
     final EmailValidationStatus emailValidationStatus =
         _validateEmail(event.email);
 
@@ -124,7 +126,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   FutureOr<void> _passwordChanged(
-      PasswordChanged event, Emitter<SignUpState> emit) {
+      PasswordChanged event, Emitter<CreateUserState> emit) {
     final PasswordValidationStatus passwordValidationStatus =
         _validatePassword(event.password);
 
@@ -148,7 +150,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   FutureOr<void> _employeeNumberChanged(
-      EmployeeNumberChanged event, Emitter<SignUpState> emit) {
+      EmployeeNumberChanged event, Emitter<CreateUserState> emit) {
     final EmployeeNumberValidationStatus employeeNumberValidationStatus =
         _validateEmployeeNumber(event.employeeNumber);
     emit(
@@ -169,7 +171,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     );
   }
 
-  FutureOr<void> _roleChanged(RoleChanged event, Emitter<SignUpState> emit) {
+  FutureOr<void> _roleChanged(
+      RoleChanged event, Emitter<CreateUserState> emit) {
     final RoleValidationStatus roleValidationStatus = _validateRole(event.role);
     emit(
       state.copyWith(
