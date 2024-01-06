@@ -19,7 +19,13 @@ class AuthenticationBloc
       : _authenticationRepository = authenticationRepository,
         super(const AuthenticationState.unknown()) {
     _userSubscription = _authenticationRepository.user.listen((authUser) {
-      add(AuthenticationUserChanged(authUser));
+      if (state.status == AuthenticationStatus.unknown) {
+        Future.delayed(const Duration(seconds: 3), () {
+          add(AuthenticationUserChanged(authUser));
+        });
+      } else {
+        add(AuthenticationUserChanged(authUser));
+      }
     });
     on<AuthenticationUserChanged>(_authenticationUserChanged);
     on<AuthenticationLogoutRequested>(_authenticationLogoutRequested);
@@ -47,9 +53,6 @@ class AuthenticationBloc
             emit(AuthenticationState.technicianAuthenticated(
                 event.user!, currentUser));
           }
-
-          emit(AuthenticationState.technicianAuthenticated(
-              event.user!, currentUser));
         } catch (e) {
           log(e.toString());
           emit(const AuthenticationState.unauthenticated(null));

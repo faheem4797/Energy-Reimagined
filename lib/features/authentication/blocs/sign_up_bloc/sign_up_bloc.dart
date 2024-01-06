@@ -40,7 +40,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       UserModel authUser = await _authenticationRepository.signUp(
           myUser: state.user, password: state.password);
 
-      await _authenticationRepository.setUserData(authUser);
+      final newUser =
+          authUser.copyWith(createdAt: DateTime.now().microsecondsSinceEpoch);
+
+      await _authenticationRepository.setUserData(newUser);
 
       emit(state.copyWith(status: SignUpStatus.success));
     } on SignUpWithEmailAndPasswordFailure catch (e) {

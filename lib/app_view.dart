@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/strings.dart';
+import 'package:energy_reimagined/features/admin/admin_dashboard.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
 import 'package:energy_reimagined/features/manager/managerdashboard.dart';
@@ -56,7 +57,7 @@ class AppView extends StatelessWidget {
             //     //const HomeScreen(),
             //     );
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
-            return const Center(child: Text('ADMIN AUTHENTICATED'));
+            return const AdminDashbaord();
             // const AdminHomeScreen();
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
             return const ManagerDashbaord();

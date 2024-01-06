@@ -15,184 +15,181 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: BlocListener<SignUpBloc, SignUpState>(
-          listener: (BuildContext context, state) {
-            if (state.status == SignUpStatus.failure) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(
-                    content:
-                        Text(state.errorMessage ?? 'Authentication Failure'),
-                  ),
-                );
-            }
-            if (state.status == SignUpStatus.success) {
-              Navigator.of(context).pop();
-            }
-          },
-          child: Container(
-            //color: kDarkPinkColor,
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 20.h),
-                    Text(
-                      'Welcome friends and family',
-                      textAlign: TextAlign.center,
-                      //style: kFriendsAndFamilyTextStyle,
-                    ),
-                    SizedBox(height: 20.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 80.w),
-                      child: Image.asset(
-                        'assets/9.png',
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.w),
-                          child: Text(
-                            'First Name',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        BlocBuilder<SignUpBloc, SignUpState>(
-                          buildWhen: (previous, current) =>
-                              previous.user.firstName != current.user.firstName,
-                          builder: (context, state) {
-                            return SizedBox(
-                              width: 250.w,
-                              child: CustomTextFormField(
-                                onChange: (firstName) {
-                                  context.read<SignUpBloc>().add(
-                                      FirstNameChanged(firstName: firstName));
-                                },
-                                textInputType: TextInputType.name,
-                                errorText: state.displayError,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.w),
-                          child: Text(
-                            'Email',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        BlocBuilder<SignUpBloc, SignUpState>(
-                          buildWhen: (previous, current) =>
-                              previous.user.email != current.user.email,
-                          builder: (context, state) {
-                            return SizedBox(
-                              width: 250.w,
-                              child: CustomTextFormField(
-                                // key: const Key(
-                                //     'signUpForm_emailInput_textField'),
-                                onChange: (email) {
-                                  context
-                                      .read<SignUpBloc>()
-                                      .add(EmailChanged(email: email));
-                                },
-                                textInputType: TextInputType.emailAddress,
-
-                                errorText: state.displayError,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.w),
-                          child: Text(
-                            'Password',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        BlocBuilder<SignUpBloc, SignUpState>(
-                          buildWhen: (previous, current) =>
-                              previous.password != current.password,
-                          builder: (context, state) {
-                            return SizedBox(
-                              width: 250.w,
-                              child: CustomTextFormField(
-                                onChange: (password) {
-                                  context
-                                      .read<SignUpBloc>()
-                                      .add(PasswordChanged(password: password));
-                                },
-                                obscureText: true,
-                                textInputType: TextInputType.name,
-                                errorText: state.displayError,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 35.h),
-                    signupButton(
-                      () async {
-                        context
-                            .read<SignUpBloc>()
-                            .add(SignUpWithEmailAndPassword());
-                      },
-                      'Register',
-                    ),
-                    SizedBox(height: 15.h),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            const TextSpan(
-                                text: 'Already have an account? ',
-                                style: TextStyle(
-                                    //color: kWhiteColor,
-                                    fontSize: 16)),
-                            TextSpan(
-                                style: const TextStyle(
-                                    //color: kBlueColor,
-                                    fontSize: 18),
-                                text: 'Login',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.of(context).pop();
-                                  }),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                  ],
+    return Scaffold(
+      body: BlocListener<SignUpBloc, SignUpState>(
+        listener: (BuildContext context, state) {
+          if (state.status == SignUpStatus.failure) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage ?? 'Authentication Failure'),
                 ),
+              );
+          }
+          if (state.status == SignUpStatus.success) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: Container(
+          //color: kDarkPinkColor,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                // mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 20.h),
+                  Text(
+                    'Welcome friends and family',
+                    textAlign: TextAlign.center,
+                    //style: kFriendsAndFamilyTextStyle,
+                  ),
+                  SizedBox(height: 20.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 80.w),
+                    child: Image.asset(
+                      'assets/9.png',
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.w),
+                        child: Text(
+                          'First Name',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      BlocBuilder<SignUpBloc, SignUpState>(
+                        buildWhen: (previous, current) =>
+                            previous.user.firstName != current.user.firstName,
+                        builder: (context, state) {
+                          return SizedBox(
+                            width: 250.w,
+                            child: CustomTextFormField(
+                              onChange: (firstName) {
+                                context.read<SignUpBloc>().add(
+                                    FirstNameChanged(firstName: firstName));
+                              },
+                              textInputType: TextInputType.name,
+                              errorText: state.displayError,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.w),
+                        child: Text(
+                          'Email',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      BlocBuilder<SignUpBloc, SignUpState>(
+                        buildWhen: (previous, current) =>
+                            previous.user.email != current.user.email,
+                        builder: (context, state) {
+                          return SizedBox(
+                            width: 250.w,
+                            child: CustomTextFormField(
+                              // key: const Key(
+                              //     'signUpForm_emailInput_textField'),
+                              onChange: (email) {
+                                context
+                                    .read<SignUpBloc>()
+                                    .add(EmailChanged(email: email));
+                              },
+                              textInputType: TextInputType.emailAddress,
+
+                              errorText: state.displayError,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.w),
+                        child: Text(
+                          'Password',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      BlocBuilder<SignUpBloc, SignUpState>(
+                        buildWhen: (previous, current) =>
+                            previous.password != current.password,
+                        builder: (context, state) {
+                          return SizedBox(
+                            width: 250.w,
+                            child: CustomTextFormField(
+                              onChange: (password) {
+                                context
+                                    .read<SignUpBloc>()
+                                    .add(PasswordChanged(password: password));
+                              },
+                              obscureText: true,
+                              textInputType: TextInputType.name,
+                              errorText: state.displayError,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 35.h),
+                  signupButton(
+                    () async {
+                      context
+                          .read<SignUpBloc>()
+                          .add(SignUpWithEmailAndPassword());
+                    },
+                    'Register',
+                  ),
+                  SizedBox(height: 15.h),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          const TextSpan(
+                              text: 'Already have an account? ',
+                              style: TextStyle(
+                                  //color: kWhiteColor,
+                                  fontSize: 16)),
+                          TextSpan(
+                              style: const TextStyle(
+                                  //color: kBlueColor,
+                                  fontSize: 18),
+                              text: 'Login',
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context).pop();
+                                }),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                ],
               ),
             ),
           ),

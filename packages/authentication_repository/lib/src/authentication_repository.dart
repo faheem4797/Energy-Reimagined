@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AuthenticationRepository {
   final FirebaseAuth _firebaseAuth;
@@ -25,21 +26,21 @@ class AuthenticationRepository {
   }) async {
     try {
       //TODO: INITIALIZE NEW FIREBASE APP
-      // FirebaseApp secondaryApp = await Firebase.initializeApp(
-      //     name: "secondary", options: Firebase.app().options);
+      FirebaseApp secondaryApp = await Firebase.initializeApp(
+          name: "secondary", options: Firebase.app().options);
 
-      // UserCredential user = await FirebaseAuth.instanceFor(app: secondaryApp)
-      //     .createUserWithEmailAndPassword(
-      //   email: myUser.email,
-      //   password: password,
-      // );
-
-      // await secondaryApp.delete();
-
-      UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential user = await FirebaseAuth.instanceFor(app: secondaryApp)
+          .createUserWithEmailAndPassword(
         email: myUser.email,
         password: password,
       );
+
+      await secondaryApp.delete();
+
+      // UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
+      //   email: myUser.email,
+      //   password: password,
+      // );
 
       return myUser.copyWith(id: user.user!.uid);
     } on FirebaseAuthException catch (e) {
@@ -118,6 +119,8 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
   /// from a firebase authentication exception code.
   /// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/createUserWithEmailAndPassword.html
   factory SignUpWithEmailAndPasswordFailure.fromCode(String code) {
+    //TODO: DIFFERENT CODES SHOWING
+
     switch (code) {
       case 'invalid-email':
         return const SignUpWithEmailAndPasswordFailure(
@@ -161,6 +164,9 @@ class SignInWithEmailAndPasswordFailure implements Exception {
   /// Create an authentication message
   /// from a firebase authentication exception code.
   factory SignInWithEmailAndPasswordFailure.fromCode(String code) {
+    //TODO: DIFFERENT CODES SHOWING
+    print('object');
+    print(code);
     switch (code) {
       case 'invalid-email':
         return const SignInWithEmailAndPasswordFailure(

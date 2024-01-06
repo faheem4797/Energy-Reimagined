@@ -56,6 +56,7 @@ class CustomTextFormField extends StatelessWidget {
 
           onChanged: onChange,
           decoration: InputDecoration(
+            errorMaxLines: 2,
             //floatingLabelBehavior: FloatingLabelBehavior.never,
             errorText: errorText,
             prefixIcon: prefixIcon,
