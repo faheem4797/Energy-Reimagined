@@ -1,5 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/features/admin/blocs/create_user_bloc/create_user_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/create_user_bloc/create_user_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,39 +63,6 @@ class AdminCreateUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _firstNameController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return "Enter the first name";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.text,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "First Name",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 BlocBuilder<CreateUserBloc, CreateUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.lastName != current.user.lastName,
@@ -115,39 +82,6 @@ class AdminCreateUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _lastNameController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return "Enter the last name";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.text,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Last Name",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 BlocBuilder<CreateUserBloc, CreateUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.employeeNumber !=
@@ -168,39 +102,6 @@ class AdminCreateUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _employeeNumberController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return "Enter the employee number";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.text,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Employee Number",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 BlocBuilder<CreateUserBloc, CreateUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.email != current.user.email,
@@ -220,39 +121,6 @@ class AdminCreateUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _emailController,
-                //     validator: (value) {
-                //       if (value!.isEmpty || !value.contains('@')) {
-                //         return "Enter a valid email";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.emailAddress,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Email",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 BlocBuilder<CreateUserBloc, CreateUserState>(
                   buildWhen: (previous, current) =>
                       previous.password != current.password,
@@ -272,53 +140,6 @@ class AdminCreateUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _passwordController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return 'Password must not be empty';
-                //       } else if (value.length < 8) {
-                //         return 'Password must be at least 8 characters';
-                //       }
-                //       return null;
-                //     },
-                //     textInputAction: TextInputAction.done,
-                //     obscureText: _obscureText,
-                //     //autofocus: true,
-                //     // inputFormatters: [
-                //     //   LengthLimitingTextInputFormatter(8),
-                //     // ],
-                //     keyboardType: TextInputType.text,
-                //     decoration: InputDecoration(
-                //         suffixIcon: IconButton(
-                //           icon: Icon(_obscureText
-                //               ? Icons.visibility_off
-                //               : Icons.visibility),
-                //           onPressed: () {
-                //             _toggle();
-                //           },
-                //         ),
-                //         border: const OutlineInputBorder(),
-                //         focusedBorder: const OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: const OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Password",
-                //         labelStyle: const TextStyle(
-                //           color: ConstColors.blackColor,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 ListTile(
                   title: const Text('Role',
                       style: TextStyle(

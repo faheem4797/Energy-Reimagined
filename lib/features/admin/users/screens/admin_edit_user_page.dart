@@ -1,5 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/features/admin/blocs/edit_user_bloc/edit_user_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/edit_user_bloc/edit_user_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,21 +44,37 @@ class AdminEditUserPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                BlocBuilder<EditUserBloc, EditUserState>(
-                  buildWhen: (previous, current) =>
-                      previous.user.isRestricted != current.user.isRestricted,
-                  builder: (context, state) {
-                    return Switch(
-                      value: state.user.isRestricted,
-                      onChanged: (isRestricted) async {
-                        context.read<EditUserBloc>().add(
-                            RestrictionChanged(isRestricted: isRestricted));
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'User Restricted',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: ConstColors.blackColor,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    BlocBuilder<EditUserBloc, EditUserState>(
+                      buildWhen: (previous, current) =>
+                          previous.user.isRestricted !=
+                          current.user.isRestricted,
+                      builder: (context, state) {
+                        return Switch(
+                          value: state.user.isRestricted,
+                          onChanged: (isRestricted) async {
+                            context.read<EditUserBloc>().add(
+                                RestrictionChanged(isRestricted: isRestricted));
+                          },
+                        );
                       },
-                    );
-                  },
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
-
                 BlocBuilder<EditUserBloc, EditUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.firstName != current.user.firstName,
@@ -79,39 +95,6 @@ class AdminEditUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _firstNameController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return "Enter the first name";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.text,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "First Name",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 BlocBuilder<EditUserBloc, EditUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.lastName != current.user.lastName,
@@ -132,39 +115,6 @@ class AdminEditUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _lastNameController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return "Enter the last name";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.text,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Last Name",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
                 BlocBuilder<EditUserBloc, EditUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.employeeNumber !=
@@ -186,40 +136,6 @@ class AdminEditUserPage extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _employeeNumberController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return "Enter the employee number";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.text,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Employee Number",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
-
                 ListTile(
                   title: const Text('Role',
                       style: TextStyle(

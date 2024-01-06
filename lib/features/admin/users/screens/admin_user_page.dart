@@ -1,10 +1,10 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/features/admin/admin_create_user_page.dart';
-import 'package:energy_reimagined/features/admin/admin_edit_user_page.dart';
-import 'package:energy_reimagined/features/admin/blocs/create_user_bloc/create_user_bloc.dart';
-import 'package:energy_reimagined/features/admin/blocs/edit_user_bloc/edit_user_bloc.dart';
-import 'package:energy_reimagined/features/admin/blocs/users_stream_bloc/users_stream_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/create_user_bloc/create_user_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/edit_user_bloc/edit_user_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/screens/admin_create_user_page.dart';
+import 'package:energy_reimagined/features/admin/users/screens/admin_edit_user_page.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +44,6 @@ class AdminUserPage extends StatelessWidget {
                         const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 10),
                       ),
-                      // To change the shape of the button:
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -170,22 +169,7 @@ class AdminUserPage extends StatelessWidget {
                                                                     .read<AuthenticationRepository>()),
                                                         child:
                                                             const AdminEditUserPage(),
-                                                      )
-                                                  //     EditUserScreen(
-                                                  //   userId: users[index].id,
-                                                  //   firstName: users[index]
-                                                  //       ['firstName'],
-                                                  //   lastName: users[index]
-                                                  //       ['lastName'],
-                                                  //   empNumber: users[index]
-                                                  //       ['employeeNumber'],
-                                                  //   email: users[index]['email'],
-                                                  //   role: users[index]['role'],
-                                                  //   isRestricted: users[index]
-                                                  //       ['isRestricted'],
-                                                  //   updateUser: _updateUser,
-                                                  // ),
-                                                  ),
+                                                      )),
                                             );
                                           },
                                         ))),

@@ -23,8 +23,7 @@ class _ManagerDashbaordState extends State<ManagerDashbaord> {
         title: const Text(
           'Manager Screen',
           style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Poppins',
+            color: ConstColors.whiteColor,
           ),
         ),
         backgroundColor: ConstColors.backgroundDarkColor,
@@ -33,7 +32,7 @@ class _ManagerDashbaordState extends State<ManagerDashbaord> {
           IconButton(
             icon: const Icon(
               Icons.exit_to_app,
-              color: Colors.white,
+              color: ConstColors.whiteColor,
             ),
             onPressed: () async {
               var logout = await WillPopScoopService()

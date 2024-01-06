@@ -26,6 +26,13 @@ class EditUserBloc extends Bloc<EditUserEvent, EditUserState> {
 
   FutureOr<void> _editUserWithUpdatedUserModel(
       EditUserWithUpdatedUserModel event, Emitter<EditUserState> emit) async {
+    emit(state.copyWith(
+      isValid: _validate(
+          firstName: state.user.firstName,
+          lastName: state.user.lastName,
+          employeeNumber: state.user.employeeNumber,
+          role: state.user.role),
+    ));
     if (!state.isValid) {
       emit(state.copyWith(
           status: EditUserStatus.failure, errorMessage: 'Invalid Form Data'));

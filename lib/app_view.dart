@@ -1,7 +1,7 @@
 import 'package:energy_reimagined/constants/strings.dart';
 import 'package:energy_reimagined/features/admin/admin_bottom_navbar.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
-import 'package:energy_reimagined/features/admin/blocs/users_stream_bloc/users_stream_bloc.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
 import 'package:energy_reimagined/features/manager/managerdashboard.dart';
