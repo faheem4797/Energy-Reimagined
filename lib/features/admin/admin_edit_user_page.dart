@@ -1,13 +1,11 @@
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/features/admin/blocs/create_user_bloc/create_user_bloc.dart';
+import 'package:energy_reimagined/features/admin/blocs/edit_user_bloc/edit_user_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminEditUserPage extends StatelessWidget {
-  final UserModel userModel;
-  const AdminEditUserPage({required this.userModel, super.key});
+  const AdminEditUserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +23,18 @@ class AdminEditUserPage extends StatelessWidget {
         ),
         backgroundColor: ConstColors.backgroundDarkColor,
       ),
-      body: BlocListener<CreateUserBloc, CreateUserState>(
+      body: BlocListener<EditUserBloc, EditUserState>(
         listener: (BuildContext context, state) {
-          if (state.status == CreateUserStatus.failure) {
+          if (state.status == EditUserStatus.failure) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Text(state.errorMessage ?? 'Authentication Failure'),
+                  content: Text(state.errorMessage ?? 'Failed to Edit'),
                 ),
               );
           }
-          if (state.status == CreateUserStatus.success) {
+          if (state.status == EditUserStatus.success) {
             Navigator.of(context).pop();
           }
         },
@@ -46,16 +44,32 @@ class AdminEditUserPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                BlocBuilder<CreateUserBloc, CreateUserState>(
+                BlocBuilder<EditUserBloc, EditUserState>(
+                  buildWhen: (previous, current) =>
+                      previous.user.isRestricted != current.user.isRestricted,
+                  builder: (context, state) {
+                    return Switch(
+                      value: state.user.isRestricted,
+                      onChanged: (isRestricted) async {
+                        context.read<EditUserBloc>().add(
+                            RestrictionChanged(isRestricted: isRestricted));
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+
+                BlocBuilder<EditUserBloc, EditUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.firstName != current.user.firstName,
                   builder: (context, state) {
                     return SizedBox(
                       child: CustomTextFormField(
+                        initialValue: state.user.firstName,
                         labelText: "First Name",
                         onChange: (firstName) {
                           context
-                              .read<CreateUserBloc>()
+                              .read<EditUserBloc>()
                               .add(FirstNameChanged(firstName: firstName));
                         },
                         textInputType: TextInputType.name,
@@ -98,16 +112,17 @@ class AdminEditUserPage extends StatelessWidget {
                 // const SizedBox(
                 //   height: 10,
                 // ),
-                BlocBuilder<CreateUserBloc, CreateUserState>(
+                BlocBuilder<EditUserBloc, EditUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.lastName != current.user.lastName,
                   builder: (context, state) {
                     return SizedBox(
                       child: CustomTextFormField(
                         labelText: "Last Name",
+                        initialValue: state.user.lastName,
                         onChange: (lastName) {
                           context
-                              .read<CreateUserBloc>()
+                              .read<EditUserBloc>()
                               .add(LastNameChanged(lastName: lastName));
                         },
                         textInputType: TextInputType.name,
@@ -150,16 +165,17 @@ class AdminEditUserPage extends StatelessWidget {
                 // const SizedBox(
                 //   height: 10,
                 // ),
-                BlocBuilder<CreateUserBloc, CreateUserState>(
+                BlocBuilder<EditUserBloc, EditUserState>(
                   buildWhen: (previous, current) =>
                       previous.user.employeeNumber !=
                       current.user.employeeNumber,
                   builder: (context, state) {
                     return SizedBox(
                       child: CustomTextFormField(
+                        initialValue: state.user.employeeNumber,
                         labelText: "Employee Number",
                         onChange: (employeeNumber) {
-                          context.read<CreateUserBloc>().add(
+                          context.read<EditUserBloc>().add(
                               EmployeeNumberChanged(
                                   employeeNumber: employeeNumber));
                         },
@@ -203,130 +219,13 @@ class AdminEditUserPage extends StatelessWidget {
                 // const SizedBox(
                 //   height: 10,
                 // ),
-                BlocBuilder<CreateUserBloc, CreateUserState>(
-                  buildWhen: (previous, current) =>
-                      previous.user.email != current.user.email,
-                  builder: (context, state) {
-                    return SizedBox(
-                      child: CustomTextFormField(
-                        labelText: "Email",
-                        onChange: (email) {
-                          context
-                              .read<CreateUserBloc>()
-                              .add(EmailChanged(email: email));
-                        },
-                        textInputType: TextInputType.emailAddress,
-                        errorText: state.displayError,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _emailController,
-                //     validator: (value) {
-                //       if (value!.isEmpty || !value.contains('@')) {
-                //         return "Enter a valid email";
-                //       }
-                //       return null;
-                //     },
-                //     //autofocus: true,
-                //     textInputAction: TextInputAction.next,
-                //     keyboardType: TextInputType.emailAddress,
-                //     decoration: const InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Email",
-                //         labelStyle: TextStyle(
-                //           color: Colors.black,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
-                BlocBuilder<CreateUserBloc, CreateUserState>(
-                  buildWhen: (previous, current) =>
-                      previous.password != current.password,
-                  builder: (context, state) {
-                    return SizedBox(
-                      child: CustomTextFormField(
-                        labelText: "Password",
-                        onChange: (password) {
-                          context
-                              .read<CreateUserBloc>()
-                              .add(PasswordChanged(password: password));
-                        },
-                        textInputType: TextInputType.name,
-                        errorText: state.displayError,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 10),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width,
-                //   child: TextFormField(
-                //     controller: _passwordController,
-                //     validator: (value) {
-                //       if (value!.isEmpty) {
-                //         return 'Password must not be empty';
-                //       } else if (value.length < 8) {
-                //         return 'Password must be at least 8 characters';
-                //       }
-                //       return null;
-                //     },
-                //     textInputAction: TextInputAction.done,
-                //     obscureText: _obscureText,
-                //     //autofocus: true,
-                //     // inputFormatters: [
-                //     //   LengthLimitingTextInputFormatter(8),
-                //     // ],
-                //     keyboardType: TextInputType.text,
-                //     decoration: InputDecoration(
-                //         suffixIcon: IconButton(
-                //           icon: Icon(_obscureText
-                //               ? Icons.visibility_off
-                //               : Icons.visibility),
-                //           onPressed: () {
-                //             _toggle();
-                //           },
-                //         ),
-                //         border: const OutlineInputBorder(),
-                //         focusedBorder: const OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black54, width: 2.0),
-                //         ),
-                //         enabledBorder: const OutlineInputBorder(
-                //           borderSide:
-                //               BorderSide(color: Colors.black38, width: 2.0),
-                //         ),
-                //         labelText: "Password",
-                //         labelStyle: const TextStyle(
-                //           color: ConstColors.blackColor,
-                //           fontFamily: 'Poppins',
-                //         )),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
+
                 ListTile(
                   title: const Text('Role',
                       style: TextStyle(
                         color: ConstColors.blackColor,
                       )),
-                  subtitle: BlocBuilder<CreateUserBloc, CreateUserState>(
+                  subtitle: BlocBuilder<EditUserBloc, EditUserState>(
                     builder: (context, state) {
                       return Column(
                         children: <Widget>[
@@ -339,7 +238,7 @@ class AdminEditUserPage extends StatelessWidget {
                             onChanged: (role) {
                               role != null
                                   ? context
-                                      .read<CreateUserBloc>()
+                                      .read<EditUserBloc>()
                                       .add(RoleChanged(role: role))
                                   : null;
                             },
@@ -353,7 +252,7 @@ class AdminEditUserPage extends StatelessWidget {
                             onChanged: (role) {
                               role != null
                                   ? context
-                                      .read<CreateUserBloc>()
+                                      .read<EditUserBloc>()
                                       .add(RoleChanged(role: role))
                                   : null;
                             },
@@ -367,7 +266,7 @@ class AdminEditUserPage extends StatelessWidget {
                             onChanged: (role) {
                               role != null
                                   ? context
-                                      .read<CreateUserBloc>()
+                                      .read<EditUserBloc>()
                                       .add(RoleChanged(role: role))
                                   : null;
                             },
@@ -379,12 +278,12 @@ class AdminEditUserPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10.0),
                 Center(
-                  child: BlocBuilder<CreateUserBloc, CreateUserState>(
+                  child: BlocBuilder<EditUserBloc, EditUserState>(
                     builder: (context, state) {
                       return ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              state.status == CreateUserStatus.inProgress
+                              state.status == EditUserStatus.inProgress
                                   ? MaterialStateProperty.all<Color>(
                                       ConstColors.greyColor)
                                   : MaterialStateProperty.all<Color>(
@@ -401,21 +300,21 @@ class AdminEditUserPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        onPressed: state.status == CreateUserStatus.inProgress
+                        onPressed: state.status == EditUserStatus.inProgress
                             ? null
                             : () {
                                 context
-                                    .read<CreateUserBloc>()
-                                    .add(CreateUserWithEmailAndPassword());
+                                    .read<EditUserBloc>()
+                                    .add(EditUserWithUpdatedUserModel());
                               },
-                        child: state.status == CreateUserStatus.inProgress
+                        child: state.status == EditUserStatus.inProgress
                             ? const Center(
                                 child: CircularProgressIndicator(
                                   color: ConstColors.backgroundLightColor,
                                 ),
                               )
                             : const Text(
-                                "Create User",
+                                "Edit User",
                                 style: TextStyle(
                                   color: ConstColors.whiteColor,
                                 ),

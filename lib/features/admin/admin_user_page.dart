@@ -1,7 +1,9 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/admin/admin_create_user_page.dart';
+import 'package:energy_reimagined/features/admin/admin_edit_user_page.dart';
 import 'package:energy_reimagined/features/admin/blocs/create_user_bloc/create_user_bloc.dart';
+import 'package:energy_reimagined/features/admin/blocs/edit_user_bloc/edit_user_bloc.dart';
 import 'package:energy_reimagined/features/admin/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
@@ -134,23 +136,57 @@ class AdminUserPage extends StatelessWidget {
                                           icon: const Icon(Icons.edit),
                                           color: ConstColors.whiteColor,
                                           onPressed: () {
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //     builder: (context) => EditUserScreen(
-                                            //       userId: users[index].id,
-                                            //       firstName: users[index]['firstName'],
-                                            //       lastName: users[index]['lastName'],
-                                            //       empNumber: users[index]
-                                            //           ['employeeNumber'],
-                                            //       email: users[index]['email'],
-                                            //       role: users[index]['role'],
-                                            //       isRestricted: users[index]
-                                            //           ['isRestricted'],
-                                            //       updateUser: _updateUser,
-                                            //     ),
-                                            //   ),
-                                            // );
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BlocProvider(
+                                                        create: (context) => EditUserBloc(
+                                                            oldUserModel: UserModel(
+                                                                id: users[index]
+                                                                    .id,
+                                                                firstName:
+                                                                    users[index]
+                                                                        .firstName,
+                                                                lastName:
+                                                                    users[index]
+                                                                        .lastName,
+                                                                isRestricted:
+                                                                    users[index]
+                                                                        .isRestricted,
+                                                                email:
+                                                                    users[index]
+                                                                        .email,
+                                                                employeeNumber:
+                                                                    users[index]
+                                                                        .employeeNumber,
+                                                                role: users[index]
+                                                                    .role,
+                                                                createdAt:
+                                                                    users[index]
+                                                                        .createdAt),
+                                                            authenticationRepository:
+                                                                context
+                                                                    .read<AuthenticationRepository>()),
+                                                        child:
+                                                            const AdminEditUserPage(),
+                                                      )
+                                                  //     EditUserScreen(
+                                                  //   userId: users[index].id,
+                                                  //   firstName: users[index]
+                                                  //       ['firstName'],
+                                                  //   lastName: users[index]
+                                                  //       ['lastName'],
+                                                  //   empNumber: users[index]
+                                                  //       ['employeeNumber'],
+                                                  //   email: users[index]['email'],
+                                                  //   role: users[index]['role'],
+                                                  //   isRestricted: users[index]
+                                                  //       ['isRestricted'],
+                                                  //   updateUser: _updateUser,
+                                                  // ),
+                                                  ),
+                                            );
                                           },
                                         ))),
                                 if (isRestricted)

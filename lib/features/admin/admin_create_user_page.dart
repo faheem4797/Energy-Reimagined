@@ -30,7 +30,7 @@ class AdminCreateUserPage extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Text(state.errorMessage ?? 'Authentication Failure'),
+                  content: Text(state.errorMessage ?? 'Failed to Create User'),
                 ),
               );
           }
