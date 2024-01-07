@@ -1,8 +1,8 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TechnicianDashboard extends StatefulWidget {
   const TechnicianDashboard({super.key});
@@ -12,9 +12,9 @@ class TechnicianDashboard extends StatefulWidget {
 }
 
 class _TechnicianDashboardState extends State<TechnicianDashboard> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  //final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  User? _user;
+  //User? _user;
 
   @override
   Widget build(BuildContext context) {
@@ -42,22 +42,26 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
               var logout = await WillPopScoopService()
                   .showLogoutConfirmationDialog(context);
               if (logout) {
-                await _auth.signOut();
-                setState(() {
-                  _user = null;
-                });
-                FirebaseAuth.instance.authStateChanges().listen((User? user) {
-                  if (user == null) {
-                    // User is signed out, perform necessary actions (e.g., navigation)
-                    // Navigator.pushAndRemoveUntil(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           const SignIn()), // Redirect to sign-in page
-                    //   (route) => false,
-                    // );
-                  }
-                });
+                if (!mounted) return;
+                context
+                    .read<AuthenticationBloc>()
+                    .add(const AuthenticationLogoutRequested());
+                //await _auth.signOut();
+                // setState(() {
+                //   _user = null;
+                // });
+                // FirebaseAuth.instance.authStateChanges().listen((User? user) {
+                //   if (user == null) {
+                // User is signed out, perform necessary actions (e.g., navigation)
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) =>
+                //           const SignIn()), // Redirect to sign-in page
+                //   (route) => false,
+                // );
+                //   }
+                // });
               }
               // Navigator.pushAndRemoveUntil(
               //     context,

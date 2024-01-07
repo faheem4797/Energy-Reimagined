@@ -25,7 +25,6 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      //TODO: INITIALIZE NEW FIREBASE APP
       FirebaseApp secondaryApp = await Firebase.initializeApp(
           name: "secondary", options: Firebase.app().options);
 
@@ -72,6 +71,16 @@ class AuthenticationRepository {
       await _firebaseAuth.signOut();
     } catch (_) {
       throw SignOutFailure();
+    }
+  }
+
+  Future<void> forgotPassword(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw SendPasswordResetEmailFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SendPasswordResetEmailFailure();
     }
   }
 
@@ -190,3 +199,41 @@ class SignInWithEmailAndPasswordFailure implements Exception {
 
 /// Thrown during the logout process if a failure occurs.
 class SignOutFailure implements Exception {}
+
+/// {@template send_password_reset_email_failure}
+/// Thrown during the password reset email sending process if a failure occurs.
+/// {@endtemplate}
+class SendPasswordResetEmailFailure implements Exception {
+  /// {@macro send_password_reset_email_failure}
+  const SendPasswordResetEmailFailure([
+    this.message = 'An unknown exception occurred.',
+  ]);
+
+  /// Create a password reset email message
+  /// from a Firebase authentication exception code.
+  factory SendPasswordResetEmailFailure.fromCode(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return const SendPasswordResetEmailFailure(
+          'Email is not valid or badly formatted.',
+        );
+      case 'user-not-found':
+        return const SendPasswordResetEmailFailure(
+          'Email not found, please create an account.',
+        );
+      case 'too-many-requests':
+        return const SendPasswordResetEmailFailure(
+          'Too many requests, please try again later.',
+        );
+      case 'network-request-failed':
+        return const SendPasswordResetEmailFailure(
+          'A network error occurred, please check your internet connection.',
+        );
+      default:
+        return const SendPasswordResetEmailFailure();
+    }
+  }
+
+  /// The associated error message.
+  final String message;
+}

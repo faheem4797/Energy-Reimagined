@@ -1,4 +1,7 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/authentication/blocs/forgot_password_bloc/forgot_password_bloc.dart'
+    as forgot_password_bloc;
 import 'package:energy_reimagined/features/authentication/blocs/sign_in_bloc/sign_in_bloc.dart';
 
 import 'package:energy_reimagined/features/authentication/screens/forgot_password.dart';
@@ -104,8 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ForgotPassword()));
+                                      builder: (context) => BlocProvider(
+                                            create: (context) => forgot_password_bloc
+                                                .ForgotPasswordBloc(
+                                                    authenticationRepository:
+                                                        context.read<
+                                                            AuthenticationRepository>()),
+                                            child: const ForgotPasswordScreen(),
+                                          )));
                             },
                             child: const Text("Forgot Password ?",
                                 style: TextStyle(

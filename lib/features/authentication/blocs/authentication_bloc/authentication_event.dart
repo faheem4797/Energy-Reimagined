@@ -17,3 +17,10 @@ final class AuthenticationUserChanged extends AuthenticationEvent {
 final class AuthenticationLogoutRequested extends AuthenticationEvent {
   const AuthenticationLogoutRequested();
 }
+
+final class AuthenticationForgotPassword extends AuthenticationEvent {
+  final String email;
+  const AuthenticationForgotPassword({required this.email});
+  @override
+  List<Object?> get props => [email];
+}
