@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/create_tool_bloc/create_tool_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/delete_tool_bloc/delete_tool_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/edit_tool_bloc/edit_tool_bloc.dart';
@@ -160,10 +161,16 @@ class AdminToolPage extends StatelessWidget {
                                                 icon: const Icon(Icons.delete),
                                                 color: ConstColors.whiteColor,
                                                 onPressed: () {
-                                                  context
-                                                      .read<DeleteToolBloc>()
-                                                      .add(ToolDeleteRequested(
-                                                          tool: tools[index]));
+                                                  checkConnectionFunc(context,
+                                                      () {
+                                                    context
+                                                        .read<DeleteToolBloc>()
+                                                        .add(
+                                                          ToolDeleteRequested(
+                                                              tool:
+                                                                  tools[index]),
+                                                        );
+                                                  });
                                                 },
                                               ),
                                               IconButton(

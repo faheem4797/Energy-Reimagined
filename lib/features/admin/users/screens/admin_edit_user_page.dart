@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/users/blocs/edit_user_bloc/edit_user_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -219,9 +220,11 @@ class AdminEditUserPage extends StatelessWidget {
                         onPressed: state.status == EditUserStatus.inProgress
                             ? null
                             : () {
-                                context
-                                    .read<EditUserBloc>()
-                                    .add(EditUserWithUpdatedUserModel());
+                                checkConnectionFunc(context, () {
+                                  context
+                                      .read<EditUserBloc>()
+                                      .add(EditUserWithUpdatedUserModel());
+                                });
                               },
                         child: state.status == EditUserStatus.inProgress
                             ? const Center(

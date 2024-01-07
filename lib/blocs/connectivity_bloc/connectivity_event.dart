@@ -5,6 +5,8 @@ part of 'connectivity_bloc.dart';
 @immutable
 abstract class ConnectivityEvent {}
 
+class CheckConnectionEvent extends ConnectivityEvent {}
+
 /// Represents an event when connectivity is established.
 class ConnectedEvent extends ConnectivityEvent {}
 

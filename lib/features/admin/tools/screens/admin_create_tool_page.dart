@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/create_tool_bloc/create_tool_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -133,9 +134,11 @@ class AdminCreateToolPage extends StatelessWidget {
                           onPressed: state.status == CreateToolStatus.inProgress
                               ? null
                               : () {
-                                  context
-                                      .read<CreateToolBloc>()
-                                      .add(CreateToolWithDataModel());
+                                  checkConnectionFunc(context, () {
+                                    context
+                                        .read<CreateToolBloc>()
+                                        .add(CreateToolWithDataModel());
+                                  });
                                 },
                           child: state.status == CreateToolStatus.inProgress
                               ? const Center(

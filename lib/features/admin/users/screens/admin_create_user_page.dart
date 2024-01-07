@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/users/blocs/create_user_bloc/create_user_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -223,9 +224,11 @@ class AdminCreateUserPage extends StatelessWidget {
                         onPressed: state.status == CreateUserStatus.inProgress
                             ? null
                             : () {
-                                context
-                                    .read<CreateUserBloc>()
-                                    .add(CreateUserWithEmailAndPassword());
+                                checkConnectionFunc(context, () {
+                                  context
+                                      .read<CreateUserBloc>()
+                                      .add(CreateUserWithEmailAndPassword());
+                                });
                               },
                         child: state.status == CreateUserStatus.inProgress
                             ? const Center(

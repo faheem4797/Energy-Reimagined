@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/screens/admin_tool_page.dart';
 import 'package:energy_reimagined/features/admin/users/screens/admin_user_page.dart';
@@ -52,9 +53,11 @@ class AdminBottomNavBar extends StatelessWidget {
                       .showLogoutConfirmationDialog(context);
                   if (logout) {
                     if (!context.mounted) return;
-                    context
-                        .read<AuthenticationBloc>()
-                        .add(const AuthenticationLogoutRequested());
+                    checkConnectionFunc(context, () {
+                      context
+                          .read<AuthenticationBloc>()
+                          .add(const AuthenticationLogoutRequested());
+                    });
                   }
                 },
               ),

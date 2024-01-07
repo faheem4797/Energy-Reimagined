@@ -13,6 +13,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   ConnectivityBloc() : super(ConnectivityInitialState()) {
     on<ConnectedEvent>((event, emit) => emit(ConnectivitySuccessState()));
     on<DisconnectedEvent>((event, emit) => emit(ConnectivityFailureState()));
+    on<CheckConnectionEvent>(_checkConnectionEvent);
 
     // Subscribe to connectivity changes using the `Connectivity` plugin.
     subscription = Connectivity()
@@ -28,12 +29,24 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       }
     });
   }
+  FutureOr<void> _checkConnectionEvent(
+      CheckConnectionEvent event, Emitter<ConnectivityState> emit) async {
+    final connectionResult = await Connectivity().checkConnectivity();
+    if (connectionResult == ConnectivityResult.mobile ||
+        connectionResult == ConnectivityResult.wifi) {
+      // If the connectivity result is mobile or wifi, add an 'ConnectedEvent'.
+      add(ConnectedEvent());
+    } else {
+      // Otherwise, add an 'DisconnectedEvent'.
+      add(DisconnectedEvent());
+    }
 
-  /// Closes the BLoC and performs necessary cleanup.
-  @override
-  Future<void> close() {
-    subscription
-        ?.cancel(); // Cancel the subscription to stop listening for connectivity changes.
-    return super.close(); // Close the BLoC and release any resources.
+    /// Closes the BLoC and performs necessary cleanup.
+    @override
+    Future<void> close() {
+      subscription
+          ?.cancel(); // Cancel the subscription to stop listening for connectivity changes.
+      return super.close(); // Close the BLoC and release any resources.
+    }
   }
 }

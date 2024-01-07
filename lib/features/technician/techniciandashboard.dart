@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +44,11 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
                   .showLogoutConfirmationDialog(context);
               if (logout) {
                 if (!mounted) return;
-                context
-                    .read<AuthenticationBloc>()
-                    .add(const AuthenticationLogoutRequested());
+                checkConnectionFunc(context, () {
+                  context
+                      .read<AuthenticationBloc>()
+                      .add(const AuthenticationLogoutRequested());
+                });
                 //await _auth.signOut();
                 // setState(() {
                 //   _user = null;

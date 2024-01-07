@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/forgot_password_bloc/forgot_password_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -104,9 +105,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                                 state.status == ForgotPasswordStatus.inProgress
                                     ? null
                                     : () {
-                                        context
-                                            .read<ForgotPasswordBloc>()
-                                            .add(ForgotPassword());
+                                        checkConnectionFunc(context, () {
+                                          context
+                                              .read<ForgotPasswordBloc>()
+                                              .add(ForgotPassword());
+                                        });
                                       },
                             child: Container(
                               padding: const EdgeInsets.symmetric(

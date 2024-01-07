@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/forgot_password_bloc/forgot_password_bloc.dart'
     as forgot_password_bloc;
 import 'package:energy_reimagined/features/authentication/blocs/sign_in_bloc/sign_in_bloc.dart';
@@ -132,9 +133,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   loginButton(
                     () async {
-                      context
-                          .read<SignInBloc>()
-                          .add(SignInWithEmailAndPassword());
+                      checkConnectionFunc(context, () {
+                        context
+                            .read<SignInBloc>()
+                            .add(SignInWithEmailAndPassword());
+                      });
                     },
                     'Login',
                   ),
