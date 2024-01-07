@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -17,6 +18,7 @@ class CustomTextFormField extends StatelessWidget {
     this.obscureText,
     this.errorText,
     this.initialValue,
+    this.inputFormatters,
   });
 
   final TextEditingController? controller;
@@ -32,6 +34,7 @@ class CustomTextFormField extends StatelessWidget {
   final Icon? prefixIcon;
   final String? errorText;
   final String? initialValue;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +56,7 @@ class CustomTextFormField extends StatelessWidget {
           onTap: onTap,
           obscureText: obscureText ?? false,
           //cursorColor: kDarkPinkColor,
+          inputFormatters: inputFormatters,
 
           onChanged: onChange,
           decoration: InputDecoration(

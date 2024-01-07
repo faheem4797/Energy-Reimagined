@@ -1,5 +1,6 @@
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
+import 'package:energy_reimagined/features/admin/tools/screens/admin_tool_page.dart';
 import 'package:energy_reimagined/features/admin/users/screens/admin_user_page.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
@@ -19,7 +20,7 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
 
 List<Widget> bottomNavScreen = <Widget>[
   const AdminUserPage(),
-  const Text('Index 1: Tools'),
+  const AdminToolPage(),
 ];
 
 class AdminBottomNavBar extends StatelessWidget {

@@ -1,6 +1,7 @@
 import 'package:energy_reimagined/constants/strings.dart';
 import 'package:energy_reimagined/features/admin/admin_bottom_navbar.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
+import 'package:energy_reimagined/features/admin/tools/blocs/tools_stream_bloc/tools_stream_bloc.dart';
 import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
@@ -10,6 +11,7 @@ import 'package:energy_reimagined/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tools_repository/tools_repository.dart';
 import 'package:user_data_repository/user_data_repository.dart';
 
 // import 'package:riddles_with_bloc/blocs/authentication_bloc/authentication_bloc.dart';
@@ -68,6 +70,10 @@ class AppView extends StatelessWidget {
                 BlocProvider(
                   create: (context) =>
                       UsersStreamBloc(userDataRepository: UserDataRepository()),
+                ),
+                BlocProvider(
+                  create: (context) => ToolsStreamBloc(
+                      toolsRepository: context.read<ToolsRepository>()),
                 ),
               ],
               child: const AdminBottomNavBar(),

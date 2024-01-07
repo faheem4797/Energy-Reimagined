@@ -1,0 +1,35 @@
+name: tools_repository
+description: Dart package that manages stream of tools.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.2
+  equatable: ^2.0.5
+
+  # Firebase
+  cloud_firestore: ^4.9.0
+  firebase_core: ^2.9.0
+
+  # authentication_repository:
+  #   path: ../authentication_repository
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+
+flutter:
+
+  uses-material-design: true
