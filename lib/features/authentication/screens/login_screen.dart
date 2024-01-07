@@ -131,15 +131,52 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  loginButton(
-                    () async {
-                      checkConnectionFunc(context, () {
-                        context
-                            .read<SignInBloc>()
-                            .add(SignInWithEmailAndPassword());
-                      });
-                    },
-                    'Login',
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: BlocBuilder<SignInBloc, SignInState>(
+                      builder: (context, state) {
+                        return GestureDetector(
+                          onTap: state.status == SignInStatus.inProgress
+                              ? null
+                              : () {
+                                  checkConnectionFunc(context, () {
+                                    context
+                                        .read<SignInBloc>()
+                                        .add(SignInWithEmailAndPassword());
+                                  });
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: state.status == SignInStatus.inProgress
+                                  ? ConstColors.greyColor
+                                  : ConstColors.foregroundColor,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey[200]!,
+                                  spreadRadius: 10,
+                                  blurRadius: 12,
+                                ),
+                              ],
+                            ),
+                            child: state.status == SignInStatus.inProgress
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 20,
+                                      color: ConstColors.blackColor,
+                                    ),
+                                  ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   SizedBox(height: 30.h),
                   MouseRegion(
@@ -176,40 +213,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  loginButton(VoidCallback onPress, String buttonText) {
-    return SizedBox(
-      height: 60.h,
-      width: 165.w,
-      child: BlocBuilder<SignInBloc, SignInState>(
-        builder: (context, state) {
-          return ElevatedButton(
-            onPressed: state.status == SignInStatus.inProgress ? null : onPress,
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              //backgroundColor: kLightPinkColor,
-            ),
-            child: state.status == SignInStatus.inProgress
-                ? const Center(
-                    child: CircularProgressIndicator(
-                        //color: kWhiteColor,
-                        ),
-                  )
-                : Text(
-                    buttonText,
-                    style: TextStyle(
-                      fontSize: 32.sp,
-                      fontWeight: FontWeight.w900,
-                      //color: kWhiteColor,
-                    ),
-                  ),
-          );
-        },
       ),
     );
   }
