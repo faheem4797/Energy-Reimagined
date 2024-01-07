@@ -6,3 +6,11 @@ sealed class DeleteToolEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+final class ToolDeleteRequested extends DeleteToolEvent {
+  final ToolModel tool;
+
+  const ToolDeleteRequested({required this.tool});
+  @override
+  List<Object> get props => [tool];
+}

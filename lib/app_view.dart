@@ -1,6 +1,7 @@
 import 'package:energy_reimagined/constants/strings.dart';
 import 'package:energy_reimagined/features/admin/admin_bottom_navbar.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
+import 'package:energy_reimagined/features/admin/tools/blocs/delete_tool_bloc/delete_tool_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/tools_stream_bloc/tools_stream_bloc.dart';
 import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
@@ -75,6 +76,9 @@ class AppView extends StatelessWidget {
                   create: (context) => ToolsStreamBloc(
                       toolsRepository: context.read<ToolsRepository>()),
                 ),
+                BlocProvider(
+                    create: (context) => DeleteToolBloc(
+                        toolsRepository: context.read<ToolsRepository>()))
               ],
               child: const AdminBottomNavBar(),
             );
