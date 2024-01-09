@@ -13,8 +13,8 @@ class ToolsStreamState extends Equatable {
 
   const ToolsStreamState.loading() : this._();
 
-  const ToolsStreamState.success(List<ToolModel> userStream)
-      : this._(status: ToolsStreamStatus.success, toolStream: userStream);
+  const ToolsStreamState.success(List<ToolModel> toolStream)
+      : this._(status: ToolsStreamStatus.success, toolStream: toolStream);
 
   const ToolsStreamState.failure() : this._(status: ToolsStreamStatus.failure);
 

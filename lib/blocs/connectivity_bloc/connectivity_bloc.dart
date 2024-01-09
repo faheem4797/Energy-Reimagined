@@ -8,7 +8,7 @@ part 'connectivity_event.dart';
 part 'connectivity_state.dart';
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
-  StreamSubscription? subscription;
+  StreamSubscription? _subscription;
 
   ConnectivityBloc() : super(ConnectivityInitialState()) {
     on<ConnectedEvent>((event, emit) => emit(ConnectivitySuccessState()));
@@ -16,7 +16,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     on<CheckConnectionEvent>(_checkConnectionEvent);
 
     // Subscribe to connectivity changes using the `Connectivity` plugin.
-    subscription = Connectivity()
+    _subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.mobile ||
@@ -45,7 +45,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
 
     @override
     Future<void> close() {
-      subscription
+      _subscription
           ?.cancel(); // Cancel the subscription to stop listening for connectivity changes.
       return super.close(); // Close the BLoC and release any resources.
     }

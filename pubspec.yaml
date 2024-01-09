@@ -62,6 +62,9 @@ dependencies:
   tools_repository:
     path: packages/tools_repository
 
+  jobs_repository:
+    path: packages/jobs_repository
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

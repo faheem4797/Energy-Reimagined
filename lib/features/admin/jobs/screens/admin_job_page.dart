@@ -1,46 +1,42 @@
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/constants/helper_functions.dart';
-import 'package:energy_reimagined/features/admin/tools/blocs/create_tool_bloc/create_tool_bloc.dart';
-import 'package:energy_reimagined/features/admin/tools/blocs/delete_tool_bloc/delete_tool_bloc.dart';
-import 'package:energy_reimagined/features/admin/tools/blocs/edit_tool_bloc/edit_tool_bloc.dart';
-import 'package:energy_reimagined/features/admin/tools/blocs/tools_stream_bloc/tools_stream_bloc.dart';
-import 'package:energy_reimagined/features/admin/tools/screens/admin_create_tool_page.dart';
-import 'package:energy_reimagined/features/admin/tools/screens/admin_edit_tool_page.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/delete_job_bloc/delete_job_bloc.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/jobs_stream_bloc/jobs_stream_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tools_repository/tools_repository.dart';
+import 'package:jobs_repository/jobs_repository.dart';
 
 class AdminJobPage extends StatelessWidget {
   const AdminJobPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final toolsStream = context.watch<ToolsStreamBloc>().state;
+    final jobsStream = context.watch<JobsStreamBloc>().state;
 
     return WillPopScope(
       onWillPop: () async {
         return await WillPopScoopService().showCloseConfirmationDialog(context);
       },
-      child: BlocListener<DeleteToolBloc, DeleteToolState>(
+      child: BlocListener<DeleteJobBloc, DeleteJobState>(
         listener: (context, state) {
-          if (state is DeleteToolSuccess) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('Tool Removed Successfully'),
-                ),
-              );
-          } else if (state is DeleteToolFailure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('Tool Removed Failure'),
-                ),
-              );
-          }
+          // if (state is DeleteToolSuccess) {
+          //   ScaffoldMessenger.of(context)
+          //     ..hideCurrentSnackBar()
+          //     ..showSnackBar(
+          //       const SnackBar(
+          //         content: Text('Tool Removed Successfully'),
+          //       ),
+          //     );
+          // } else if (state is DeleteToolFailure) {
+          //   ScaffoldMessenger.of(context)
+          //     ..hideCurrentSnackBar()
+          //     ..showSnackBar(
+          //       const SnackBar(
+          //         content: Text('Tool Removed Failure'),
+          //       ),
+          //     );
+          // }
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -78,10 +74,12 @@ class AdminJobPage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
-                              create: (context) => CreateToolBloc(
-                                  toolsRepository:
-                                      context.read<ToolsRepository>()),
-                              child: const AdminCreateToolPage(),
+                              create: (context) => CreateJobBloc(
+                                  // toolsRepository:
+                                  //     context.read<ToolsRepository>()
+                                  ),
+                              child: Container(),
+                              //const AdminCreateJobPage(),
                             ),
                           ),
                         );
@@ -94,13 +92,13 @@ class AdminJobPage extends StatelessWidget {
                   ],
                 ),
               ),
-              toolsStream.status == ToolsStreamStatus.loading
+              jobsStream.status == JobsStreamStatus.loading
                   ? const Expanded(
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
                     )
-                  : toolsStream.status == ToolsStreamStatus.failure
+                  : jobsStream.status == JobsStreamStatus.failure
                       ? const Expanded(
                           child: Center(
                             child: Text("Error Loading Stream"),
@@ -108,11 +106,11 @@ class AdminJobPage extends StatelessWidget {
                         )
                       : Expanded(
                           child: ListView.builder(
-                            itemCount: toolsStream.toolStream?.length,
+                            itemCount: jobsStream.jobStream?.length,
                             itemBuilder: (context, index) {
-                              final tools = toolsStream.toolStream!;
-                              final bool isUnavailable =
-                                  tools[index].quantity == 0;
+                              final jobs = jobsStream.jobStream!;
+                              final bool isOnHold =
+                                  jobs[index].status == JobStatus.onHold;
 
                               return Stack(
                                 children: [
@@ -130,7 +128,7 @@ class AdminJobPage extends StatelessWidget {
                                               ),
                                               children: [
                                                 TextSpan(
-                                                  text: tools[index].name,
+                                                  text: jobs[index].title,
                                                   style: const TextStyle(
                                                     color:
                                                         ConstColors.whiteColor,
@@ -139,7 +137,7 @@ class AdminJobPage extends StatelessWidget {
                                                 ),
                                                 TextSpan(
                                                   text:
-                                                      '${'  [${tools[index].category}'}]',
+                                                      '${'  [${jobs[index].status}'}]',
                                                   style: const TextStyle(
                                                     color:
                                                         ConstColors.whiteColor,
@@ -150,7 +148,7 @@ class AdminJobPage extends StatelessWidget {
                                             ),
                                           ),
                                           subtitle: Text(
-                                            'Quantity: ${tools[index].quantity.toString()}',
+                                            jobs[index].description,
                                             style: const TextStyle(
                                               color: ConstColors.whiteColor,
                                             ),
@@ -161,53 +159,53 @@ class AdminJobPage extends StatelessWidget {
                                                 icon: const Icon(Icons.delete),
                                                 color: ConstColors.whiteColor,
                                                 onPressed: () {
-                                                  checkConnectionFunc(context,
-                                                      () {
-                                                    context
-                                                        .read<DeleteToolBloc>()
-                                                        .add(
-                                                          ToolDeleteRequested(
-                                                              tool:
-                                                                  tools[index]),
-                                                        );
-                                                  });
+                                                  // checkConnectionFunc(context,
+                                                  //     () {
+                                                  //   context
+                                                  //       .read<DeleteToolBloc>()
+                                                  //       .add(
+                                                  //         ToolDeleteRequested(
+                                                  //             tool:
+                                                  //                 jobs[index]),
+                                                  //       );
+                                                  // });
                                                 },
                                               ),
                                               IconButton(
                                                 icon: const Icon(Icons.edit),
                                                 color: ConstColors.whiteColor,
                                                 onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                BlocProvider(
-                                                                  create: (context) =>
-                                                                      EditToolBloc(
-                                                                          toolsRepository: context.read<
-                                                                              ToolsRepository>(),
-                                                                          oldToolModel:
-                                                                              ToolModel(
-                                                                            id: tools[index].id,
-                                                                            name:
-                                                                                tools[index].name,
-                                                                            category:
-                                                                                tools[index].category,
-                                                                            quantity:
-                                                                                tools[index].quantity,
-                                                                            lastUpdated:
-                                                                                tools[index].lastUpdated,
-                                                                          )),
-                                                                  child:
-                                                                      const AdminEditToolPage(),
-                                                                )),
-                                                  );
+                                                  // Navigator.push(
+                                                  //   context,
+                                                  //   MaterialPageRoute(
+                                                  //       builder:
+                                                  //           (context) =>
+                                                  //               BlocProvider(
+                                                  //                 create: (context) =>
+                                                  //                     EditToolBloc(
+                                                  //                         toolsRepository: context.read<
+                                                  //                             ToolsRepository>(),
+                                                  //                         oldToolModel:
+                                                  //                             ToolModel(
+                                                  //                           id: jobs[index].id,
+                                                  //                           name:
+                                                  //                               jobs[index].name,
+                                                  //                           category:
+                                                  //                               jobs[index].category,
+                                                  //                           quantity:
+                                                  //                               jobs[index].quantity,
+                                                  //                           lastUpdated:
+                                                  //                               jobs[index].lastUpdated,
+                                                  //                         )),
+                                                  //                 child:
+                                                  //                     const AdminEditToolPage(),
+                                                  //               )),
+                                                  // );
                                                 },
                                               ),
                                             ],
                                           ))),
-                                  if (isUnavailable)
+                                  if (isOnHold)
                                     Positioned(
                                       top: 0,
                                       left: 0,
@@ -215,7 +213,7 @@ class AdminJobPage extends StatelessWidget {
                                       child: Container(
                                         padding: const EdgeInsets.all(8.0),
                                         child: const Banner(
-                                          message: 'Unavailable',
+                                          message: 'On Hold',
                                           location: BannerLocation.topEnd,
                                           color: ConstColors.redColor,
                                           textStyle: TextStyle(
