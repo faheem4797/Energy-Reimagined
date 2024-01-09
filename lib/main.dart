@@ -7,8 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tools_repository/tools_repository.dart';
 import 'firebase_options.dart';
 
-//TODO: ADD CONNECTIVITY CONSTRAINTS ON INTERNET SPECIFIC TASKS
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

@@ -17,6 +17,10 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
     icon: Icon(Icons.handyman),
     label: 'Tools',
   ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.handyman),
+    label: 'Jobs',
+  ),
 ];
 
 List<Widget> bottomNavScreen = <Widget>[
