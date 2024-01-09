@@ -143,6 +143,34 @@ class JobModel extends Equatable {
     );
   }
 
+  List<Map<String, dynamic>> getChangedFields(JobModel other) {
+    final changedFieldsList = <Map<String, dynamic>>[];
+
+    void addChangedField(String fieldName, dynamic oldValue, dynamic newValue) {
+      changedFieldsList.add({
+        'field': fieldName,
+        'oldValue': oldValue,
+        'newValue': newValue,
+      });
+    }
+
+    if (id != other.id) {
+      addChangedField('id', id, other.id);
+    }
+    if (title != other.title) {
+      addChangedField('title', title, other.title);
+    }
+    if (description != other.description) {
+      addChangedField('description', description, other.description);
+    }
+    if (status != other.status) {
+      addChangedField('status', status.toString().split('.').last,
+          other.status.toString().split('.').last);
+    }
+
+    return changedFieldsList;
+  }
+
   String toJson() => json.encode(toMap());
 
   factory JobModel.fromJson(String source) =>

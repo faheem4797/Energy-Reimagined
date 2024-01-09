@@ -4,25 +4,25 @@ import 'package:equatable/equatable.dart';
 
 class UpdateJobModel extends Equatable {
   final String id;
-  final List<String> updatedField;
+  final List<Map<String, dynamic>> updatedFields;
   final String updatedBy;
   final int updatedTimeStamp;
   const UpdateJobModel({
     required this.id,
-    required this.updatedField,
+    required this.updatedFields,
     required this.updatedBy,
     required this.updatedTimeStamp,
   });
 
   UpdateJobModel copyWith({
     String? id,
-    List<String>? updatedField,
+    List<Map<String, dynamic>>? updatedFields,
     String? updatedBy,
     int? updatedTimeStamp,
   }) {
     return UpdateJobModel(
       id: id ?? this.id,
-      updatedField: updatedField ?? this.updatedField,
+      updatedFields: updatedFields ?? this.updatedFields,
       updatedBy: updatedBy ?? this.updatedBy,
       updatedTimeStamp: updatedTimeStamp ?? this.updatedTimeStamp,
     );
@@ -31,16 +31,19 @@ class UpdateJobModel extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'updatedField': updatedField,
+      'updatedField': updatedFields,
       'updatedBy': updatedBy,
       'updatedTimeStamp': updatedTimeStamp,
     };
   }
 
   factory UpdateJobModel.fromMap(Map<String, dynamic> map) {
+    List<Map<String, dynamic>> fields =
+        List<Map<String, dynamic>>.from(map['updatedFields'] ?? []);
+
     return UpdateJobModel(
       id: map['id'] ?? '',
-      updatedField: List<String>.from(map['updatedField']),
+      updatedFields: fields,
       updatedBy: map['updatedBy'] ?? '',
       updatedTimeStamp: map['updatedTimeStamp']?.toInt() ?? 0,
     );
@@ -53,9 +56,9 @@ class UpdateJobModel extends Equatable {
 
   @override
   String toString() {
-    return 'UpdateJobModel(id: $id, updatedField: $updatedField, updatedBy: $updatedBy, updatedTimeStamp: $updatedTimeStamp)';
+    return 'UpdateJobModel(id: $id, updatedField: $updatedFields, updatedBy: $updatedBy, updatedTimeStamp: $updatedTimeStamp)';
   }
 
   @override
-  List<Object> get props => [id, updatedField, updatedBy, updatedTimeStamp];
+  List<Object> get props => [id, updatedFields, updatedBy, updatedTimeStamp];
 }

@@ -24,6 +24,26 @@ class JobsRepository {
     }
   }
 
+  Future<void> updateJobData(JobModel currentJobModel, JobModel oldJobModel,
+      UpdateJobModel updateModel) async {
+    try {
+      await _firebaseFirestore
+          .collection('jobs')
+          .doc(currentJobModel.id)
+          .set(currentJobModel.toMap());
+      await _firebaseFirestore
+          .collection('jobs')
+          .doc(currentJobModel.id)
+          .collection('updates')
+          .doc(updateModel.id)
+          .set(updateModel.toMap());
+    } on FirebaseException catch (e) {
+      throw SetFirebaseDataFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SetFirebaseDataFailure();
+    }
+  }
+
   Future<void> deleteJob(JobModel job) async {
     try {
       await _firebaseFirestore.collection('jobs').doc(job.id).delete();
