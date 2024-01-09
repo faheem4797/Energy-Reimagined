@@ -75,9 +75,8 @@ class AdminJobPage extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
                               create: (context) => CreateJobBloc(
-                                  // toolsRepository:
-                                  //     context.read<ToolsRepository>()
-                                  ),
+                                  jobsRepository:
+                                      context.read<JobsRepository>()),
                               child: Container(),
                               //const AdminCreateJobPage(),
                             ),

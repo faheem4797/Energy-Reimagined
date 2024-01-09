@@ -1,10 +1,37 @@
 part of 'create_job_bloc.dart';
 
-sealed class CreateJobState extends Equatable {
-  const CreateJobState();
-  
-  @override
-  List<Object> get props => [];
-}
+enum CreateJobStatus { initial, inProgress, success, failure }
 
-final class CreateJobInitial extends CreateJobState {}
+final class CreateJobState extends Equatable {
+  const CreateJobState({
+    this.job = JobModel.empty,
+    this.isValid = false,
+    this.status = CreateJobStatus.initial,
+    this.errorMessage,
+    this.displayError,
+  });
+  final JobModel job;
+  final bool isValid;
+  final CreateJobStatus status;
+  final String? errorMessage;
+  final String? displayError;
+
+  CreateJobState copyWith({
+    JobModel? job,
+    bool? isValid,
+    CreateJobStatus? status,
+    String? errorMessage,
+    String? displayError,
+  }) {
+    return CreateJobState(
+      job: job ?? this.job,
+      isValid: isValid ?? this.isValid,
+      status: status ?? this.status,
+      errorMessage: errorMessage,
+      displayError: displayError,
+    );
+  }
+
+  @override
+  List<Object?> get props => [job, isValid, status, errorMessage, displayError];
+}

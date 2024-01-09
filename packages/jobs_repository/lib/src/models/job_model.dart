@@ -10,7 +10,9 @@ class JobModel extends Equatable {
   final String description;
   final JobStatus status;
   final String assignedTechnicianId;
-  final String locationId;
+  final String locationName;
+  final int locationLatitude;
+  final int locationLongitude;
   final String holdReason;
   final String cancelReason;
   final int createdTimestamp;
@@ -24,7 +26,9 @@ class JobModel extends Equatable {
     required this.description,
     required this.status,
     required this.assignedTechnicianId,
-    required this.locationId,
+    required this.locationName,
+    required this.locationLatitude,
+    required this.locationLongitude,
     required this.holdReason,
     required this.cancelReason,
     required this.createdTimestamp,
@@ -34,28 +38,22 @@ class JobModel extends Equatable {
     required this.completedTimestamp,
   });
 
-  //static const empty =
-  //JobModel(id: '', name: '', category: '', quantity: 0, lastUpdated: 0);
-
-  // JobModel copyWith({
-  //   final String? id,
-  //   final String? title,
-  //   final String? description,
-  //   final JobStatus? status,
-  //   final String? assignedTechnicianId,
-  //   final String? locationId,
-  //   final String? holdReason,
-  //   final String? cancelReason,
-  //   final int? createdTimestamp,
-  //   final int? assignedTimestamp,
-  //   final int? startedTimestamp,
-  //   final int? holdTimestamp,
-  //   final int? completedTimestamp,
-  // }) {
-  //   return JobModel();
-  // }
-
-  //String toJson() => json.encode(toMap());
+  static const empty = JobModel(
+      id: '',
+      title: '',
+      description: '',
+      status: JobStatus.pending,
+      assignedTechnicianId: '',
+      locationName: '',
+      locationLongitude: 0,
+      locationLatitude: 0,
+      holdReason: '',
+      cancelReason: '',
+      createdTimestamp: 0,
+      assignedTimestamp: 0,
+      startedTimestamp: 0,
+      holdTimestamp: 0,
+      completedTimestamp: 0);
 
   JobModel copyWith({
     String? id,
@@ -63,7 +61,9 @@ class JobModel extends Equatable {
     String? description,
     JobStatus? status,
     String? assignedTechnicianId,
-    String? locationId,
+    String? locationName,
+    int? locationLatitude,
+    int? locationLongitude,
     String? holdReason,
     String? cancelReason,
     int? createdTimestamp,
@@ -78,7 +78,9 @@ class JobModel extends Equatable {
       description: description ?? this.description,
       status: status ?? this.status,
       assignedTechnicianId: assignedTechnicianId ?? this.assignedTechnicianId,
-      locationId: locationId ?? this.locationId,
+      locationName: locationName ?? this.locationName,
+      locationLatitude: locationLatitude ?? this.locationLatitude,
+      locationLongitude: locationLongitude ?? this.locationLongitude,
       holdReason: holdReason ?? this.holdReason,
       cancelReason: cancelReason ?? this.cancelReason,
       createdTimestamp: createdTimestamp ?? this.createdTimestamp,
@@ -106,9 +108,11 @@ class JobModel extends Equatable {
       'id': id,
       'title': title,
       'description': description,
-      'status': _statusToMap(status), //status.toMap(),
+      'status': _statusToMap(status),
       'assignedTechnicianId': assignedTechnicianId,
-      'locationId': locationId,
+      'locationName': locationName,
+      'locationLatitude': locationLatitude,
+      'locationLongitude': locationLongitude,
       'holdReason': holdReason,
       'cancelReason': cancelReason,
       'createdTimestamp': createdTimestamp,
@@ -126,7 +130,9 @@ class JobModel extends Equatable {
       description: map['description'] ?? '',
       status: _mapToStatus(map['status']), //JobStatus.fromMap(map['status']),
       assignedTechnicianId: map['assignedTechnicianId'] ?? '',
-      locationId: map['locationId'] ?? '',
+      locationName: map['locationName'] ?? '',
+      locationLatitude: map['locationLatitude']?.toInt() ?? 0,
+      locationLongitude: map['locationLongitude']?.toInt() ?? 0,
       holdReason: map['holdReason'] ?? '',
       cancelReason: map['cancelReason'] ?? '',
       createdTimestamp: map['createdTimestamp']?.toInt() ?? 0,
@@ -144,7 +150,7 @@ class JobModel extends Equatable {
 
   @override
   String toString() {
-    return 'JobModel(id: $id, title: $title, description: $description, status: $status, assignedTechnicianId: $assignedTechnicianId, locationId: $locationId, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
+    return 'JobModel(id: $id, title: $title, description: $description, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
   }
 
   @override
@@ -155,7 +161,9 @@ class JobModel extends Equatable {
       description,
       status,
       assignedTechnicianId,
-      locationId,
+      locationName,
+      locationLatitude,
+      locationLongitude,
       holdReason,
       cancelReason,
       createdTimestamp,
