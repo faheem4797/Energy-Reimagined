@@ -1,6 +1,7 @@
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
+import 'package:energy_reimagined/features/admin/jobs/screens/admin_job_page.dart';
 import 'package:energy_reimagined/features/admin/tools/screens/admin_tool_page.dart';
 import 'package:energy_reimagined/features/admin/users/screens/admin_user_page.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
@@ -18,7 +19,7 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
     label: 'Tools',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.handyman),
+    icon: Icon(Icons.work),
     label: 'Jobs',
   ),
 ];
@@ -26,6 +27,7 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
 List<Widget> bottomNavScreen = <Widget>[
   const AdminUserPage(),
   const AdminToolPage(),
+  const AdminJobPage(),
 ];
 
 class AdminBottomNavBar extends StatelessWidget {

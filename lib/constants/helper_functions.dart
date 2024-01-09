@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void checkConnectionFunc(BuildContext context, void Function() onPressed) {
   final connectivityState = context.read<ConnectivityBloc>().state;
-  print(connectivityState);
   if (connectivityState is ConnectivityFailureState) {
     showDialog(
       context: context,

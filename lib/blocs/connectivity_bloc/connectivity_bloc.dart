@@ -42,6 +42,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     }
 
     /// Closes the BLoC and performs necessary cleanup.
+
     @override
     Future<void> close() {
       subscription
