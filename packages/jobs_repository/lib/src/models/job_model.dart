@@ -2,6 +2,14 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
+// pending = job is just created by admin, not assigned to any technician
+// assigned = admin assigned the job to technician
+// started = technician has started working on job
+// onHold = technician put job on hold (need more tools etc.)
+// completed = job is completed
+// cancelled = admin completed the job
+//also put onHold when technician requests tools
+
 enum JobStatus { pending, assigned, started, onHold, completed, cancelled }
 
 class JobModel extends Equatable {

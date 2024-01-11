@@ -1,6 +1,9 @@
+import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/strings.dart';
 import 'package:energy_reimagined/features/admin/admin_bottom_navbar.dart';
 import 'package:energy_reimagined/features/admin/blocs/admin_nav_bloc/admin_nav_bloc.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/delete_job_bloc/delete_job_bloc.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/jobs_stream_bloc/jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/delete_tool_bloc/delete_tool_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/tools_stream_bloc/tools_stream_bloc.dart';
 import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
@@ -12,6 +15,7 @@ import 'package:energy_reimagined/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 import 'package:user_data_repository/user_data_repository.dart';
 
@@ -40,7 +44,8 @@ class AppView extends StatelessWidget {
         // builder: DevicePreview.appBuilder,
         title: ConstStrings.appname,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: ConstColors.backgroundDarkColor),
           fontFamily: 'Poppins',
           textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Poppins'),
           useMaterial3: true,
@@ -69,8 +74,8 @@ class AppView extends StatelessWidget {
                   create: (context) => AdminNavBloc(),
                 ),
                 BlocProvider(
-                  create: (context) =>
-                      UsersStreamBloc(userDataRepository: UserDataRepository()),
+                  create: (context) => UsersStreamBloc(
+                      userDataRepository: context.read<UserDataRepository>()),
                 ),
                 BlocProvider(
                   create: (context) => ToolsStreamBloc(
@@ -78,7 +83,14 @@ class AppView extends StatelessWidget {
                 ),
                 BlocProvider(
                     create: (context) => DeleteToolBloc(
-                        toolsRepository: context.read<ToolsRepository>()))
+                        toolsRepository: context.read<ToolsRepository>())),
+                BlocProvider(
+                  create: (context) => JobsStreamBloc(
+                      jobsRepository: context.read<JobsRepository>()),
+                ),
+                BlocProvider(
+                    create: (context) => DeleteJobBloc(
+                        jobsRepository: context.read<JobsRepository>()))
               ],
               child: const AdminBottomNavBar(),
             );

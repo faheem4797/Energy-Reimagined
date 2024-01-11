@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
+import 'package:user_data_repository/user_data_repository.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -16,6 +17,8 @@ void main() async {
   Bloc.observer = AppBlocObserver();
   final toolsRepository = ToolsRepository();
   final jobsRepository = JobsRepository();
+  final userDataRepository = UserDataRepository();
+
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
 
@@ -23,5 +26,6 @@ void main() async {
     authenticationRepository: authenticationRepository,
     toolsRepository: toolsRepository,
     jobsRepository: jobsRepository,
+    userDataRepository: userDataRepository,
   ));
 }

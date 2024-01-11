@@ -40,14 +40,13 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       // Otherwise, add an 'DisconnectedEvent'.
       add(DisconnectedEvent());
     }
+  }
 
-    /// Closes the BLoC and performs necessary cleanup.
-
-    @override
-    Future<void> close() {
-      _subscription
-          ?.cancel(); // Cancel the subscription to stop listening for connectivity changes.
-      return super.close(); // Close the BLoC and release any resources.
-    }
+  /// Closes the BLoC and performs necessary cleanup.
+  @override
+  Future<void> close() {
+    _subscription
+        ?.cancel(); // Cancel the subscription to stop listening for connectivity changes.
+    return super.close(); // Close the BLoC and release any resources.
   }
 }

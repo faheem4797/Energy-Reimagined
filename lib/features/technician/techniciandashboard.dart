@@ -49,27 +49,7 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
                       .read<AuthenticationBloc>()
                       .add(const AuthenticationLogoutRequested());
                 });
-                //await _auth.signOut();
-                // setState(() {
-                //   _user = null;
-                // });
-                // FirebaseAuth.instance.authStateChanges().listen((User? user) {
-                //   if (user == null) {
-                // User is signed out, perform necessary actions (e.g., navigation)
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) =>
-                //           const SignIn()), // Redirect to sign-in page
-                //   (route) => false,
-                // );
-                //   }
-                // });
               }
-              // Navigator.pushAndRemoveUntil(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => const SignIn()),
-              //     (route) => false);
             },
           ),
         ],

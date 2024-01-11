@@ -39,7 +39,9 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      //padding: EdgeInsets.symmetric(horizontal: 15.w),
+      padding: EdgeInsets.symmetric(horizontal: 0.w),
+
       child: Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ThemeData().colorScheme.copyWith(

@@ -20,21 +20,22 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     required this.userId,
   })  : _jobsRepository = jobsRepository,
         super(EditJobState(job: oldJobModel)) {
-    on<EditJobWithUpdatedToolModel>(_editJobWithUpdatedToolModel);
+    on<EditJobWithUpdatedJobModel>(_editJobWithUpdatedJobModel);
     on<TitleChanged>(_titleChanged);
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
+    on<StatusChanged>(_statusChanged);
   }
 
-  FutureOr<void> _editJobWithUpdatedToolModel(
-      EditJobWithUpdatedToolModel event, Emitter<EditJobState> emit) async {
+  FutureOr<void> _editJobWithUpdatedJobModel(
+      EditJobWithUpdatedJobModel event, Emitter<EditJobState> emit) async {
     emit(state.copyWith(
       isValid: _validate(
         title: state.job.title,
         description: state.job.description,
         locationName: state.job.locationName,
-        locationLatitude: state.job.locationLatitude,
-        locationLongitude: state.job.locationLongitude,
+        // locationLatitude: state.job.locationLatitude,
+        // locationLongitude: state.job.locationLongitude,
       ),
     ));
     if (!state.isValid) {
@@ -77,8 +78,8 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
           title: event.title,
           description: state.job.description,
           locationName: state.job.locationName,
-          locationLatitude: state.job.locationLatitude,
-          locationLongitude: state.job.locationLongitude,
+          // locationLatitude: state.job.locationLatitude,
+          // locationLongitude: state.job.locationLongitude,
         ),
         displayError: titleValidationStatus == TitleValidationStatus.empty
             ? 'Please enter a title'
@@ -99,8 +100,8 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
           title: state.job.title,
           description: event.description,
           locationName: state.job.locationName,
-          locationLatitude: state.job.locationLatitude,
-          locationLongitude: state.job.locationLongitude,
+          // locationLatitude: state.job.locationLatitude,
+          // locationLongitude: state.job.locationLongitude,
         ),
         displayError:
             descriptionValidationStatus == DescriptionValidationStatus.empty
@@ -113,20 +114,23 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
   FutureOr<void> _locationChanged(
       LocationChanged event, Emitter<EditJobState> emit) {
     final LocationValidationStatus locationValidationStatus = _validateLocation(
-        event.locationName, event.locationLatitude, event.locationLongitude);
+      event.locationName,
+      // event.locationLatitude, event.locationLongitude
+    );
 
     emit(
       state.copyWith(
         job: state.job.copyWith(
-            locationName: event.locationName,
-            locationLatitude: event.locationLatitude,
-            locationLongitude: event.locationLongitude),
+          locationName: event.locationName,
+          // locationLatitude: event.locationLatitude,
+          // locationLongitude: event.locationLongitude
+        ),
         isValid: _validate(
           title: state.job.title,
           description: state.job.description,
           locationName: event.locationName,
-          locationLatitude: event.locationLatitude,
-          locationLongitude: event.locationLongitude,
+          // locationLatitude: event.locationLatitude,
+          // locationLongitude: event.locationLongitude,
         ),
         displayError: locationValidationStatus == LocationValidationStatus.empty
             ? 'Please enter a location'
@@ -137,19 +141,44 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     );
   }
 
+  FutureOr<void> _statusChanged(
+      StatusChanged event, Emitter<EditJobState> emit) {
+    emit(
+      state.copyWith(
+        job: state.job.copyWith(
+          status: event.isCancelled ? JobStatus.cancelled : oldJobModel.status,
+          // status: event.isCancelled
+          //     ? JobStatus.cancelled
+          //     : oldJobModel.status == JobStatus.cancelled
+          //         ? JobStatus.pending
+          //         : JobStatus.cancelled,
+        ),
+        isValid: _validate(
+          title: state.job.title,
+          description: state.job.description,
+          locationName: state.job.locationName,
+          // locationLatitude: event.locationLatitude,
+          // locationLongitude: event.locationLongitude,
+        ),
+      ),
+    );
+  }
+
   bool _validate({
     required String title,
     required String description,
     required String locationName,
-    required int locationLongitude,
-    required int locationLatitude,
+    // required int locationLongitude,
+    // required int locationLatitude,
   }) {
     final TitleValidationStatus titleValidationStatus = _validateTitle(title);
 
     final DescriptionValidationStatus descriptionValidationStatus =
         _validateDescription(description);
-    final LocationValidationStatus locationValidationStatus =
-        _validateLocation(locationName, locationLatitude, locationLongitude);
+    final LocationValidationStatus locationValidationStatus = _validateLocation(
+      locationName,
+      // locationLatitude, locationLongitude
+    );
 
     return titleValidationStatus == TitleValidationStatus.valid &&
         descriptionValidationStatus == DescriptionValidationStatus.valid &&
@@ -173,12 +202,16 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
   }
 
   LocationValidationStatus _validateLocation(
-      String location, int locationLatitude, int locationLongitude) {
+    String location,
+    //  int locationLatitude, int locationLongitude
+  ) {
     if (location.isEmpty) {
       return LocationValidationStatus.empty;
-    } else if (locationLatitude == 0 || locationLongitude == 0) {
-      return LocationValidationStatus.invalid;
-    } else {
+    }
+    // else if (locationLatitude == 0 || locationLongitude == 0) {
+    //   return LocationValidationStatus.invalid;
+    // }
+    else {
       return LocationValidationStatus.valid;
     }
   }

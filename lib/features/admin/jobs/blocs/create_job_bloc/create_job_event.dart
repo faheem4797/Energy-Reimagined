@@ -27,14 +27,17 @@ final class DescriptionChanged extends CreateJobEvent {
 
 final class LocationChanged extends CreateJobEvent {
   final String locationName;
-  final int locationLatitude;
-  final int locationLongitude;
+  // final int locationLatitude;
+  // final int locationLongitude;
   const LocationChanged({
     required this.locationName,
-    required this.locationLatitude,
-    required this.locationLongitude,
+    // required this.locationLatitude,
+    // required this.locationLongitude,
   });
 
   @override
-  List<Object> get props => [locationName, locationLatitude, locationLongitude];
+  List<Object> get props => [
+        locationName,
+        //locationLatitude, locationLongitude
+      ];
 }
