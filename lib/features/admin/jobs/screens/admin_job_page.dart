@@ -18,8 +18,6 @@ class AdminJobPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final streamOfJobs = context.watch<JobsStreamBloc>().state;
-
     return WillPopScope(
       onWillPop: () async {
         return await WillPopScoopService().showCloseConfirmationDialog(context);
@@ -278,8 +276,9 @@ class AdminJobPage extends StatelessWidget {
                                               left: 0,
                                               right: 0,
                                               child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.w,
+                                                    vertical: 8.h),
                                                 child: Banner(
                                                   message: isOnHold
                                                       ? 'On Hold'

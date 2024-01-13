@@ -14,6 +14,16 @@ class JobsRepository {
         snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
   }
 
+  Stream<List<JobModel>> getUserJobsStream(String userId) {
+    return _firebaseFirestore
+        .collection('jobs')
+        .where('assignedTechnicianId', isEqualTo: userId)
+        .orderBy('assignedTimestamp', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
+  }
+
   Future<void> setJobData(JobModel job) async {
     try {
       await _firebaseFirestore.collection('jobs').doc(job.id).set(job.toMap());
