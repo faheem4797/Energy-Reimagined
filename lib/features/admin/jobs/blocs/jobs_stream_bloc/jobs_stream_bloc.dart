@@ -14,21 +14,60 @@ class JobsStreamBloc extends Bloc<JobsStreamEvent, JobsStreamState> {
 
   JobsStreamBloc({required JobsRepository jobsRepository})
       : _jobsRepository = jobsRepository,
-        super(const JobsStreamState.loading()) {
+        super(JobsStreamState.loading()) {
     _jobsSubscription = _jobsRepository.getJobsStream.listen((jobData) {
-      add(GetJobStream(jobsStream: jobData));
+      final newFilteredList = _filterList(jobData, state.selectedStatuses);
+      add(GetJobStream(
+          jobsStream: jobData,
+          filteredJobs: newFilteredList,
+          selectedStatuses: state.selectedStatuses));
     });
     on<GetJobStream>(_getJobStream);
+    on<AddFilterStatus>(_addFilterStatus);
+    on<RemoveFilterStatus>(_removeFilterStatus);
   }
 
   FutureOr<void> _getJobStream(
       GetJobStream event, Emitter<JobsStreamState> emit) {
     try {
-      emit(JobsStreamState.success(event.jobsStream));
+      emit(JobsStreamState.success(
+          event.jobsStream, event.filteredJobs, event.selectedStatuses));
     } catch (e) {
       log(e.toString());
-      emit(const JobsStreamState.failure());
+      emit(JobsStreamState.failure());
     }
+  }
+
+  FutureOr<void> _addFilterStatus(
+      AddFilterStatus event, Emitter<JobsStreamState> emit) {
+    final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
+    tempSet.add(event.status);
+
+    final newFilteredList = _filterList(state.jobStream!, tempSet);
+
+    emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
+  }
+
+  FutureOr<void> _removeFilterStatus(
+      RemoveFilterStatus event, Emitter<JobsStreamState> emit) {
+    final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
+    tempSet.remove(event.status);
+
+    final newFilteredList = _filterList(state.jobStream!, tempSet);
+
+    emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
+  }
+
+  List<JobModel> _filterList(List<JobModel> jobData, Set<JobStatus> filterSet) {
+    final List<JobModel> tempFilteredJobs;
+
+    if (filterSet.isEmpty) {
+      tempFilteredJobs = List.from(jobData);
+    } else {
+      tempFilteredJobs =
+          jobData.where((job) => filterSet.contains(job.status)).toList();
+    }
+    return tempFilteredJobs;
   }
 
   @override

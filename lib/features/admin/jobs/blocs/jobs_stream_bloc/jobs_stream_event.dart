@@ -9,9 +9,28 @@ sealed class JobsStreamEvent extends Equatable {
 
 final class GetJobStream extends JobsStreamEvent {
   final List<JobModel> jobsStream;
+  final List<JobModel> filteredJobs;
+  final Set<JobStatus> selectedStatuses;
 
-  const GetJobStream({required this.jobsStream});
+  const GetJobStream(
+      {required this.jobsStream,
+      required this.filteredJobs,
+      required this.selectedStatuses});
 
   @override
-  List<Object> get props => [jobsStream];
+  List<Object> get props => [jobsStream, filteredJobs, selectedStatuses];
+}
+
+final class AddFilterStatus extends JobsStreamEvent {
+  final JobStatus status;
+  const AddFilterStatus({required this.status});
+  @override
+  List<Object> get props => [status];
+}
+
+final class RemoveFilterStatus extends JobsStreamEvent {
+  final JobStatus status;
+  const RemoveFilterStatus({required this.status});
+  @override
+  List<Object> get props => [status];
 }
