@@ -317,9 +317,9 @@ class AdminJobPage extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           _buildFilterChip(JobStatus.pending),
+          _buildFilterChip(JobStatus.onHold),
           _buildFilterChip(JobStatus.assigned),
           _buildFilterChip(JobStatus.started),
-          _buildFilterChip(JobStatus.onHold),
           _buildFilterChip(JobStatus.completed),
           _buildFilterChip(JobStatus.cancelled),
         ],
@@ -333,9 +333,20 @@ class AdminJobPage extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
           child: FilterChip(
-            label: Text(status.toString().split('.').last),
-            selected: //selectedStatuses.contains(status),
-                state.selectedStatuses.contains(status),
+            label: Text(status == JobStatus.pending
+                ? 'Pending'
+                : status == JobStatus.assigned
+                    ? 'Assigned'
+                    : status == JobStatus.cancelled
+                        ? 'Cancelled'
+                        : status == JobStatus.completed
+                            ? 'Completed'
+                            : status == JobStatus.started
+                                ? 'Started'
+                                : status == JobStatus.onHold
+                                    ? 'On Hold'
+                                    : ''),
+            selected: state.selectedStatuses.contains(status),
             onSelected: (bool selected) {
               if (selected) {
                 context
