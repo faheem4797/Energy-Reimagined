@@ -7,6 +7,7 @@ class ToolModel extends Equatable {
   final String name;
   final String category;
   final int quantity;
+  final String imageUrl;
   final int lastUpdated;
 
   const ToolModel({
@@ -14,17 +15,25 @@ class ToolModel extends Equatable {
     required this.name,
     required this.category,
     required this.quantity,
+    required this.imageUrl,
     required this.lastUpdated,
   });
 
-  static const empty =
-      ToolModel(id: '', name: '', category: '', quantity: 0, lastUpdated: 0);
+  static const empty = ToolModel(
+    id: '',
+    name: '',
+    category: '',
+    quantity: 0,
+    imageUrl: '',
+    lastUpdated: 0,
+  );
 
   ToolModel copyWith({
     String? id,
     String? name,
     String? category,
     int? quantity,
+    String? imageUrl,
     int? lastUpdated,
   }) {
     return ToolModel(
@@ -32,6 +41,7 @@ class ToolModel extends Equatable {
       name: name ?? this.name,
       category: category ?? this.category,
       quantity: quantity ?? this.quantity,
+      imageUrl: imageUrl ?? this.imageUrl,
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
   }
@@ -42,6 +52,7 @@ class ToolModel extends Equatable {
       'name': name,
       'category': category,
       'quantity': quantity,
+      'imageUrl': imageUrl,
       'lastUpdated': lastUpdated,
     };
   }
@@ -52,6 +63,7 @@ class ToolModel extends Equatable {
       name: map['name'] ?? '',
       category: map['category'] ?? '',
       quantity: map['quantity']?.toInt() ?? 0,
+      imageUrl: map['imageUrl'] ?? '',
       lastUpdated: map['lastUpdated']?.toInt() ?? 0,
     );
   }
@@ -67,7 +79,7 @@ class ToolModel extends Equatable {
 
   @override
   String toString() {
-    return 'ToolModel(id: $id, name: $name, category: $category, quantity: $quantity, lastUpdated: $lastUpdated)';
+    return 'ToolModel(id: $id, name: $name, category: $category, quantity: $quantity, imageUrl: $imageUrl, lastUpdated: $lastUpdated)';
   }
 
   @override
@@ -77,6 +89,7 @@ class ToolModel extends Equatable {
       name,
       category,
       quantity,
+      imageUrl,
       lastUpdated,
     ];
   }

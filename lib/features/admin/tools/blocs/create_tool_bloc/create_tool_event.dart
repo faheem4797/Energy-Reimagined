@@ -32,3 +32,5 @@ final class QuantityChanged extends CreateToolEvent {
   @override
   List<Object> get props => [quantity];
 }
+
+//TODO: ADD AN EVENT FOR TOOL IMAGE CHANGED

@@ -196,6 +196,8 @@ class AdminToolPage extends StatelessWidget {
                                                                                 tools[index].category,
                                                                             quantity:
                                                                                 tools[index].quantity,
+                                                                            imageUrl:
+                                                                                tools[index].imageUrl,
                                                                             lastUpdated:
                                                                                 tools[index].lastUpdated,
                                                                           )),

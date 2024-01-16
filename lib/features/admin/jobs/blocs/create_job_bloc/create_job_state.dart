@@ -2,6 +2,8 @@ part of 'create_job_bloc.dart';
 
 enum CreateJobStatus { initial, inProgress, success, failure }
 
+//TODO: add a dropdown in job creation named 'municipality'. dropdown shows a list of municipalities
+
 final class CreateJobState extends Equatable {
   const CreateJobState({
     this.job = JobModel.empty,
