@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/create_tool_bloc/create_tool_bloc.dart';
@@ -122,6 +123,11 @@ class AdminToolPage extends StatelessWidget {
                                       margin: const EdgeInsets.symmetric(
                                           vertical: 8, horizontal: 8),
                                       child: ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    tools[index].imageUrl),
+                                          ),
                                           title: RichText(
                                             text: TextSpan(
                                               style: const TextStyle(

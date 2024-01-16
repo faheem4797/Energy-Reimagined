@@ -49,11 +49,8 @@ class AdminEditToolPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  //TODO: Add image select container here
-
                   imageSelectContainer(context),
                   const SizedBox(height: 10),
-
                   BlocBuilder<EditToolBloc, EditToolState>(
                     buildWhen: (previous, current) =>
                         previous.tool.name != current.tool.name,
@@ -212,19 +209,19 @@ class AdminEditToolPage extends StatelessWidget {
             },
           ),
         ),
-        BlocBuilder<EditToolBloc, EditToolState>(
-            buildWhen: (previous, current) =>
-                (previous.imageToolFileBytes != current.imageToolFileBytes) &&
-                (previous.imageToolFileNameFromFilePicker !=
-                    current.imageToolFileNameFromFilePicker) &&
-                (previous.imageToolFilePathFromFilePicker !=
-                    current.imageToolFilePathFromFilePicker),
-            builder: (context, state) {
-              return Text(
-                state.displayError ?? '',
-                style: const TextStyle(color: ConstColors.redColor),
-              );
-            })
+        // BlocBuilder<EditToolBloc, EditToolState>(
+        //     buildWhen: (previous, current) =>
+        //         (previous.imageToolFileBytes != current.imageToolFileBytes) &&
+        //         (previous.imageToolFileNameFromFilePicker !=
+        //             current.imageToolFileNameFromFilePicker) &&
+        //         (previous.imageToolFilePathFromFilePicker !=
+        //             current.imageToolFilePathFromFilePicker),
+        //     builder: (context, state) {
+        //       return Text(
+        //         state.displayError ?? '',
+        //         style: const TextStyle(color: ConstColors.redColor),
+        //       );
+        //     })
       ],
     );
   }
