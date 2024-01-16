@@ -12,10 +12,20 @@ import 'package:equatable/equatable.dart';
 
 enum JobStatus { pending, assigned, started, onHold, completed, cancelled }
 
+const List<String> municipalities = [
+  'Municipality 1',
+  'Municipality 2',
+  'Municipality 3',
+  'Municipality 4',
+  'Municipality 5'
+];
+const String firstMunicipality = 'Municipality 1';
+
 class JobModel extends Equatable {
   final String id;
   final String title;
   final String description;
+  final String municipality;
   final JobStatus status;
   final String assignedTechnicianId;
   final String locationName;
@@ -32,6 +42,7 @@ class JobModel extends Equatable {
     required this.id,
     required this.title,
     required this.description,
+    required this.municipality,
     required this.status,
     required this.assignedTechnicianId,
     required this.locationName,
@@ -50,6 +61,7 @@ class JobModel extends Equatable {
       id: '',
       title: '',
       description: '',
+      municipality: firstMunicipality,
       status: JobStatus.pending,
       assignedTechnicianId: '',
       locationName: '',
@@ -67,6 +79,7 @@ class JobModel extends Equatable {
     String? id,
     String? title,
     String? description,
+    String? municipality,
     JobStatus? status,
     String? assignedTechnicianId,
     String? locationName,
@@ -84,6 +97,7 @@ class JobModel extends Equatable {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      municipality: municipality ?? this.municipality,
       status: status ?? this.status,
       assignedTechnicianId: assignedTechnicianId ?? this.assignedTechnicianId,
       locationName: locationName ?? this.locationName,
@@ -116,6 +130,7 @@ class JobModel extends Equatable {
       'id': id,
       'title': title,
       'description': description,
+      'municipality': municipality,
       'status': _statusToMap(status),
       'assignedTechnicianId': assignedTechnicianId,
       'locationName': locationName,
@@ -136,6 +151,7 @@ class JobModel extends Equatable {
       id: map['id'] ?? '',
       title: map['title'] ?? '',
       description: map['description'] ?? '',
+      municipality: map['municipality'] ?? '',
       status: _mapToStatus(map['status']), //JobStatus.fromMap(map['status']),
       assignedTechnicianId: map['assignedTechnicianId'] ?? '',
       locationName: map['locationName'] ?? '',
@@ -186,7 +202,7 @@ class JobModel extends Equatable {
 
   @override
   String toString() {
-    return 'JobModel(id: $id, title: $title, description: $description, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
+    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
   }
 
   @override
@@ -195,6 +211,7 @@ class JobModel extends Equatable {
       id,
       title,
       description,
+      municipality,
       status,
       assignedTechnicianId,
       locationName,

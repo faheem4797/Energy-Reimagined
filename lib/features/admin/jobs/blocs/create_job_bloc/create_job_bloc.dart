@@ -18,6 +18,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
     on<TitleChanged>(_titleChanged);
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
+    on<MunicipalityChanged>(_municipalityChanged);
   }
 
   FutureOr<void> _createJobWithDataModel(
@@ -63,6 +64,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: state.job.locationName,
           // locationLatitude: state.job.locationLatitude,
           // locationLongitude: state.job.locationLongitude,
+          municipality: state.job.municipality,
         ),
         displayError: titleValidationStatus == TitleValidationStatus.empty
             ? 'Please enter a title'
@@ -85,6 +87,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: state.job.locationName,
           // locationLatitude: state.job.locationLatitude,
           // locationLongitude: state.job.locationLongitude,
+          municipality: state.job.municipality,
         ),
         displayError:
             descriptionValidationStatus == DescriptionValidationStatus.empty
@@ -114,11 +117,40 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: event.locationName,
           // locationLatitude: event.locationLatitude,
           // locationLongitude: event.locationLongitude,
+          municipality: state.job.municipality,
         ),
         displayError: locationValidationStatus == LocationValidationStatus.empty
             ? 'Please enter a location'
             : locationValidationStatus == LocationValidationStatus.invalid
                 ? 'Please choose a location on map as well'
+                : null,
+      ),
+    );
+  }
+
+  FutureOr<void> _municipalityChanged(
+      MunicipalityChanged event, Emitter<CreateJobState> emit) {
+    final MunicipalityValidationStatus municipalityValidationStatus =
+        _validateMunicipality(
+      event.municipality,
+    );
+
+    emit(
+      state.copyWith(
+        job: state.job.copyWith(
+          municipality: event.municipality,
+        ),
+        isValid: _validate(
+          title: state.job.title,
+          description: state.job.description,
+          locationName: state.job.locationName,
+          // locationLatitude: event.locationLatitude,
+          // locationLongitude: event.locationLongitude,
+          municipality: event.municipality,
+        ),
+        displayError:
+            municipalityValidationStatus == MunicipalityValidationStatus.empty
+                ? 'Please choose a municipality'
                 : null,
       ),
     );
@@ -130,6 +162,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
     required String locationName,
     // required int locationLongitude,
     // required int locationLatitude,
+    required String municipality,
   }) {
     final TitleValidationStatus titleValidationStatus = _validateTitle(title);
 
@@ -139,10 +172,13 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
       locationName,
       // locationLatitude, locationLongitude
     );
+    final MunicipalityValidationStatus municipalityValidationStatus =
+        _validateMunicipality(municipality);
 
     return titleValidationStatus == TitleValidationStatus.valid &&
         descriptionValidationStatus == DescriptionValidationStatus.valid &&
-        locationValidationStatus == LocationValidationStatus.valid;
+        locationValidationStatus == LocationValidationStatus.valid &&
+        municipalityValidationStatus == MunicipalityValidationStatus.valid;
   }
 
   TitleValidationStatus _validateTitle(String title) {
@@ -175,6 +211,16 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
       return LocationValidationStatus.valid;
     }
   }
+
+  MunicipalityValidationStatus _validateMunicipality(
+    String municipality,
+  ) {
+    if (municipality.isEmpty) {
+      return MunicipalityValidationStatus.empty;
+    } else {
+      return MunicipalityValidationStatus.valid;
+    }
+  }
 }
 
 enum TitleValidationStatus { empty, valid }
@@ -182,3 +228,5 @@ enum TitleValidationStatus { empty, valid }
 enum DescriptionValidationStatus { empty, valid }
 
 enum LocationValidationStatus { empty, invalid, valid }
+
+enum MunicipalityValidationStatus { empty, valid }

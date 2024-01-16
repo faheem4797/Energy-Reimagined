@@ -25,6 +25,14 @@ final class DescriptionChanged extends EditJobEvent {
   List<Object> get props => [description];
 }
 
+final class MunicipalityChanged extends EditJobEvent {
+  final String municipality;
+  const MunicipalityChanged({required this.municipality});
+
+  @override
+  List<Object> get props => [municipality];
+}
+
 final class LocationChanged extends EditJobEvent {
   final String locationName;
   // final int locationLatitude;

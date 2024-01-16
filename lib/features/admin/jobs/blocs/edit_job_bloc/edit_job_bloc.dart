@@ -25,6 +25,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
     on<StatusChanged>(_statusChanged);
+    on<MunicipalityChanged>(_municipalityChanged);
   }
 
   FutureOr<void> _editJobWithUpdatedJobModel(
@@ -36,6 +37,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
         locationName: state.job.locationName,
         // locationLatitude: state.job.locationLatitude,
         // locationLongitude: state.job.locationLongitude,
+        municipality: state.job.municipality,
       ),
     ));
     if (!state.isValid) {
@@ -80,6 +82,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
           locationName: state.job.locationName,
           // locationLatitude: state.job.locationLatitude,
           // locationLongitude: state.job.locationLongitude,
+          municipality: state.job.municipality,
         ),
         displayError: titleValidationStatus == TitleValidationStatus.empty
             ? 'Please enter a title'
@@ -102,6 +105,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
           locationName: state.job.locationName,
           // locationLatitude: state.job.locationLatitude,
           // locationLongitude: state.job.locationLongitude,
+          municipality: state.job.municipality,
         ),
         displayError:
             descriptionValidationStatus == DescriptionValidationStatus.empty
@@ -131,6 +135,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
           locationName: event.locationName,
           // locationLatitude: event.locationLatitude,
           // locationLongitude: event.locationLongitude,
+          municipality: state.job.municipality,
         ),
         displayError: locationValidationStatus == LocationValidationStatus.empty
             ? 'Please enter a location'
@@ -159,7 +164,34 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
           locationName: state.job.locationName,
           // locationLatitude: event.locationLatitude,
           // locationLongitude: event.locationLongitude,
+          municipality: state.job.municipality,
         ),
+      ),
+    );
+  }
+
+  FutureOr<void> _municipalityChanged(
+      MunicipalityChanged event, Emitter<EditJobState> emit) {
+    final MunicipalityValidationStatus municipalityValidationStatus =
+        _validateMunicipality(
+      event.municipality,
+    );
+    emit(
+      state.copyWith(
+        job: state.job.copyWith(
+          municipality: event.municipality,
+        ),
+        isValid: _validate(
+            title: state.job.title,
+            description: state.job.description,
+            locationName: state.job.locationName,
+            // locationLatitude: event.locationLatitude,
+            // locationLongitude: event.locationLongitude,
+            municipality: event.municipality),
+        displayError:
+            municipalityValidationStatus == MunicipalityValidationStatus.empty
+                ? 'Please choose a municipality'
+                : null,
       ),
     );
   }
@@ -170,6 +202,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     required String locationName,
     // required int locationLongitude,
     // required int locationLatitude,
+    required String municipality,
   }) {
     final TitleValidationStatus titleValidationStatus = _validateTitle(title);
 
@@ -179,10 +212,13 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
       locationName,
       // locationLatitude, locationLongitude
     );
+    final MunicipalityValidationStatus municipalityValidationStatus =
+        _validateMunicipality(municipality);
 
     return titleValidationStatus == TitleValidationStatus.valid &&
         descriptionValidationStatus == DescriptionValidationStatus.valid &&
-        locationValidationStatus == LocationValidationStatus.valid;
+        locationValidationStatus == LocationValidationStatus.valid &&
+        municipalityValidationStatus == MunicipalityValidationStatus.valid;
   }
 
   TitleValidationStatus _validateTitle(String title) {
@@ -215,6 +251,16 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
       return LocationValidationStatus.valid;
     }
   }
+
+  MunicipalityValidationStatus _validateMunicipality(
+    String? municipality,
+  ) {
+    if (municipality == null || municipality.isEmpty) {
+      return MunicipalityValidationStatus.empty;
+    } else {
+      return MunicipalityValidationStatus.valid;
+    }
+  }
 }
 
 enum TitleValidationStatus { empty, valid }
@@ -222,3 +268,5 @@ enum TitleValidationStatus { empty, valid }
 enum DescriptionValidationStatus { empty, valid }
 
 enum LocationValidationStatus { empty, invalid, valid }
+
+enum MunicipalityValidationStatus { empty, valid }

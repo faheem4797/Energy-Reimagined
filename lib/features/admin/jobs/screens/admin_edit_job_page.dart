@@ -118,6 +118,43 @@ class AdminEditJobPage extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Municipality: ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: ConstColors.blackColor,
+                        ),
+                      ),
+                      BlocBuilder<EditJobBloc, EditJobState>(
+                        buildWhen: (previous, current) =>
+                            previous.job.municipality !=
+                            current.job.municipality,
+                        builder: (context, state) {
+                          return DropdownButton<String>(
+                            value: state.job.municipality,
+                            onChanged: (municipality) {
+                              municipality != null
+                                  ? context.read<EditJobBloc>().add(
+                                      MunicipalityChanged(
+                                          municipality: municipality))
+                                  : null;
+                            },
+                            items: municipalities.map((String municipality) {
+                              return DropdownMenuItem<String>(
+                                value: municipality,
+                                child: Text(municipality),
+                              );
+                            }).toList(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
                   BlocBuilder<EditJobBloc, EditJobState>(
                     buildWhen: (previous, current) =>
                         previous.job.description != current.job.description,

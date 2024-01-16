@@ -4,6 +4,7 @@ import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/crea
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jobs_repository/jobs_repository.dart';
 
 class AdminCreateJobPage extends StatelessWidget {
   const AdminCreateJobPage({super.key});
@@ -83,6 +84,43 @@ class AdminCreateJobPage extends StatelessWidget {
                         ),
                       );
                     },
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Municipality: ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: ConstColors.blackColor,
+                        ),
+                      ),
+                      BlocBuilder<CreateJobBloc, CreateJobState>(
+                        buildWhen: (previous, current) =>
+                            previous.job.municipality !=
+                            current.job.municipality,
+                        builder: (context, state) {
+                          return DropdownButton<String>(
+                            value: state.job.municipality,
+                            onChanged: (municipality) {
+                              municipality != null
+                                  ? context.read<CreateJobBloc>().add(
+                                      MunicipalityChanged(
+                                          municipality: municipality))
+                                  : null;
+                            },
+                            items: municipalities.map((String municipality) {
+                              return DropdownMenuItem<String>(
+                                value: municipality,
+                                child: Text(municipality),
+                              );
+                            }).toList(),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   BlocBuilder<CreateJobBloc, CreateJobState>(
