@@ -1,25 +1,52 @@
-import 'dart:developer';
+import 'dart:developer' as developers;
+import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class ToolsRepository {
   final FirebaseFirestore _firebaseFirestore;
+  final FirebaseStorage _firebaseStorage;
 
-  ToolsRepository({FirebaseFirestore? firebaseFirestore})
-      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+  ToolsRepository(
+      {FirebaseFirestore? firebaseFirestore, FirebaseStorage? firebaseStorage})
+      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
+        _firebaseStorage = firebaseStorage ?? FirebaseStorage.instance;
 
   Stream<List<ToolModel>> get getToolsStream {
     return _firebaseFirestore.collection('tools').snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => ToolModel.fromMap(doc.data())).toList());
   }
 
-  Future<void> setToolData(ToolModel tool) async {
+  Future<void> setToolData(ToolModel tool, File? toolImageFile,
+      String? toolImageNameFromFilePicker) async {
     try {
-      await _firebaseFirestore
-          .collection('tools')
-          .doc(tool.id)
-          .set(tool.toMap());
+      if (toolImageFile != null && toolImageNameFromFilePicker != null) {
+        int randomNumber = Random().nextInt(100000) + 100000;
+
+        final toolRef = _firebaseStorage.ref().child(
+            'tool_image/${tool.id}/$randomNumber$toolImageNameFromFilePicker');
+        UploadTask toolUploadTask = toolRef.putFile(toolImageFile);
+
+        final toolSnapshot = await toolUploadTask.whenComplete(() => {});
+        final String toolUrlDownload = await toolSnapshot.ref.getDownloadURL();
+        if (tool.imageUrl != '') {
+          await FirebaseStorage.instance.refFromURL(tool.imageUrl).delete();
+        }
+        final ToolModel newTool = tool.copyWith(imageUrl: toolUrlDownload);
+
+        await _firebaseFirestore
+            .collection('tools')
+            .doc(newTool.id)
+            .set(newTool.toMap());
+      } else {
+        await _firebaseFirestore
+            .collection('tools')
+            .doc(tool.id)
+            .set(tool.toMap());
+      }
     } on FirebaseException catch (e) {
       throw SetFirebaseDataFailure.fromCode(e.code);
     } catch (_) {
@@ -31,10 +58,10 @@ class ToolsRepository {
     try {
       await _firebaseFirestore.collection('tools').doc(tool.id).delete();
     } on FirebaseException catch (e) {
-      log(e.code);
+      developers.log(e.code);
       throw SetFirebaseDataFailure.fromCode(e.code);
     } catch (_) {
-      log(_.toString());
+      developers.log(_.toString());
       throw const SetFirebaseDataFailure();
     }
   }
