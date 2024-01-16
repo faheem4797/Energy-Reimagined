@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/edit_tool_bloc/edit_tool_bloc.dart';
@@ -5,8 +6,7 @@ import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-//TODO: ADD A IMAGE PICKER for tool image
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AdminEditToolPage extends StatelessWidget {
   const AdminEditToolPage({super.key});
@@ -49,6 +49,11 @@ class AdminEditToolPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  //TODO: Add image select container here
+
+                  imageSelectContainer(context),
+                  const SizedBox(height: 10),
+
                   BlocBuilder<EditToolBloc, EditToolState>(
                     buildWhen: (previous, current) =>
                         previous.tool.name != current.tool.name,
@@ -166,6 +171,61 @@ class AdminEditToolPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget imageSelectContainer(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () async {
+            context.read<EditToolBloc>().add(const ImageChanged());
+          },
+          child: BlocBuilder<EditToolBloc, EditToolState>(
+            builder: (context, state) {
+              return Container(
+                  decoration: BoxDecoration(
+                      color: ConstColors.greyColor,
+                      borderRadius: BorderRadius.all(Radius.circular(7.r))),
+                  height: 200.h,
+                  width: double.maxFinite,
+                  child: state.imageToolFileBytes == null ||
+                          state.imageToolFileNameFromFilePicker == null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(7.r)),
+                          child: CachedNetworkImage(
+                            fit: BoxFit.fill,
+                            imageUrl: state.tool.imageUrl,
+                            placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) => const Center(
+                                child: Text('Error loading image')),
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(7.r)),
+                          child: Image.memory(
+                            state.imageToolFileBytes!,
+                            fit: BoxFit.fill,
+                          ),
+                        ));
+            },
+          ),
+        ),
+        BlocBuilder<EditToolBloc, EditToolState>(
+            buildWhen: (previous, current) =>
+                (previous.imageToolFileBytes != current.imageToolFileBytes) &&
+                (previous.imageToolFileNameFromFilePicker !=
+                    current.imageToolFileNameFromFilePicker) &&
+                (previous.imageToolFilePathFromFilePicker !=
+                    current.imageToolFilePathFromFilePicker),
+            builder: (context, state) {
+              return Text(
+                state.displayError ?? '',
+                style: const TextStyle(color: ConstColors.redColor),
+              );
+            })
+      ],
     );
   }
 }

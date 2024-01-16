@@ -8,7 +8,7 @@ import 'package:jobs_repository/jobs_repository.dart';
 
 class AdminEditJobPage extends StatelessWidget {
   const AdminEditJobPage({super.key});
-
+//TODO:
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +47,6 @@ class AdminEditJobPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  //TODO:
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -139,7 +138,6 @@ class AdminEditJobPage extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 10.0),
-
                   Center(
                     child: BlocBuilder<EditJobBloc, EditJobState>(
                       builder: (context, state) {

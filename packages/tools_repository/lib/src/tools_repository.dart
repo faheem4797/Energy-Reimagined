@@ -20,10 +20,7 @@ class ToolsRepository {
         snapshot.docs.map((doc) => ToolModel.fromMap(doc.data())).toList());
   }
 
-  Future<void> setToolData(
-      ToolModel tool,
-      //File? toolImageFile,
-      String? toolImagePathFromFilePicker,
+  Future<void> setToolData(ToolModel tool, String? toolImagePathFromFilePicker,
       String? toolImageNameFromFilePicker) async {
     try {
       if (toolImagePathFromFilePicker != null &&

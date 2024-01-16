@@ -32,4 +32,10 @@ final class QuantityChanged extends EditToolEvent {
   @override
   List<Object> get props => [quantity];
 }
-//TODO: ADD AN EVENT FOR TOOL IMAGE CHANGED
+
+final class ImageChanged extends EditToolEvent {
+  const ImageChanged();
+
+  @override
+  List<Object> get props => [];
+}

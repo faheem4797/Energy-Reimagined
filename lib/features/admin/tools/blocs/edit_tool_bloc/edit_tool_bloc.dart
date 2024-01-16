@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 part 'edit_tool_event.dart';
@@ -19,6 +21,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
     on<NameChanged>(_nameChanged);
     on<CategoryChanged>(_categoryChanged);
     on<QuantityChanged>(_quantityChanged);
+    on<ImageChanged>(_imageChanged);
   }
   RegExp numberOnlyRegex = RegExp(r'^\d+$');
 
@@ -29,6 +32,9 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
         name: state.tool.name,
         category: state.tool.category,
         quantity: state.tool.quantity.toString(),
+        // imageToolFileBytes: state.imageToolFileBytes,
+        // imageToolFileNameFromFilePicker: state.imageToolFileNameFromFilePicker,
+        // imageToolFilePathFromFilePicker: state.imageToolFilePathFromFilePicker,
       ),
     ));
     if (!state.isValid) {
@@ -42,8 +48,10 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       emit(state.copyWith(
           tool: state.tool
               .copyWith(lastUpdated: DateTime.now().microsecondsSinceEpoch)));
-//TODO:
-      //await _toolsRepository.setToolData(state.tool);
+      await _toolsRepository.setToolData(
+          state.tool,
+          state.imageToolFilePathFromFilePicker,
+          state.imageToolFileNameFromFilePicker);
 
       emit(state.copyWith(status: EditToolStatus.success));
     } on SetFirebaseDataFailure catch (e) {
@@ -66,6 +74,11 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
           name: event.name,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
+          // imageToolFileBytes: state.imageToolFileBytes,
+          // imageToolFileNameFromFilePicker:
+          //     state.imageToolFileNameFromFilePicker,
+          // imageToolFilePathFromFilePicker:
+          //     state.imageToolFilePathFromFilePicker,
         ),
         displayError: nameValidationStatus == NameValidationStatus.empty
             ? 'Please enter a name'
@@ -85,6 +98,11 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
           name: state.tool.name,
           category: state.tool.category,
           quantity: event.quantity,
+          // imageToolFileBytes: state.imageToolFileBytes,
+          // imageToolFileNameFromFilePicker:
+          //     state.imageToolFileNameFromFilePicker,
+          // imageToolFilePathFromFilePicker:
+          //     state.imageToolFilePathFromFilePicker,
         ),
         displayError: quantityValidationStatus == QuantityValidationStatus.empty
             ? 'Please enter a quantity'
@@ -106,6 +124,11 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
           name: state.tool.name,
           category: event.category,
           quantity: state.tool.quantity.toString(),
+          // imageToolFileBytes: state.imageToolFileBytes,
+          // imageToolFileNameFromFilePicker:
+          //     state.imageToolFileNameFromFilePicker,
+          // imageToolFilePathFromFilePicker:
+          //     state.imageToolFilePathFromFilePicker,
         ),
         displayError: categoryValidationStatus == CategoryValidationStatus.empty
             ? 'Please enter a category'
@@ -114,10 +137,44 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
     );
   }
 
+  FutureOr<void> _imageChanged(
+      ImageChanged event, Emitter<EditToolState> emit) async {
+    final ImagePicker picker = ImagePicker();
+
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final Uint8List? imageBytes = await image?.readAsBytes();
+
+    // final ImageValidationStatus imageValidationStatus =
+    //     _validateToolImage(imageBytes, image?.path, image?.name);
+
+    emit(
+      state.copyWith(
+        tool: state.tool,
+        imageToolFileBytes: imageBytes,
+        imageToolFileNameFromFilePicker: image?.name,
+        imageToolFilePathFromFilePicker: image?.path,
+        isValid: _validate(
+          name: state.tool.name,
+          category: state.tool.category,
+          quantity: state.tool.quantity.toString(),
+          // imageToolFileBytes: imageBytes,
+          // imageToolFileNameFromFilePicker: image?.name,
+          // imageToolFilePathFromFilePicker: image?.path,
+        ),
+        // displayError: imageValidationStatus == ImageValidationStatus.empty
+        //     ? 'Please select an image'
+        //     : null,
+      ),
+    );
+  }
+
   bool _validate({
     required String name,
     required String category,
     required String quantity,
+    // required Uint8List? imageToolFileBytes,
+    // required String? imageToolFilePathFromFilePicker,
+    // required String? imageToolFileNameFromFilePicker,
   }) {
     final NameValidationStatus nameValidationStatus = _validateName(name);
 
@@ -125,10 +182,17 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
         _validateCategory(category);
     final QuantityValidationStatus quantityValidationStatus =
         _validateQuantity(quantity);
+    // final ImageValidationStatus imageValidationStatus = _validateToolImage(
+    //     imageToolFileBytes,
+    //     imageToolFilePathFromFilePicker,
+    //     imageToolFileNameFromFilePicker);
 
     return nameValidationStatus == NameValidationStatus.valid &&
-        categoryValidationStatus == CategoryValidationStatus.valid &&
-        quantityValidationStatus == QuantityValidationStatus.valid;
+            categoryValidationStatus == CategoryValidationStatus.valid &&
+            quantityValidationStatus == QuantityValidationStatus.valid
+        // &&
+        // imageValidationStatus == ImageValidationStatus.valid
+        ;
   }
 
   NameValidationStatus _validateName(String name) {
@@ -156,6 +220,19 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       return QuantityValidationStatus.valid;
     }
   }
+
+  // ImageValidationStatus _validateToolImage(
+  //     Uint8List? imageToolFileBytes,
+  //     String? imageToolFilePathFromFilePicker,
+  //     String? imageToolFileNameFromFilePicker) {
+  //   if (imageToolFilePathFromFilePicker == null ||
+  //       imageToolFileNameFromFilePicker == null ||
+  //       imageToolFileBytes == null) {
+  //     return ImageValidationStatus.empty;
+  //   } else {
+  //     return ImageValidationStatus.valid;
+  //   }
+  // }
 }
 
 enum NameValidationStatus { empty, valid }
@@ -163,3 +240,5 @@ enum NameValidationStatus { empty, valid }
 enum CategoryValidationStatus { empty, valid }
 
 enum QuantityValidationStatus { empty, invalid, valid }
+
+// enum ImageValidationStatus { empty, valid }
