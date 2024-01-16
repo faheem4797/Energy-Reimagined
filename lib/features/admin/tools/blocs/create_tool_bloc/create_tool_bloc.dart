@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -18,6 +19,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
     on<NameChanged>(_nameChanged);
     on<CategoryChanged>(_categoryChanged);
     on<QuantityChanged>(_quantityChanged);
+    on<ImageChanged>(_imageChanged);
   }
 
   RegExp numberOnlyRegex = RegExp(r'^\d+$');
@@ -37,7 +39,8 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
               id: const Uuid().v1(),
               lastUpdated: DateTime.now().microsecondsSinceEpoch)));
 
-      await _toolsRepository.setToolData(state.tool);
+      await _toolsRepository.setToolData(state.tool, state.imageToolFile,
+          state.imageToolFileNameFromFilePicker);
 
       emit(state.copyWith(status: CreateToolStatus.success));
     } on SetFirebaseDataFailure catch (e) {
@@ -61,6 +64,8 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
           name: event.name,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
+          toolImageFile: state.imageToolFile,
+          toolImageNameFromImagePicker: state.imageToolFileNameFromFilePicker,
         ),
         displayError: nameValidationStatus == NameValidationStatus.empty
             ? 'Please enter a name'
@@ -80,6 +85,8 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
           name: state.tool.name,
           category: event.category,
           quantity: state.tool.quantity.toString(),
+          toolImageFile: state.imageToolFile,
+          toolImageNameFromImagePicker: state.imageToolFileNameFromFilePicker,
         ),
         displayError: categoryValidationStatus == CategoryValidationStatus.empty
             ? 'Please enter a category'
@@ -100,6 +107,8 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
           name: state.tool.name,
           category: state.tool.category,
           quantity: event.quantity,
+          toolImageFile: state.imageToolFile,
+          toolImageNameFromImagePicker: state.imageToolFileNameFromFilePicker,
         ),
         displayError: quantityValidationStatus == QuantityValidationStatus.empty
             ? 'Please enter a quantity'
@@ -110,10 +119,33 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
     );
   }
 
+  FutureOr<void> _imageChanged(
+      ImageChanged event, Emitter<CreateToolState> emit) {
+    final ImageValidationStatus imageValidationStatus = _validateToolImage(
+        event.toolImageFile, event.toolImageFileNameFromImagePicker);
+    emit(
+      state.copyWith(
+        tool: state.tool,
+        isValid: _validate(
+          name: state.tool.name,
+          category: state.tool.category,
+          quantity: state.tool.quantity.toString(),
+          toolImageFile: event.toolImageFile,
+          toolImageNameFromImagePicker: event.toolImageFileNameFromImagePicker,
+        ),
+        displayError: imageValidationStatus == ImageValidationStatus.empty
+            ? 'Please select an image'
+            : null,
+      ),
+    );
+  }
+
   bool _validate({
     required String name,
     required String category,
     required String quantity,
+    required File? toolImageFile,
+    required String? toolImageNameFromImagePicker,
   }) {
     final NameValidationStatus nameValidationStatus = _validateName(name);
 
@@ -121,10 +153,13 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         _validateCategory(category);
     final QuantityValidationStatus quantityValidationStatus =
         _validateQuantity(quantity);
+    final ImageValidationStatus imageValidationStatus =
+        _validateToolImage(toolImageFile, toolImageNameFromImagePicker);
 
     return nameValidationStatus == NameValidationStatus.valid &&
         categoryValidationStatus == CategoryValidationStatus.valid &&
-        quantityValidationStatus == QuantityValidationStatus.valid;
+        quantityValidationStatus == QuantityValidationStatus.valid &&
+        imageValidationStatus == ImageValidationStatus.valid;
   }
 
   NameValidationStatus _validateName(String name) {
@@ -144,16 +179,21 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
   }
 
   QuantityValidationStatus _validateQuantity(String quantity) {
-    // if (quantity == '0') {
-    //   return QuantityValidationStatus.valid;
-    // }
-    // else
     if (quantity.isEmpty) {
       return QuantityValidationStatus.empty;
     } else if (!numberOnlyRegex.hasMatch(quantity)) {
       return QuantityValidationStatus.invalid;
     } else {
       return QuantityValidationStatus.valid;
+    }
+  }
+
+  ImageValidationStatus _validateToolImage(
+      File? toolImageFile, String? toolImageFileNameFromImagePicker) {
+    if (toolImageFileNameFromImagePicker == null || toolImageFile == null) {
+      return ImageValidationStatus.empty;
+    } else {
+      return ImageValidationStatus.valid;
     }
   }
 }
@@ -163,3 +203,5 @@ enum NameValidationStatus { empty, valid }
 enum CategoryValidationStatus { empty, valid }
 
 enum QuantityValidationStatus { empty, invalid, valid }
+
+enum ImageValidationStatus { empty, valid }

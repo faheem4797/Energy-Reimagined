@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+//TODO: 1ST CREATE A IMAGE PICKER CONTAINER AND TEST IT
 //TODO: ADD A IMAGE PICKER for tool image
 class AdminCreateToolPage extends StatelessWidget {
   const AdminCreateToolPage({super.key});
