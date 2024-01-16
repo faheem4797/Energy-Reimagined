@@ -47,14 +47,12 @@ dependencies:
   # cloud_firestore: ^4.13.6
   url_launcher: ^6.2.2
   intl: ^0.19.0
-  image_picker: ^1.0.6
+  image_picker: ^1.0.7
   flutter_screenutil: ^5.9.0
   uuid: ^4.2.2
 
   authentication_repository:
     path: packages/authentication_repository
-
-
 
   user_data_repository:
     path: packages/user_data_repository

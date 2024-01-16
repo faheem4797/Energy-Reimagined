@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tools_repository/tools_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -39,7 +40,9 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
               id: const Uuid().v1(),
               lastUpdated: DateTime.now().microsecondsSinceEpoch)));
 
-      await _toolsRepository.setToolData(state.tool, state.imageToolFile,
+      await _toolsRepository.setToolData(
+          state.tool,
+          state.imageToolFilePathFromFilePicker,
           state.imageToolFileNameFromFilePicker);
 
       emit(state.copyWith(status: CreateToolStatus.success));
@@ -64,8 +67,11 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
           name: event.name,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
-          toolImageFile: state.imageToolFile,
-          toolImageNameFromImagePicker: state.imageToolFileNameFromFilePicker,
+          imageToolFileBytes: state.imageToolFileBytes,
+          imageToolFileNameFromFilePicker:
+              state.imageToolFileNameFromFilePicker,
+          imageToolFilePathFromFilePicker:
+              state.imageToolFilePathFromFilePicker,
         ),
         displayError: nameValidationStatus == NameValidationStatus.empty
             ? 'Please enter a name'
@@ -85,8 +91,11 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
           name: state.tool.name,
           category: event.category,
           quantity: state.tool.quantity.toString(),
-          toolImageFile: state.imageToolFile,
-          toolImageNameFromImagePicker: state.imageToolFileNameFromFilePicker,
+          imageToolFileBytes: state.imageToolFileBytes,
+          imageToolFileNameFromFilePicker:
+              state.imageToolFileNameFromFilePicker,
+          imageToolFilePathFromFilePicker:
+              state.imageToolFilePathFromFilePicker,
         ),
         displayError: categoryValidationStatus == CategoryValidationStatus.empty
             ? 'Please enter a category'
@@ -107,8 +116,11 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
           name: state.tool.name,
           category: state.tool.category,
           quantity: event.quantity,
-          toolImageFile: state.imageToolFile,
-          toolImageNameFromImagePicker: state.imageToolFileNameFromFilePicker,
+          imageToolFileBytes: state.imageToolFileBytes,
+          imageToolFileNameFromFilePicker:
+              state.imageToolFileNameFromFilePicker,
+          imageToolFilePathFromFilePicker:
+              state.imageToolFilePathFromFilePicker,
         ),
         displayError: quantityValidationStatus == QuantityValidationStatus.empty
             ? 'Please enter a quantity'
@@ -120,18 +132,28 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
   }
 
   FutureOr<void> _imageChanged(
-      ImageChanged event, Emitter<CreateToolState> emit) {
-    final ImageValidationStatus imageValidationStatus = _validateToolImage(
-        event.toolImageFile, event.toolImageFileNameFromImagePicker);
+      ImageChanged event, Emitter<CreateToolState> emit) async {
+    final ImagePicker picker = ImagePicker();
+
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final Uint8List? imageBytes = await image?.readAsBytes();
+
+    final ImageValidationStatus imageValidationStatus =
+        _validateToolImage(imageBytes, image?.path, image?.name);
+
     emit(
       state.copyWith(
         tool: state.tool,
+        imageToolFileBytes: imageBytes,
+        imageToolFileNameFromFilePicker: image?.name,
+        imageToolFilePathFromFilePicker: image?.path,
         isValid: _validate(
           name: state.tool.name,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
-          toolImageFile: event.toolImageFile,
-          toolImageNameFromImagePicker: event.toolImageFileNameFromImagePicker,
+          imageToolFileBytes: imageBytes,
+          imageToolFileNameFromFilePicker: image?.name,
+          imageToolFilePathFromFilePicker: image?.path,
         ),
         displayError: imageValidationStatus == ImageValidationStatus.empty
             ? 'Please select an image'
@@ -144,8 +166,9 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
     required String name,
     required String category,
     required String quantity,
-    required File? toolImageFile,
-    required String? toolImageNameFromImagePicker,
+    required Uint8List? imageToolFileBytes,
+    required String? imageToolFilePathFromFilePicker,
+    required String? imageToolFileNameFromFilePicker,
   }) {
     final NameValidationStatus nameValidationStatus = _validateName(name);
 
@@ -153,8 +176,10 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         _validateCategory(category);
     final QuantityValidationStatus quantityValidationStatus =
         _validateQuantity(quantity);
-    final ImageValidationStatus imageValidationStatus =
-        _validateToolImage(toolImageFile, toolImageNameFromImagePicker);
+    final ImageValidationStatus imageValidationStatus = _validateToolImage(
+        imageToolFileBytes,
+        imageToolFilePathFromFilePicker,
+        imageToolFileNameFromFilePicker);
 
     return nameValidationStatus == NameValidationStatus.valid &&
         categoryValidationStatus == CategoryValidationStatus.valid &&
@@ -189,8 +214,12 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
   }
 
   ImageValidationStatus _validateToolImage(
-      File? toolImageFile, String? toolImageFileNameFromImagePicker) {
-    if (toolImageFileNameFromImagePicker == null || toolImageFile == null) {
+      Uint8List? imageToolFileBytes,
+      String? imageToolFilePathFromFilePicker,
+      String? imageToolFileNameFromFilePicker) {
+    if (imageToolFilePathFromFilePicker == null ||
+        imageToolFileNameFromFilePicker == null ||
+        imageToolFileBytes == null) {
       return ImageValidationStatus.empty;
     } else {
       return ImageValidationStatus.valid;

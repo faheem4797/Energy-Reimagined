@@ -5,16 +5,18 @@ enum CreateToolStatus { initial, inProgress, success, failure }
 final class CreateToolState extends Equatable {
   const CreateToolState({
     this.tool = ToolModel.empty,
-    this.imageToolFile,
+    this.imageToolFileBytes,
     this.imageToolFileNameFromFilePicker,
+    this.imageToolFilePathFromFilePicker,
     this.isValid = false,
     this.status = CreateToolStatus.initial,
     this.errorMessage,
     this.displayError,
   });
   final ToolModel tool;
-  final File? imageToolFile;
+  final Uint8List? imageToolFileBytes;
   final String? imageToolFileNameFromFilePicker;
+  final String? imageToolFilePathFromFilePicker;
   final bool isValid;
   final CreateToolStatus status;
   final String? errorMessage;
@@ -22,8 +24,9 @@ final class CreateToolState extends Equatable {
 
   CreateToolState copyWith({
     ToolModel? tool,
-    File? imageToolFile,
+    Uint8List? imageToolFileBytes,
     String? imageToolFileNameFromFilePicker,
+    String? imageToolFilePathFromFilePicker,
     bool? isValid,
     CreateToolStatus? status,
     String? errorMessage,
@@ -31,9 +34,11 @@ final class CreateToolState extends Equatable {
   }) {
     return CreateToolState(
       tool: tool ?? this.tool,
-      imageToolFile: imageToolFile ?? this.imageToolFile,
+      imageToolFileBytes: imageToolFileBytes ?? this.imageToolFileBytes,
       imageToolFileNameFromFilePicker: imageToolFileNameFromFilePicker ??
           this.imageToolFileNameFromFilePicker,
+      imageToolFilePathFromFilePicker: imageToolFilePathFromFilePicker ??
+          this.imageToolFilePathFromFilePicker,
       isValid: isValid ?? this.isValid,
       status: status ?? this.status,
       errorMessage: errorMessage,
@@ -44,8 +49,9 @@ final class CreateToolState extends Equatable {
   @override
   List<Object?> get props => [
         tool,
-        imageToolFile,
+        imageToolFileBytes,
         imageToolFileNameFromFilePicker,
+        imageToolFilePathFromFilePicker,
         isValid,
         status,
         errorMessage,

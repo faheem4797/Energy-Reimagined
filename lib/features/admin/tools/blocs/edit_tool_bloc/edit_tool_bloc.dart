@@ -42,8 +42,8 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       emit(state.copyWith(
           tool: state.tool
               .copyWith(lastUpdated: DateTime.now().microsecondsSinceEpoch)));
-
-      await _toolsRepository.setToolData(state.tool);
+//TODO:
+      //await _toolsRepository.setToolData(state.tool);
 
       emit(state.copyWith(status: EditToolStatus.success));
     } on SetFirebaseDataFailure catch (e) {

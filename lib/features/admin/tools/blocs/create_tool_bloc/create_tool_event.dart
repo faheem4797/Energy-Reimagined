@@ -34,12 +34,15 @@ final class QuantityChanged extends CreateToolEvent {
 }
 
 final class ImageChanged extends CreateToolEvent {
-  final File toolImageFile;
-  final String toolImageFileNameFromImagePicker;
+  // final File toolImageFile;
+  // final String toolImageFileNameFromImagePicker;
   const ImageChanged(
-      {required this.toolImageFile,
-      required this.toolImageFileNameFromImagePicker});
+      // {required this.toolImageFile,
+      // required this.toolImageFileNameFromImagePicker}
+      );
 
   @override
-  List<Object> get props => [toolImageFile, toolImageFileNameFromImagePicker];
+  List<Object> get props => [
+        //toolImageFile, toolImageFileNameFromImagePicker
+      ];
 }

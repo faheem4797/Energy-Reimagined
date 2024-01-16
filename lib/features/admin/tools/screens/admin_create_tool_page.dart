@@ -5,6 +5,7 @@ import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //TODO: 1ST CREATE A IMAGE PICKER CONTAINER AND TEST IT
 //TODO: ADD A IMAGE PICKER for tool image
@@ -50,6 +51,7 @@ class AdminCreateToolPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  imageSelectContainer(context),
                   BlocBuilder<CreateToolBloc, CreateToolState>(
                     buildWhen: (previous, current) =>
                         previous.tool.name != current.tool.name,
@@ -164,6 +166,63 @@ class AdminCreateToolPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget imageSelectContainer(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () async {
+            context.read<CreateToolBloc>().add(const ImageChanged());
+          },
+          child: BlocBuilder<CreateToolBloc, CreateToolState>(
+            builder: (context, state) {
+              return Container(
+                  decoration: BoxDecoration(
+                      color: ConstColors.greyColor,
+                      borderRadius: BorderRadius.all(Radius.circular(7.r))),
+                  height: 200.h,
+                  width: double.maxFinite,
+                  child: state.imageToolFileBytes == null ||
+                          state.imageToolFileNameFromFilePicker == null
+                      ? const Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_a_photo),
+                              Text(
+                                'Upload Tool Image',
+                                //style: kSmallBlackTextStyle,
+                              )
+                            ],
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(7.r)),
+                          child: Image.memory(
+                            state.imageToolFileBytes!,
+                            fit: BoxFit.fill,
+                          ),
+                        ));
+            },
+          ),
+        ),
+        BlocBuilder<CreateToolBloc, CreateToolState>(
+            buildWhen: (previous, current) =>
+                (previous.imageToolFileBytes != current.imageToolFileBytes) &&
+                (previous.imageToolFileNameFromFilePicker !=
+                    current.imageToolFileNameFromFilePicker) &&
+                (previous.imageToolFilePathFromFilePicker !=
+                    current.imageToolFilePathFromFilePicker),
+            builder: (context, state) {
+              return Text(
+                state.displayError ?? '',
+                style: const TextStyle(color: ConstColors.redColor),
+              );
+            })
+      ],
     );
   }
 }

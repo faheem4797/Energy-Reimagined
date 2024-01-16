@@ -20,15 +20,20 @@ class ToolsRepository {
         snapshot.docs.map((doc) => ToolModel.fromMap(doc.data())).toList());
   }
 
-  Future<void> setToolData(ToolModel tool, File? toolImageFile,
+  Future<void> setToolData(
+      ToolModel tool,
+      //File? toolImageFile,
+      String? toolImagePathFromFilePicker,
       String? toolImageNameFromFilePicker) async {
     try {
-      if (toolImageFile != null && toolImageNameFromFilePicker != null) {
+      if (toolImagePathFromFilePicker != null &&
+          toolImageNameFromFilePicker != null) {
         int randomNumber = Random().nextInt(100000) + 100000;
 
         final toolRef = _firebaseStorage.ref().child(
             'tool_image/${tool.id}/$randomNumber$toolImageNameFromFilePicker');
-        UploadTask toolUploadTask = toolRef.putFile(toolImageFile);
+        UploadTask toolUploadTask =
+            toolRef.putFile(File(toolImagePathFromFilePicker));
 
         final toolSnapshot = await toolUploadTask.whenComplete(() => {});
         final String toolUrlDownload = await toolSnapshot.ref.getDownloadURL();
