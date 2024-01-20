@@ -40,6 +40,7 @@ class JobModel extends Equatable {
   final int locationLongitude;
   final List<String> allToolsRequested;
   final List<String> currentToolsRequested;
+  final String currentToolsRequestQrCode;
   final String holdReason;
   final String cancelReason;
   final int createdTimestamp;
@@ -59,6 +60,7 @@ class JobModel extends Equatable {
     required this.locationLongitude,
     required this.allToolsRequested,
     required this.currentToolsRequested,
+    required this.currentToolsRequestQrCode,
     required this.holdReason,
     required this.cancelReason,
     required this.createdTimestamp,
@@ -80,6 +82,7 @@ class JobModel extends Equatable {
       locationLatitude: 0,
       allToolsRequested: [],
       currentToolsRequested: [],
+      currentToolsRequestQrCode: '',
       holdReason: '',
       cancelReason: '',
       createdTimestamp: 0,
@@ -100,6 +103,7 @@ class JobModel extends Equatable {
     int? locationLongitude,
     List<String>? allToolsRequested,
     List<String>? currentToolsRequested,
+    String? currentToolsRequestQrCode,
     String? holdReason,
     String? cancelReason,
     int? createdTimestamp,
@@ -121,6 +125,8 @@ class JobModel extends Equatable {
       allToolsRequested: allToolsRequested ?? this.allToolsRequested,
       currentToolsRequested:
           currentToolsRequested ?? this.currentToolsRequested,
+      currentToolsRequestQrCode:
+          currentToolsRequestQrCode ?? this.currentToolsRequestQrCode,
       holdReason: holdReason ?? this.holdReason,
       cancelReason: cancelReason ?? this.cancelReason,
       createdTimestamp: createdTimestamp ?? this.createdTimestamp,
@@ -156,6 +162,7 @@ class JobModel extends Equatable {
       'locationLongitude': locationLongitude,
       'allToolsRequested': allToolsRequested,
       'currentToolsRequested': currentToolsRequested,
+      'currentToolsRequestQrCode': currentToolsRequestQrCode,
       'holdReason': holdReason,
       'cancelReason': cancelReason,
       'createdTimestamp': createdTimestamp,
@@ -179,6 +186,7 @@ class JobModel extends Equatable {
       locationLongitude: map['locationLongitude']?.toInt() ?? 0,
       allToolsRequested: List<String>.from(map['allToolsRequested']),
       currentToolsRequested: List<String>.from(map['currentToolsRequested']),
+      currentToolsRequestQrCode: map['currentToolsRequestQrCode'] ?? '',
       holdReason: map['holdReason'] ?? '',
       cancelReason: map['cancelReason'] ?? '',
       createdTimestamp: map['createdTimestamp']?.toInt() ?? 0,
@@ -222,6 +230,10 @@ class JobModel extends Equatable {
       addChangedField('currentToolsRequested', currentToolsRequested,
           other.currentToolsRequested);
     }
+    if (currentToolsRequestQrCode != other.currentToolsRequestQrCode) {
+      addChangedField('currentToolsRequestQrCode', currentToolsRequestQrCode,
+          other.currentToolsRequestQrCode);
+    }
     //TODO: ADD MORE FIELDS FOR UPDATION
 
     return changedFieldsList;
@@ -234,7 +246,7 @@ class JobModel extends Equatable {
 
   @override
   String toString() {
-    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, allToolsRequested: $allToolsRequested, currentToolsRequested: $currentToolsRequested, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
+    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, allToolsRequested: $allToolsRequested, currentToolsRequested: $currentToolsRequested, currentToolsRequestQrCode: $currentToolsRequestQrCode, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
   }
 
   @override
@@ -251,6 +263,7 @@ class JobModel extends Equatable {
       locationLongitude,
       allToolsRequested,
       currentToolsRequested,
+      currentToolsRequestQrCode,
       holdReason,
       cancelReason,
       createdTimestamp,
