@@ -2,23 +2,15 @@ import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
+import 'package:energy_reimagined/features/technician/technician_job_detail_page.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 
-class TechnicianDashboard extends StatefulWidget {
+class TechnicianDashboard extends StatelessWidget {
   const TechnicianDashboard({super.key});
-
-  @override
-  State<TechnicianDashboard> createState() => _TechnicianDashboardState();
-}
-
-class _TechnicianDashboardState extends State<TechnicianDashboard> {
-  //final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  //User? _user;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +37,7 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
                 var logout = await WillPopScoopService()
                     .showLogoutConfirmationDialog(context);
                 if (logout) {
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   checkConnectionFunc(context, () {
                     context
                         .read<AuthenticationBloc>()
@@ -94,47 +86,6 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        // ElevatedButton(
-                                        //   style: ButtonStyle(
-                                        //     backgroundColor:
-                                        //         MaterialStateProperty
-                                        //             .all<Color>(ConstColors
-                                        //                 .foregroundColor),
-                                        //     padding: MaterialStateProperty.all<
-                                        //         EdgeInsetsGeometry>(
-                                        //       const EdgeInsets.symmetric(
-                                        //           horizontal: 14, vertical: 10),
-                                        //     ),
-                                        //     shape: MaterialStateProperty.all<
-                                        //         RoundedRectangleBorder>(
-                                        //       RoundedRectangleBorder(
-                                        //         borderRadius:
-                                        //             BorderRadius.circular(8.0),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        //   onPressed: () {
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) =>
-                                        //         BlocProvider(
-                                        //       create: (context) => CreateJobBloc(
-                                        //           jobsRepository:
-                                        //               context.read<
-                                        //                   JobsRepository>()),
-                                        //       child:
-                                        //           const AdminCreateJobPage(),
-                                        //     ),
-                                        //   ),
-                                        // );
-                                        //   },
-                                        //   child: const Text(
-                                        //     "Create Job",
-                                        //     style: TextStyle(
-                                        //         color: ConstColors.blackColor),
-                                        //   ),
-                                        // ),
                                       ],
                                     ),
                                   ),
@@ -153,79 +104,91 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
 
                                         return Stack(
                                           children: [
-                                            Card(
-                                                color:
-                                                    ConstColors.backgroundColor,
-                                                elevation: 4,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 8),
-                                                child: ListTile(
-                                                  title: RichText(
-                                                    text: TextSpan(
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 16,
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            TechnicianJobDetailPage(
+                                                              jobModel:
+                                                                  jobs[index],
+                                                            )));
+                                              },
+                                              child: Card(
+                                                  color: ConstColors
+                                                      .backgroundColor,
+                                                  elevation: 4,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: 8,
+                                                      horizontal: 8),
+                                                  child: ListTile(
+                                                    title: RichText(
+                                                      text: TextSpan(
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                        ),
+                                                        children: [
+                                                          TextSpan(
+                                                            text: jobs[index]
+                                                                .title,
+                                                            style:
+                                                                const TextStyle(
+                                                              color: ConstColors
+                                                                  .whiteColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          TextSpan(
+                                                            text: jobs[index]
+                                                                        .status ==
+                                                                    JobStatus
+                                                                        .pending
+                                                                ? '  [Pending]'
+                                                                : jobs[index]
+                                                                            .status ==
+                                                                        JobStatus
+                                                                            .assigned
+                                                                    ? '  [Assigned]'
+                                                                    : jobs[index].status ==
+                                                                            JobStatus
+                                                                                .cancelled
+                                                                        ? '  [Cancelled]'
+                                                                        : jobs[index].status ==
+                                                                                JobStatus.completed
+                                                                            ? '  [Completed]'
+                                                                            : jobs[index].status == JobStatus.workInProgress
+                                                                                ? '  [In Progress]'
+                                                                                : jobs[index].status == JobStatus.onHold
+                                                                                    ? '  [On Hold]'
+                                                                                    : '',
+                                                            style:
+                                                                const TextStyle(
+                                                              color: ConstColors
+                                                                  .whiteColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      children: [
-                                                        TextSpan(
-                                                          text:
-                                                              jobs[index].title,
-                                                          style:
-                                                              const TextStyle(
-                                                            color: ConstColors
-                                                                .whiteColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        TextSpan(
-                                                          text: jobs[index]
-                                                                      .status ==
-                                                                  JobStatus
-                                                                      .pending
-                                                              ? '  [Pending]'
-                                                              : jobs[index]
-                                                                          .status ==
-                                                                      JobStatus
-                                                                          .assigned
-                                                                  ? '  [Assigned]'
-                                                                  : jobs[index]
-                                                                              .status ==
-                                                                          JobStatus
-                                                                              .cancelled
-                                                                      ? '  [Cancelled]'
-                                                                      : jobs[index].status ==
-                                                                              JobStatus.completed
-                                                                          ? '  [Completed]'
-                                                                          : jobs[index].status == JobStatus.started
-                                                                              ? '  [Started]'
-                                                                              : jobs[index].status == JobStatus.onHold
-                                                                                  ? '  [On Hold]'
-                                                                                  : '',
-                                                          style:
-                                                              const TextStyle(
-                                                            color: ConstColors
-                                                                .whiteColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ],
                                                     ),
-                                                  ),
-                                                  subtitle: Text(
-                                                    jobs[index].description,
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      color: ConstColors
-                                                          .whiteColor,
+                                                    subtitle: Text(
+                                                      jobs[index].description,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        color: ConstColors
+                                                            .whiteColor,
+                                                      ),
                                                     ),
-                                                  ),
-                                                )),
+                                                  )),
+                                            ),
                                             if (isOnHold || isCancelled)
                                               Positioned(
                                                 top: 0,
@@ -271,12 +234,12 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          _buildFilterChip(JobStatus.pending),
+          _buildFilterChip(JobStatus.workInProgress),
           _buildFilterChip(JobStatus.onHold),
           _buildFilterChip(JobStatus.assigned),
-          _buildFilterChip(JobStatus.started),
           _buildFilterChip(JobStatus.completed),
           _buildFilterChip(JobStatus.cancelled),
+          _buildFilterChip(JobStatus.pending),
         ],
       ),
     );
@@ -288,18 +251,18 @@ class _TechnicianDashboardState extends State<TechnicianDashboard> {
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
           child: FilterChip(
-            label: Text(status == JobStatus.pending
-                ? 'Pending'
-                : status == JobStatus.assigned
-                    ? 'Assigned'
-                    : status == JobStatus.cancelled
-                        ? 'Cancelled'
-                        : status == JobStatus.completed
-                            ? 'Completed'
-                            : status == JobStatus.started
-                                ? 'Started'
-                                : status == JobStatus.onHold
-                                    ? 'On Hold'
+            label: Text(status == JobStatus.workInProgress
+                ? 'In Progress'
+                : status == JobStatus.onHold
+                    ? 'On Hold'
+                    : status == JobStatus.assigned
+                        ? 'Assigned'
+                        : status == JobStatus.cancelled
+                            ? 'Cancelled'
+                            : status == JobStatus.completed
+                                ? 'Completed'
+                                : status == JobStatus.pending
+                                    ? 'Pending'
                                     : ''),
             selected: state.selectedStatuses.contains(status),
             onSelected: (bool selected) {

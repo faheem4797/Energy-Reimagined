@@ -178,8 +178,8 @@ class AdminJobPage extends StatelessWidget {
                                                                       : jobs[index].status ==
                                                                               JobStatus.completed
                                                                           ? '  [Completed]'
-                                                                          : jobs[index].status == JobStatus.started
-                                                                              ? '  [Started]'
+                                                                          : jobs[index].status == JobStatus.workInProgress
+                                                                              ? '  [In Progress]'
                                                                               : jobs[index].status == JobStatus.onHold
                                                                                   ? '  [On Hold]'
                                                                                   : '',
@@ -319,7 +319,7 @@ class AdminJobPage extends StatelessWidget {
           _buildFilterChip(JobStatus.pending),
           _buildFilterChip(JobStatus.onHold),
           _buildFilterChip(JobStatus.assigned),
-          _buildFilterChip(JobStatus.started),
+          _buildFilterChip(JobStatus.workInProgress),
           _buildFilterChip(JobStatus.completed),
           _buildFilterChip(JobStatus.cancelled),
         ],
@@ -341,8 +341,8 @@ class AdminJobPage extends StatelessWidget {
                         ? 'Cancelled'
                         : status == JobStatus.completed
                             ? 'Completed'
-                            : status == JobStatus.started
-                                ? 'Started'
+                            : status == JobStatus.workInProgress
+                                ? 'In Progress'
                                 : status == JobStatus.onHold
                                     ? 'On Hold'
                                     : ''),
