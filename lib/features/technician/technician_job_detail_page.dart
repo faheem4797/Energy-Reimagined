@@ -1,6 +1,7 @@
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/technician_request_tools.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,6 +108,18 @@ class TechnicianJobDetailPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TechnicianRequestToolsPage()
+                      // BlocProvider(
+                      // create: (context) => CreateJobBloc(
+                      // jobsRepository: context.read<JobsRepository>()),
+                      // child: const TechnicianRequestToolsPage(),
+                      // ),
+
+                      ),
+                );
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(
