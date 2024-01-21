@@ -19,8 +19,6 @@ class _TechnicianRequestToolsPageState
     extends State<TechnicianRequestToolsPage> {
   @override
   Widget build(BuildContext context) {
-    //TODO: ADD A DROPDOWN OR SOME SORT OF SELECTION PROCESS for technician to choose from the added tools
-    //TODO: IF NEED A NEW TOOL THEN FILL A FORM WITH NAME OF THE TOOL AND REQUEST
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

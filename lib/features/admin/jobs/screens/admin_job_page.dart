@@ -1,8 +1,11 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
+import 'package:energy_reimagined/features/admin/jobs/screens/admin_qrcode_scanner_page.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/delete_job_bloc/delete_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/edit_job_bloc/edit_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/jobs_stream_bloc/jobs_stream_bloc.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/qr_code_scanner_bloc/qr_code_scanner_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_create_job_page.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_edit_job_page.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
@@ -225,6 +228,29 @@ class AdminJobPage extends StatelessWidget {
                                                       //     });
                                                       //   },
                                                       // ),
+                                                      jobs[index]
+                                                              .currentToolsRequestQrCode
+                                                              .isNotEmpty
+                                                          ? IconButton(
+                                                              icon: const Icon(Icons
+                                                                  .qr_code_scanner),
+                                                              color: ConstColors
+                                                                  .whiteColor,
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(MaterialPageRoute(
+                                                                        builder: (context) => BlocProvider(
+                                                                              create: (context) => QrCodeScannerBloc(
+                                                                                jobsRepository: context.read<JobsRepository>(),
+                                                                                jobModel: jobs[index],
+                                                                                userId: context.read<AuthenticationBloc>().state.userModel!.id,
+                                                                              ),
+                                                                              child: const AdminQRCodeScannerPage(),
+                                                                            )));
+                                                              },
+                                                            )
+                                                          : Container(),
                                                       IconButton(
                                                         icon: const Icon(
                                                             Icons.edit),

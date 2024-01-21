@@ -50,7 +50,10 @@ dependencies:
   image_picker: ^1.0.7
   cached_network_image: ^3.3.1
   flutter_screenutil: ^5.9.0
+  mobile_scanner: 3.5.5
   uuid: ^4.2.2
+  qr_flutter: ^4.1.0
+
 
   authentication_repository:
     path: packages/authentication_repository

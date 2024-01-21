@@ -45,7 +45,9 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
     try {
       final newSelectedToolsList =
           state.selectedToolsList.map((tool) => tool.id).toList();
-      final newAllRequestedToolsList = oldJobModel.allToolsRequested;
+      final newAllRequestedToolsList = oldJobModel.allToolsRequested
+          .where((element) => element.isNotEmpty)
+          .toList();
       for (var element in newSelectedToolsList) {
         if (!newAllRequestedToolsList.contains(element)) {
           newAllRequestedToolsList.add(element);
@@ -86,6 +88,15 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
       LoadToolsList event, Emitter<ToolsRequestState> emit) async {
     try {
       final List<ToolModel> listOfTools = await _toolsRepository.getAllTools();
+      if (oldJobModel.currentToolsRequested.isNotEmpty) {
+        List<ToolModel> selectedTools = oldJobModel.currentToolsRequested
+            .where((toolId) => listOfTools.any((tool) => tool.id == toolId))
+            .map(
+                (toolId) => listOfTools.firstWhere((tool) => tool.id == toolId))
+            .toList();
+
+        emit(state.copyWith(selectedToolsList: selectedTools));
+      }
       emit(state.copyWith(
           toolsList: listOfTools, status: ToolsRequestStatus.initial));
     } on SetFirebaseDataFailure catch (e) {

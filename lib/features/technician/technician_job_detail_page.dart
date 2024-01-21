@@ -10,7 +10,7 @@ import 'package:tools_repository/tools_repository.dart';
 class TechnicianJobDetailPage extends StatelessWidget {
   final JobModel jobModel;
   const TechnicianJobDetailPage({required this.jobModel, super.key});
-
+//TODO: CHANGE UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
