@@ -58,7 +58,7 @@ class TechnicianDashboard extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: BlocBuilder<TechnicianJobsStreamBloc,
                 TechnicianJobsStreamState>(
-              builder: (context, state) {
+              builder: (blocContext, state) {
                 return state.status == JobsStreamStatus.loading
                     ? const Center(
                         child: CircularProgressIndicator(),
@@ -128,7 +128,8 @@ class TechnicianDashboard extends StatelessWidget {
                                                         text: TextSpan(
                                                           style:
                                                               const TextStyle(
-                                                            color: Colors.white,
+                                                            color: ConstColors
+                                                                .whiteColor,
                                                             fontSize: 16,
                                                           ),
                                                           children: [
@@ -196,13 +197,14 @@ class TechnicianDashboard extends StatelessWidget {
                                                               color: ConstColors
                                                                   .whiteColor,
                                                               onPressed: () {
-                                                                //TODO: TAPPING ON THIS OPENS A NEW PAGE WITH QR CODE DISPLAYING ON SCREEN
-                                                                //TODO: WHEN ADMIN SCANS THIS QR CODE THEN IT SHOULD COMPLETE THE TOOL TRANSACTION and pop the screen
                                                                 Navigator.of(
                                                                         context)
                                                                     .push(MaterialPageRoute(
-                                                                        builder: (context) => TechnicianQRCodePage(
-                                                                              qrCodeText: jobs[index].currentToolsRequestQrCode,
+                                                                        builder: (context) => BlocProvider.value(
+                                                                              value: blocContext.read<TechnicianJobsStreamBloc>(),
+                                                                              child: TechnicianQRCodePage(
+                                                                                jobModel: jobs[index],
+                                                                              ),
                                                                             )));
                                                               },
                                                             )

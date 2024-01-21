@@ -4,6 +4,7 @@ import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/t
 import 'package:energy_reimagined/features/technician/technician_request_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 
@@ -34,86 +35,167 @@ class TechnicianJobDetailPage extends StatelessWidget {
           //         .showCloseConfirmationDialog(context);
           //   },
           // child:
-          Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text('Current Status: '),
-              Text(jobModel.status == JobStatus.workInProgress
-                  ? 'In Progress'
-                  : jobModel.status == JobStatus.onHold
-                      ? 'On Hold'
-                      : jobModel.status == JobStatus.assigned
-                          ? 'Assigned'
-                          : jobModel.status == JobStatus.cancelled
-                              ? 'Cancelled'
-                              : jobModel.status == JobStatus.completed
-                                  ? 'Completed'
-                                  : jobModel.status == JobStatus.pending
-                                      ? 'Pending'
-                                      : '')
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Job Description: '),
-              Text(jobModel.description),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Location: '),
-              Text(jobModel.locationName),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Municipality'),
-              Text(jobModel.municipality),
-            ],
-          ),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(ConstColors.foregroundColor),
-              padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              SizedBox(
+                height: 20.h,
               ),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Current Status: ',
+                    style: TextStyle(
+                        color: ConstColors.blackColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    jobModel.status == JobStatus.workInProgress
+                        ? 'In Progress'
+                        : jobModel.status == JobStatus.onHold
+                            ? 'On Hold'
+                            : jobModel.status == JobStatus.assigned
+                                ? 'Assigned'
+                                : jobModel.status == JobStatus.cancelled
+                                    ? 'Cancelled'
+                                    : jobModel.status == JobStatus.completed
+                                        ? 'Completed'
+                                        : jobModel.status == JobStatus.pending
+                                            ? 'Pending'
+                                            : '',
+                    style: TextStyle(
+                      color: ConstColors.blackColor,
+                      fontSize: 16.sp,
+                    ),
+                  )
+                ],
               ),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => ToolsRequestBloc(
-                        toolsRepository: context.read<ToolsRepository>(),
-                        jobsRepository: context.read<JobsRepository>(),
-                        oldJobModel: jobModel,
-                        userId: context
-                            .read<AuthenticationBloc>()
-                            .state
-                            .userModel!
-                            .id),
-                    child: const TechnicianRequestToolsPage(),
+              SizedBox(
+                height: 20.h,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Job Description: ',
+                      style: TextStyle(
+                          color: ConstColors.blackColor,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                      width: double.infinity,
+                      height: 150.h,
+                      decoration: BoxDecoration(
+                        color: ConstColors.greyColor,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SingleChildScrollView(
+                            child: Text(jobModel.description)),
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Location: ',
+                      style: TextStyle(
+                          color: ConstColors.blackColor,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                      width: double.infinity,
+                      height: 100.h,
+                      decoration: BoxDecoration(
+                        color: ConstColors.greyColor,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SingleChildScrollView(
+                            child: Text(jobModel.locationName)),
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Municipality: ',
+                    style: TextStyle(
+                        color: ConstColors.blackColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    jobModel.municipality,
+                    style: const TextStyle(
+                      color: ConstColors.blackColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      ConstColors.foregroundColor),
+                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
                   ),
                 ),
-              );
-            },
-            child: const Text(
-              "Request Tools",
-              style: TextStyle(color: ConstColors.blackColor),
-            ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => ToolsRequestBloc(
+                            toolsRepository: context.read<ToolsRepository>(),
+                            jobsRepository: context.read<JobsRepository>(),
+                            oldJobModel: jobModel,
+                            userId: context
+                                .read<AuthenticationBloc>()
+                                .state
+                                .userModel!
+                                .id),
+                        child: const TechnicianRequestToolsPage(),
+                      ),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "Request Tools",
+                  style: TextStyle(color: ConstColors.blackColor),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       //),
     );

@@ -53,7 +53,9 @@ class _AdminQRCodeScannerPageState extends State<AdminQRCodeScannerPage> {
                 ),
               );
             Future.delayed(const Duration(seconds: 2), () {
-              Navigator.pop(context);
+              Navigator.of(context)
+                ..pop()
+                ..pop();
             });
           }
         },

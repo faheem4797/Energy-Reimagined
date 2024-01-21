@@ -67,7 +67,9 @@ class _TechnicianRequestToolsPageState
               );
           }
           if (state.status == ToolsRequestStatus.success) {
-            Navigator.of(context).pop();
+            Navigator.of(context)
+              ..pop()
+              ..pop();
           }
         },
         builder: (context, state) {
