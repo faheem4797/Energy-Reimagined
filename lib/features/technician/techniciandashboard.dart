@@ -187,6 +187,16 @@ class TechnicianDashboard extends StatelessWidget {
                                                             .whiteColor,
                                                       ),
                                                     ),
+                                                    trailing: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.request_page),
+                                                      color: ConstColors
+                                                          .whiteColor,
+                                                      onPressed: () {
+                                                        //TODO: TAPPING ON THIS OPENS A NEW PAGE WITH QR CODE DISPLAYING ON SCREEN
+                                                        //TODO: WHEN ADMIN SCANS THIS QR CODE THEN IT SHOULD COMPLETE THE TOOL TRANSACTION and pop the screen
+                                                      },
+                                                    ),
                                                   )),
                                             ),
                                             if (isOnHold || isCancelled)

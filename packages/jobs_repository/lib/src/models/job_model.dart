@@ -217,9 +217,19 @@ class JobModel extends Equatable {
     if (description != other.description) {
       addChangedField('description', description, other.description);
     }
+    if (municipality != other.municipality) {
+      addChangedField('municipality', municipality, other.municipality);
+    }
     if (status != other.status) {
       addChangedField('status', status.toString().split('.').last,
           other.status.toString().split('.').last);
+    }
+    if (assignedTechnicianId != other.assignedTechnicianId) {
+      addChangedField('assignedTechnicianId', assignedTechnicianId,
+          other.assignedTechnicianId);
+    }
+    if (locationName != other.locationName) {
+      addChangedField('locationName', locationName, other.locationName);
     }
 
     if (allToolsRequested != other.allToolsRequested) {
@@ -234,7 +244,31 @@ class JobModel extends Equatable {
       addChangedField('currentToolsRequestQrCode', currentToolsRequestQrCode,
           other.currentToolsRequestQrCode);
     }
-    //TODO: ADD MORE FIELDS FOR UPDATION
+    if (holdReason != other.holdReason) {
+      addChangedField('holdReason', holdReason, other.holdReason);
+    }
+    if (cancelReason != other.cancelReason) {
+      addChangedField('cancelReason', cancelReason, other.cancelReason);
+    }
+    if (holdTimestamp != other.holdTimestamp) {
+      addChangedField('holdTimestamp', holdTimestamp, other.holdTimestamp);
+    }
+    if (createdTimestamp != other.createdTimestamp) {
+      addChangedField(
+          'createdTimestamp', createdTimestamp, other.createdTimestamp);
+    }
+    if (assignedTimestamp != other.assignedTimestamp) {
+      addChangedField(
+          'assignedTimestamp', assignedTimestamp, other.assignedTimestamp);
+    }
+    if (completedTimestamp != other.completedTimestamp) {
+      addChangedField(
+          'completedTimestamp', completedTimestamp, other.completedTimestamp);
+    }
+    if (startedTimestamp != other.startedTimestamp) {
+      addChangedField(
+          'startedTimestamp', startedTimestamp, other.startedTimestamp);
+    }
 
     return changedFieldsList;
   }

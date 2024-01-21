@@ -1,4 +1,5 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_request_tools.dart';
 import 'package:flutter/material.dart';
@@ -92,11 +93,16 @@ class TechnicianJobDetailPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      // const TechnicianRequestToolsPage()
-                      BlocProvider(
+                  builder: (context) => BlocProvider(
                     create: (context) => ToolsRequestBloc(
-                        toolsRepository: context.read<ToolsRepository>()),
+                        toolsRepository: context.read<ToolsRepository>(),
+                        jobsRepository: context.read<JobsRepository>(),
+                        oldJobModel: jobModel,
+                        userId: context
+                            .read<AuthenticationBloc>()
+                            .state
+                            .userModel!
+                            .id),
                     child: const TechnicianRequestToolsPage(),
                   ),
                 ),

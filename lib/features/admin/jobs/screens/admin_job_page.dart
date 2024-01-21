@@ -1,5 +1,4 @@
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/delete_job_bloc/delete_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/edit_job_bloc/edit_job_bloc.dart';
@@ -206,25 +205,26 @@ class AdminJobPage extends StatelessWidget {
                                                   ),
                                                   trailing: Wrap(
                                                     children: [
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                            Icons.delete),
-                                                        color: ConstColors
-                                                            .whiteColor,
-                                                        onPressed: () {
-                                                          checkConnectionFunc(
-                                                              context, () {
-                                                            context
-                                                                .read<
-                                                                    DeleteJobBloc>()
-                                                                .add(
-                                                                  JobDeleteRequested(
-                                                                      job: jobs[
-                                                                          index]),
-                                                                );
-                                                          });
-                                                        },
-                                                      ),
+                                                      //TODO: DELETE COMMENTED FROM HERE
+                                                      // IconButton(
+                                                      //   icon: const Icon(
+                                                      //       Icons.delete),
+                                                      //   color: ConstColors
+                                                      //       .whiteColor,
+                                                      //   onPressed: () {
+                                                      //     checkConnectionFunc(
+                                                      //         context, () {
+                                                      //       context
+                                                      //           .read<
+                                                      //               DeleteJobBloc>()
+                                                      //           .add(
+                                                      //             JobDeleteRequested(
+                                                      //                 job: jobs[
+                                                      //                     index]),
+                                                      //           );
+                                                      //     });
+                                                      //   },
+                                                      // ),
                                                       IconButton(
                                                         icon: const Icon(
                                                             Icons.edit),

@@ -11,14 +11,14 @@ enum ToolsRequestStatus {
 
 final class ToolsRequestState extends Equatable {
   const ToolsRequestState({
-    this.toolsList,
-    this.selectedToolsList,
+    this.toolsList = const [],
+    this.selectedToolsList = const [],
     this.isValid = false,
-    this.status = ToolsRequestStatus.initial,
+    this.status = ToolsRequestStatus.loading,
     this.errorMessage,
   });
-  final List<ToolModel>? toolsList;
-  final List<ToolModel>? selectedToolsList;
+  final List<ToolModel> toolsList;
+  final List<ToolModel> selectedToolsList;
 
   final bool isValid;
   final ToolsRequestStatus status;

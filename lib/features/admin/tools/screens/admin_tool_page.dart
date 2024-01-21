@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/create_tool_bloc/create_tool_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/delete_tool_bloc/delete_tool_bloc.dart';
 import 'package:energy_reimagined/features/admin/tools/blocs/edit_tool_bloc/edit_tool_bloc.dart';
@@ -163,22 +162,23 @@ class AdminToolPage extends StatelessWidget {
                                           ),
                                           trailing: Wrap(
                                             children: [
-                                              IconButton(
-                                                icon: const Icon(Icons.delete),
-                                                color: ConstColors.whiteColor,
-                                                onPressed: () {
-                                                  checkConnectionFunc(context,
-                                                      () {
-                                                    context
-                                                        .read<DeleteToolBloc>()
-                                                        .add(
-                                                          ToolDeleteRequested(
-                                                              tool:
-                                                                  tools[index]),
-                                                        );
-                                                  });
-                                                },
-                                              ),
+                                              //TODO: DELETE COMMENTED FROM HERE
+                                              // IconButton(
+                                              //   icon: const Icon(Icons.delete),
+                                              //   color: ConstColors.whiteColor,
+                                              //   onPressed: () {
+                                              //     checkConnectionFunc(context,
+                                              //         () {
+                                              //       context
+                                              //           .read<DeleteToolBloc>()
+                                              //           .add(
+                                              //             ToolDeleteRequested(
+                                              //                 tool:
+                                              //                     tools[index]),
+                                              //           );
+                                              //     });
+                                              //   },
+                                              // ),
                                               IconButton(
                                                 icon: const Icon(Icons.edit),
                                                 color: ConstColors.whiteColor,

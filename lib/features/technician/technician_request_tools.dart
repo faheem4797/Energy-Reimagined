@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,10 +34,47 @@ class _TechnicianRequestToolsPageState
         iconTheme: const IconThemeData(
           color: ConstColors.whiteColor,
         ),
+        actions: <Widget>[
+          BlocBuilder<ToolsRequestBloc, ToolsRequestState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: const Icon(
+                  Icons.remove_from_queue,
+                  color: ConstColors.whiteColor,
+                ),
+                onPressed: state.status == ToolsRequestStatus.inProgress
+                    ? null
+                    : () async {
+                        if (!context.mounted) return;
+                        checkConnectionFunc(context, () {
+                          context
+                              .read<ToolsRequestBloc>()
+                              .add(RequestSelectedTools());
+                        });
+                      },
+              );
+            },
+          ),
+        ],
       ),
-      body: BlocBuilder<ToolsRequestBloc, ToolsRequestState>(
+      body: BlocConsumer<ToolsRequestBloc, ToolsRequestState>(
+        listener: (context, state) {
+          if (state.status == ToolsRequestStatus.failure) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage ?? 'Error occured'),
+                ),
+              );
+          }
+          if (state.status == ToolsRequestStatus.success) {
+            Navigator.of(context).pop();
+          }
+        },
         builder: (context, state) {
-          return state.status == ToolsRequestStatus.loading
+          return state.status == ToolsRequestStatus.loading ||
+                  state.status == ToolsRequestStatus.inProgress
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
@@ -45,13 +84,13 @@ class _TechnicianRequestToolsPageState
                     )
                   : Column(
                       children: [
-                        state.selectedToolsList!.isEmpty
+                        state.selectedToolsList.isEmpty
                             ? Container()
                             : SizedBox(
                                 height: 50,
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
-                                  children: state.selectedToolsList!
+                                  children: state.selectedToolsList
                                       .map((tool) => Padding(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 8.w),
@@ -65,11 +104,11 @@ class _TechnicianRequestToolsPageState
                         Expanded(
                           child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: state.toolsList!.length,
+                            itemCount: state.toolsList.length,
                             itemBuilder: (context, index) {
-                              ToolModel tool = state.toolsList![index];
+                              ToolModel tool = state.toolsList[index];
                               bool isSelected =
-                                  state.selectedToolsList!.contains(tool);
+                                  state.selectedToolsList.contains(tool);
 
                               return Card(
                                 color: ConstColors.backgroundColor,
@@ -77,7 +116,40 @@ class _TechnicianRequestToolsPageState
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 8),
                                 child: ListTile(
-                                  title: Text(tool.name),
+                                  leading: CircleAvatar(
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        tool.imageUrl),
+                                  ),
+                                  title: RichText(
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: tool.name,
+                                          style: const TextStyle(
+                                            color: ConstColors.whiteColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: '${'  [${tool.category}'}]',
+                                          style: const TextStyle(
+                                            color: ConstColors.whiteColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'Quantity: ${tool.quantity.toString()}',
+                                    style: const TextStyle(
+                                      color: ConstColors.whiteColor,
+                                    ),
+                                  ),
                                   trailing: Checkbox(
                                     activeColor:
                                         ConstColors.backgroundDarkColor,
