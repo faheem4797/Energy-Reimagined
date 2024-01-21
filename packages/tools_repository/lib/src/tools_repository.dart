@@ -33,6 +33,22 @@ class ToolsRepository {
     }
   }
 
+  Future<List<ToolModel>> getSomeTools(List<String> toolIds) {
+    try {
+      return _firebaseFirestore
+          .collection('tools')
+          .where('id', whereIn: toolIds)
+          .get()
+          .then((toolsSnapshot) => toolsSnapshot.docs
+              .map((doc) => ToolModel.fromMap(doc.data()))
+              .toList());
+    } on FirebaseException catch (e) {
+      throw SetFirebaseDataFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SetFirebaseDataFailure();
+    }
+  }
+
   Future<void> setToolData(ToolModel tool, String? toolImagePathFromFilePicker,
       String? toolImageNameFromFilePicker) async {
     try {

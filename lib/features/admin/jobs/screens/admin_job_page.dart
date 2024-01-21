@@ -1,19 +1,19 @@
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/constants/helper_functions.dart';
-import 'package:energy_reimagined/features/admin/jobs/screens/admin_qrcode_scanner_page.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/tool_request_bloc/tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/delete_job_bloc/delete_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/edit_job_bloc/edit_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/jobs_stream_bloc/jobs_stream_bloc.dart';
-import 'package:energy_reimagined/features/admin/jobs/blocs/qr_code_scanner_bloc/qr_code_scanner_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_create_job_page.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_edit_job_page.dart';
+import 'package:energy_reimagined/features/admin/jobs/screens/admin_tools_request_page.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:tools_repository/tools_repository.dart';
 
 class AdminJobPage extends StatelessWidget {
   const AdminJobPage({super.key});
@@ -228,12 +228,15 @@ class AdminJobPage extends StatelessWidget {
                                                       //     });
                                                       //   },
                                                       // ),
+
+                                                      //
+                                                      //
                                                       jobs[index]
                                                               .currentToolsRequestQrCode
                                                               .isNotEmpty
                                                           ? IconButton(
-                                                              icon: const Icon(Icons
-                                                                  .qr_code_scanner),
+                                                              icon: const Icon(
+                                                                  Icons.build),
                                                               color: ConstColors
                                                                   .whiteColor,
                                                               onPressed: () {
@@ -241,16 +244,17 @@ class AdminJobPage extends StatelessWidget {
                                                                         context)
                                                                     .push(MaterialPageRoute(
                                                                         builder: (context) => BlocProvider(
-                                                                              create: (context) => QrCodeScannerBloc(
-                                                                                jobsRepository: context.read<JobsRepository>(),
+                                                                              create: (context) => ToolRequestBloc(
+                                                                                toolsRepository: context.read<ToolsRepository>(),
                                                                                 jobModel: jobs[index],
-                                                                                userId: context.read<AuthenticationBloc>().state.userModel!.id,
                                                                               ),
-                                                                              child: const AdminQRCodeScannerPage(),
+                                                                              child: AdminToolsRequestPage(
+                                                                                jobModel: jobs[index],
+                                                                              ),
                                                                             )));
                                                               },
                                                             )
-                                                          : Container(),
+                                                          : const SizedBox(),
                                                       IconButton(
                                                         icon: const Icon(
                                                             Icons.edit),
