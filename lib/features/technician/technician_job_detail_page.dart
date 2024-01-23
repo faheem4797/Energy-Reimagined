@@ -47,11 +47,11 @@ class TechnicianJobDetailPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Current Status: ',
                     style: TextStyle(
                         color: ConstColors.blackColor,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
@@ -81,7 +81,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Job Description: ',
+                  Text('Job Description',
                       style: TextStyle(
                           color: ConstColors.blackColor,
                           fontSize: 16.sp,
@@ -109,7 +109,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Location: ',
+                  Text('Location',
                       style: TextStyle(
                           color: ConstColors.blackColor,
                           fontSize: 16.sp,
@@ -137,63 +137,151 @@ class TechnicianJobDetailPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Municipality: ',
                     style: TextStyle(
                         color: ConstColors.blackColor,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
                     jobModel.municipality,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: ConstColors.blackColor,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ],
               ),
+              // SizedBox(
+              //   height: 20.h,
+              // ),
+              // ElevatedButton(
+              //   style: ButtonStyle(
+              //     backgroundColor: MaterialStateProperty.all<Color>(
+              //         ConstColors.foregroundColor),
+              //     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              //       const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              //     ),
+              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //       RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(8.0),
+              //       ),
+              //     ),
+              //   ),
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => BlocProvider(
+              //           create: (context) => ToolsRequestBloc(
+              //               toolsRepository: context.read<ToolsRepository>(),
+              //               jobsRepository: context.read<JobsRepository>(),
+              //               oldJobModel: jobModel,
+              //               userId: context
+              //                   .read<AuthenticationBloc>()
+              //                   .state
+              //                   .userModel!
+              //                   .id),
+              //           child: const TechnicianRequestToolsPage(),
+              //         ),
+              //       ),
+              //     );
+              //   },
+              //   //TODO: CHANGE TO ACCEPT JOB AND THEN PROCEED TO TOOLS SELECT
+              //   child: const Text(
+              //     "Request Tools",
+              //     style: TextStyle(color: ConstColors.blackColor),
+              //   ),
+              // ),
+
               SizedBox(
-                height: 20.h,
+                height: 40.h,
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      ConstColors.foregroundColor),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) => ToolsRequestBloc(
-                            toolsRepository: context.read<ToolsRepository>(),
-                            jobsRepository: context.read<JobsRepository>(),
-                            oldJobModel: jobModel,
-                            userId: context
-                                .read<AuthenticationBloc>()
-                                .state
-                                .userModel!
-                                .id),
-                        child: const TechnicianRequestToolsPage(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          ConstColors.foregroundColor),
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                     ),
-                  );
-                },
-                //TODO: CHANGE TO ACCEPT JOB AND THEN PROCEED TO TOOLS SELECT
-                child: const Text(
-                  "Request Tools",
-                  style: TextStyle(color: ConstColors.blackColor),
-                ),
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => BlocProvider(
+                      //       create: (context) => ToolsRequestBloc(
+                      //           toolsRepository: context.read<ToolsRepository>(),
+                      //           jobsRepository: context.read<JobsRepository>(),
+                      //           oldJobModel: jobModel,
+                      //           userId: context
+                      //               .read<AuthenticationBloc>()
+                      //               .state
+                      //               .userModel!
+                      //               .id),
+                      //       child: const TechnicianRequestToolsPage(),
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                    child: const Text(
+                      "Accept Job",
+                      style: TextStyle(color: ConstColors.blackColor),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => BlocProvider(
+                      //       create: (context) => ToolsRequestBloc(
+                      //           toolsRepository: context.read<ToolsRepository>(),
+                      //           jobsRepository: context.read<JobsRepository>(),
+                      //           oldJobModel: jobModel,
+                      //           userId: context
+                      //               .read<AuthenticationBloc>()
+                      //               .state
+                      //               .userModel!
+                      //               .id),
+                      //       child: const TechnicianRequestToolsPage(),
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                    child: const Text(
+                      "Reject Job",
+                      style: TextStyle(color: ConstColors.whiteColor),
+                    ),
+                  ),
+                ],
               ),
+              // SizedBox(
+              //   height: 20.h,
+              // ),
             ],
           ),
         ),
