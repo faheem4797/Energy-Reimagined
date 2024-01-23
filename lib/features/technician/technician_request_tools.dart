@@ -7,6 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tools_repository/tools_repository.dart';
 
+// TODO: 1. Change horizontal filter chips into multiple rows all shown at the same time
+//
+// TODO: 2. Change design of job detail page on technician side
+//
+// TODO: 2. For requesting tools, make each tile navigate to new page with tool details.
+// TODO: Add quantity buttons(increase/decrease) there as well. Then a button at the bottom
+// TODO: that adds that tool to the selected tools list
+//
+// TODO: 3. At the end of tool requesting before sending to firestore,
+// TODO: add a modal sheet or alert dialog that shows all the selected
+// TODO: tools and their quantity and user can review it before requesting. Just like checkout
 class TechnicianRequestToolsPage extends StatefulWidget {
   const TechnicianRequestToolsPage({super.key});
 

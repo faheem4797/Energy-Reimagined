@@ -39,7 +39,8 @@ class JobModel extends Equatable {
   final int locationLatitude;
   final int locationLongitude;
   final List<String> allToolsRequested;
-  final List<String> currentToolsRequested;
+  final List<String> currentToolsRequestedIds;
+  final List<int> currentToolsRequestedQuantity;
   final String currentToolsRequestQrCode;
   final String holdReason;
   final String cancelReason;
@@ -59,7 +60,8 @@ class JobModel extends Equatable {
     required this.locationLatitude,
     required this.locationLongitude,
     required this.allToolsRequested,
-    required this.currentToolsRequested,
+    required this.currentToolsRequestedIds,
+    required this.currentToolsRequestedQuantity,
     required this.currentToolsRequestQrCode,
     required this.holdReason,
     required this.cancelReason,
@@ -81,7 +83,8 @@ class JobModel extends Equatable {
       locationLongitude: 0,
       locationLatitude: 0,
       allToolsRequested: [],
-      currentToolsRequested: [],
+      currentToolsRequestedIds: [],
+      currentToolsRequestedQuantity: [],
       currentToolsRequestQrCode: '',
       holdReason: '',
       cancelReason: '',
@@ -102,7 +105,8 @@ class JobModel extends Equatable {
     int? locationLatitude,
     int? locationLongitude,
     List<String>? allToolsRequested,
-    List<String>? currentToolsRequested,
+    List<String>? currentToolsRequestedIds,
+    List<int>? currentToolsRequestedQuantity,
     String? currentToolsRequestQrCode,
     String? holdReason,
     String? cancelReason,
@@ -123,8 +127,10 @@ class JobModel extends Equatable {
       locationLatitude: locationLatitude ?? this.locationLatitude,
       locationLongitude: locationLongitude ?? this.locationLongitude,
       allToolsRequested: allToolsRequested ?? this.allToolsRequested,
-      currentToolsRequested:
-          currentToolsRequested ?? this.currentToolsRequested,
+      currentToolsRequestedIds:
+          currentToolsRequestedIds ?? this.currentToolsRequestedIds,
+      currentToolsRequestedQuantity:
+          currentToolsRequestedQuantity ?? this.currentToolsRequestedQuantity,
       currentToolsRequestQrCode:
           currentToolsRequestQrCode ?? this.currentToolsRequestQrCode,
       holdReason: holdReason ?? this.holdReason,
@@ -161,7 +167,8 @@ class JobModel extends Equatable {
       'locationLatitude': locationLatitude,
       'locationLongitude': locationLongitude,
       'allToolsRequested': allToolsRequested,
-      'currentToolsRequested': currentToolsRequested,
+      'currentToolsRequestedIds': currentToolsRequestedIds,
+      'currentToolsRequestedQuantity': currentToolsRequestedQuantity,
       'currentToolsRequestQrCode': currentToolsRequestQrCode,
       'holdReason': holdReason,
       'cancelReason': cancelReason,
@@ -185,7 +192,10 @@ class JobModel extends Equatable {
       locationLatitude: map['locationLatitude']?.toInt() ?? 0,
       locationLongitude: map['locationLongitude']?.toInt() ?? 0,
       allToolsRequested: List<String>.from(map['allToolsRequested']),
-      currentToolsRequested: List<String>.from(map['currentToolsRequested']),
+      currentToolsRequestedIds:
+          List<String>.from(map['currentToolsRequestedIds']),
+      currentToolsRequestedQuantity:
+          List<int>.from(map['currentToolsRequestedQuantity']),
       currentToolsRequestQrCode: map['currentToolsRequestQrCode'] ?? '',
       holdReason: map['holdReason'] ?? '',
       cancelReason: map['cancelReason'] ?? '',
@@ -236,9 +246,13 @@ class JobModel extends Equatable {
       addChangedField(
           'allToolsRequested', allToolsRequested, other.allToolsRequested);
     }
-    if (currentToolsRequested != other.currentToolsRequested) {
-      addChangedField('currentToolsRequested', currentToolsRequested,
-          other.currentToolsRequested);
+    if (currentToolsRequestedIds != other.currentToolsRequestedIds) {
+      addChangedField('currentToolsRequestedIds', currentToolsRequestedIds,
+          other.currentToolsRequestedIds);
+    }
+    if (currentToolsRequestedQuantity != other.currentToolsRequestedQuantity) {
+      addChangedField('currentToolsRequestedQuantity',
+          currentToolsRequestedQuantity, other.currentToolsRequestedQuantity);
     }
     if (currentToolsRequestQrCode != other.currentToolsRequestQrCode) {
       addChangedField('currentToolsRequestQrCode', currentToolsRequestQrCode,
@@ -280,7 +294,7 @@ class JobModel extends Equatable {
 
   @override
   String toString() {
-    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, allToolsRequested: $allToolsRequested, currentToolsRequested: $currentToolsRequested, currentToolsRequestQrCode: $currentToolsRequestQrCode, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
+    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, allToolsRequested: $allToolsRequested, currentToolsRequested: $currentToolsRequestedIds, currentToolsRequestedQuantity: $currentToolsRequestedQuantity, currentToolsRequestQrCode: $currentToolsRequestQrCode, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
   }
 
   @override
@@ -296,7 +310,8 @@ class JobModel extends Equatable {
       locationLatitude,
       locationLongitude,
       allToolsRequested,
-      currentToolsRequested,
+      currentToolsRequestedIds,
+      currentToolsRequestedQuantity,
       currentToolsRequestQrCode,
       holdReason,
       cancelReason,

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:multi_dropdown/models/value_item.dart';
 
 part 'technician_jobs_stream_event.dart';
 part 'technician_jobs_stream_state.dart';
@@ -29,6 +30,7 @@ class TechnicianJobsStreamBloc
     on<GetJobStream>(_getJobStream);
     on<AddFilterStatus>(_addFilterStatus);
     on<RemoveFilterStatus>(_removeFilterStatus);
+    on<ChangeFilterStatus>(_changeFilterStatus);
   }
 
   FutureOr<void> _getJobStream(
@@ -40,6 +42,19 @@ class TechnicianJobsStreamBloc
       log(e.toString());
       emit(TechnicianJobsStreamState.failure());
     }
+  }
+
+  FutureOr<void> _changeFilterStatus(
+      ChangeFilterStatus event, Emitter<TechnicianJobsStreamState> emit) {
+    Set<JobStatus> tempSet = {};
+    for (var element in event.filterStatusList) {
+      tempSet.add(element.value);
+    }
+
+    final newFilteredList = _filterList(state.jobStream!, tempSet);
+
+    emit(TechnicianJobsStreamState.success(
+        state.jobStream!, newFilteredList, tempSet));
   }
 
   FutureOr<void> _addFilterStatus(

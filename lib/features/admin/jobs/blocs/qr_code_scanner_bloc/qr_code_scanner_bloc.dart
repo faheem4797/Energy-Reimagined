@@ -36,7 +36,7 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
           final currentTime = DateTime.now().microsecondsSinceEpoch;
           JobModel newJobModel = jobModel.copyWith(
             currentToolsRequestQrCode: '',
-            currentToolsRequested: [],
+            currentToolsRequestedIds: [],
             // allToolsRequested: newAllRequestedToolsList,
             status: JobStatus.workInProgress,
             startedTimestamp: currentTime,

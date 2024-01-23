@@ -34,3 +34,10 @@ final class RemoveFilterStatus extends TechnicianJobsStreamEvent {
   @override
   List<Object> get props => [status];
 }
+
+final class ChangeFilterStatus extends TechnicianJobsStreamEvent {
+  final List<ValueItem<dynamic>> filterStatusList;
+  const ChangeFilterStatus({required this.filterStatusList});
+  @override
+  List<Object> get props => [filterStatusList];
+}

@@ -57,7 +57,7 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
       final currentTime = DateTime.now().microsecondsSinceEpoch;
       job_repository.JobModel newJobModel = oldJobModel.copyWith(
         currentToolsRequestQrCode: const Uuid().v1(),
-        currentToolsRequested: newSelectedToolsList,
+        currentToolsRequestedIds: newSelectedToolsList,
         allToolsRequested: newAllRequestedToolsList,
         status: job_repository.JobStatus.onHold,
         holdReason: 'Tools Requested',
@@ -88,8 +88,8 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
       LoadToolsList event, Emitter<ToolsRequestState> emit) async {
     try {
       final List<ToolModel> listOfTools = await _toolsRepository.getAllTools();
-      if (oldJobModel.currentToolsRequested.isNotEmpty) {
-        List<ToolModel> selectedTools = oldJobModel.currentToolsRequested
+      if (oldJobModel.currentToolsRequestedIds.isNotEmpty) {
+        List<ToolModel> selectedTools = oldJobModel.currentToolsRequestedIds
             .where((toolId) => listOfTools.any((tool) => tool.id == toolId))
             .map(
                 (toolId) => listOfTools.firstWhere((tool) => tool.id == toolId))

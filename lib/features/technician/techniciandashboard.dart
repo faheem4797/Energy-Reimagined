@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class TechnicianDashboard extends StatelessWidget {
   const TechnicianDashboard({super.key});
@@ -74,23 +75,108 @@ class TechnicianDashboard extends StatelessWidget {
                             : Column(
                                 children: [
                                   const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Jobs List",
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        // IconButton(
+                                        //   icon: const Icon(
+                                        //     Icons.filter_list,
+                                        //     color: ConstColors.blackColor,
+                                        //   ),
+                                        //   onPressed: () {
+                                        //     // var logout = await WillPopScoopService()
+                                        //     //     .showLogoutConfirmationDialog(context);
+                                        //     // if (logout) {
+                                        //     //   if (!context.mounted) return;
+                                        //     //   checkConnectionFunc(context, () {
+                                        //     //     context
+                                        //     //         .read<AuthenticationBloc>()
+                                        //     //         .add(const AuthenticationLogoutRequested());
+                                        //     //   });
+                                        //     // }
+                                        //   },
+                                        // ),
                                       ],
                                     ),
                                   ),
-                                  _buildFilterChips(),
+                                  MultiSelectDropDown(
+                                    showClearIcon: true,
+                                    // controller: _controller,
+
+                                    onOptionSelected: (options) {
+                                      context
+                                          .read<TechnicianJobsStreamBloc>()
+                                          .add(ChangeFilterStatus(
+                                              filterStatusList: options));
+                                      // print('object');
+                                      // debugPrint(options.toString());
+
+                                      // Set a = {};
+                                      // for (var element in options) {
+                                      //   a.add(element.value);
+                                      // }
+                                      // print(a);
+                                      // print('vie');
+                                    },
+                                    // onOptionRemoved: (index, option) {
+                                    //   print('object1');
+                                    //   debugPrint(index.toString());
+                                    //   debugPrint(option.toString());
+                                    // },
+
+                                    options: const <ValueItem>[
+                                      ValueItem(
+                                          label: 'In Progress',
+                                          value: JobStatus.workInProgress),
+                                      ValueItem(
+                                          label: 'On Hold',
+                                          value: JobStatus.onHold),
+                                      ValueItem(
+                                          label: 'Assigned',
+                                          value: JobStatus.assigned),
+                                      ValueItem(
+                                          label: 'Completed',
+                                          value: JobStatus.completed),
+                                      ValueItem(
+                                          label: 'Cancelled',
+                                          value: JobStatus.cancelled),
+                                      ValueItem(
+                                          label: 'Pending',
+                                          value: JobStatus.pending),
+                                    ],
+
+                                    selectionType: SelectionType.multi,
+                                    chipConfig: const ChipConfig(
+                                        wrapType: WrapType.scroll,
+                                        backgroundColor:
+                                            ConstColors.backgroundDarkColor),
+                                    dropdownHeight: 300,
+                                    optionTextStyle:
+                                        const TextStyle(fontSize: 16),
+                                    selectedOptionTextColor:
+                                        ConstColors.whiteColor,
+                                    selectedOptionIcon: const Icon(
+                                      Icons.check_circle,
+                                      color: ConstColors.whiteColor,
+                                    ),
+
+                                    hint: 'Select Filter',
+
+                                    // selectedOptionTextColor: Colors.green,
+                                    selectedOptionBackgroundColor:
+                                        ConstColors.backgroundDarkColor,
+                                  ),
+                                  // _buildFilterChips(),
                                   Expanded(
                                     child: ListView.builder(
                                       itemCount: state.filteredJobs?.length,
@@ -251,9 +337,10 @@ class TechnicianDashboard extends StatelessWidget {
 
   Widget _buildFilterChips() {
     return SizedBox(
-      height: 50,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
+      height: 150,
+      child: Wrap(
+        // direction: Axis.vertical,
+        // scrollDirection: Axis.horizontal,
         children: [
           _buildFilterChip(JobStatus.workInProgress),
           _buildFilterChip(JobStatus.onHold),
