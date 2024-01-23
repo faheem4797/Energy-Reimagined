@@ -32,7 +32,6 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
 
   FutureOr<void> _requestSelectedTools(
       RequestSelectedTools event, Emitter<ToolsRequestState> emit) async {
-//TODO: TEST THIS FUNCTION
     emit(state.copyWith(isValid: state.selectedToolsList.isNotEmpty));
     if (!state.isValid) {
       emit(state.copyWith(

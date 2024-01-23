@@ -45,7 +45,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                 height: 20.h,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Text(
                     'Current Status: ',
@@ -91,9 +91,9 @@ class TechnicianJobDetailPage extends StatelessWidget {
                   ),
                   Container(
                       width: double.infinity,
-                      height: 150.h,
+                      height: 175.h,
                       decoration: BoxDecoration(
-                        color: ConstColors.greyColor,
+                        color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Padding(
@@ -121,7 +121,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                       width: double.infinity,
                       height: 100.h,
                       decoration: BoxDecoration(
-                        color: ConstColors.greyColor,
+                        color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Padding(
@@ -135,7 +135,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                 height: 20.h,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Text(
                     'Municipality: ',
@@ -188,6 +188,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                     ),
                   );
                 },
+                //TODO: CHANGE TO ACCEPT JOB AND THEN PROCEED TO TOOLS SELECT
                 child: const Text(
                   "Request Tools",
                   style: TextStyle(color: ConstColors.blackColor),

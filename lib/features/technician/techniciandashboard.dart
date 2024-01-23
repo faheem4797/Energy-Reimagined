@@ -75,65 +75,32 @@ class TechnicianDashboard extends StatelessWidget {
                             : Column(
                                 children: [
                                   const Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10.0),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
+                                        Text(
                                           "Jobs List",
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        // IconButton(
-                                        //   icon: const Icon(
-                                        //     Icons.filter_list,
-                                        //     color: ConstColors.blackColor,
-                                        //   ),
-                                        //   onPressed: () {
-                                        //     // var logout = await WillPopScoopService()
-                                        //     //     .showLogoutConfirmationDialog(context);
-                                        //     // if (logout) {
-                                        //     //   if (!context.mounted) return;
-                                        //     //   checkConnectionFunc(context, () {
-                                        //     //     context
-                                        //     //         .read<AuthenticationBloc>()
-                                        //     //         .add(const AuthenticationLogoutRequested());
-                                        //     //   });
-                                        //     // }
-                                        //   },
-                                        // ),
                                       ],
                                     ),
                                   ),
                                   MultiSelectDropDown(
                                     showClearIcon: true,
-                                    // controller: _controller,
-
                                     onOptionSelected: (options) {
                                       context
                                           .read<TechnicianJobsStreamBloc>()
                                           .add(ChangeFilterStatus(
                                               filterStatusList: options));
-                                      // print('object');
+
                                       // debugPrint(options.toString());
-
-                                      // Set a = {};
-                                      // for (var element in options) {
-                                      //   a.add(element.value);
-                                      // }
-                                      // print(a);
-                                      // print('vie');
                                     },
-                                    // onOptionRemoved: (index, option) {
-                                    //   print('object1');
-                                    //   debugPrint(index.toString());
-                                    //   debugPrint(option.toString());
-                                    // },
-
                                     options: const <ValueItem>[
                                       ValueItem(
                                           label: 'In Progress',
@@ -154,7 +121,6 @@ class TechnicianDashboard extends StatelessWidget {
                                           label: 'Pending',
                                           value: JobStatus.pending),
                                     ],
-
                                     selectionType: SelectionType.multi,
                                     chipConfig: const ChipConfig(
                                         wrapType: WrapType.scroll,
@@ -163,18 +129,15 @@ class TechnicianDashboard extends StatelessWidget {
                                     dropdownHeight: 300,
                                     optionTextStyle:
                                         const TextStyle(fontSize: 16),
+                                    selectedOptionBackgroundColor:
+                                        ConstColors.backgroundDarkColor,
                                     selectedOptionTextColor:
                                         ConstColors.whiteColor,
                                     selectedOptionIcon: const Icon(
                                       Icons.check_circle,
                                       color: ConstColors.whiteColor,
                                     ),
-
                                     hint: 'Select Filter',
-
-                                    // selectedOptionTextColor: Colors.green,
-                                    selectedOptionBackgroundColor:
-                                        ConstColors.backgroundDarkColor,
                                   ),
                                   // _buildFilterChips(),
                                   Expanded(
