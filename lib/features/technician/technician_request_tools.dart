@@ -1,19 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tools_repository/tools_repository.dart';
 
-//
-// TODO: 2. For requesting tools, make each tile navigate to new page with tool details.
-// TODO: Add quantity buttons(increase/decrease) there as well. Then a button at the bottom
-// TODO: that adds that tool to the selected tools list
-//
-// TODO: 3. At the end of tool requesting before sending to firestore,
-// TODO: add a modal sheet or alert dialog that shows all the selected
-// TODO: tools and their quantity and user can review it before requesting. Just like checkout
 class TechnicianRequestToolsPage extends StatefulWidget {
   const TechnicianRequestToolsPage({super.key});
 
@@ -123,10 +116,11 @@ class _TechnicianRequestToolsPageState
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<ToolsRequestBloc>()
-                          .add(RequestSelectedTools());
-                      // Perform checkout logic here
+                      checkConnectionFunc(context, () {
+                        context
+                            .read<ToolsRequestBloc>()
+                            .add(RequestSelectedTools());
+                      });
                       Navigator.of(context).pop();
                     },
                     child: const Text('Proceed'),
@@ -254,6 +248,8 @@ class _TechnicianRequestToolsPageState
                                     //             )));
                                   },
                                   child: ExpansionTile(
+                                    expandedCrossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
@@ -308,6 +304,17 @@ class _TechnicianRequestToolsPageState
                                       },
                                     ),
                                     children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0, vertical: 8),
+                                        child: Text(
+                                          tool.description,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: ConstColors.whiteColor,
+                                          ),
+                                        ),
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: CachedNetworkImage(
