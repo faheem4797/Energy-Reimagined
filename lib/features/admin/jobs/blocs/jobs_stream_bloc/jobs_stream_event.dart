@@ -21,19 +21,19 @@ final class GetJobStream extends JobsStreamEvent {
   List<Object> get props => [jobsStream, filteredJobs, selectedStatuses];
 }
 
-final class AddFilterStatus extends JobsStreamEvent {
-  final JobStatus status;
-  const AddFilterStatus({required this.status});
-  @override
-  List<Object> get props => [status];
-}
+// final class AddFilterStatus extends JobsStreamEvent {
+//   final JobStatus status;
+//   const AddFilterStatus({required this.status});
+//   @override
+//   List<Object> get props => [status];
+// }
 
-final class RemoveFilterStatus extends JobsStreamEvent {
-  final JobStatus status;
-  const RemoveFilterStatus({required this.status});
-  @override
-  List<Object> get props => [status];
-}
+// final class RemoveFilterStatus extends JobsStreamEvent {
+//   final JobStatus status;
+//   const RemoveFilterStatus({required this.status});
+//   @override
+//   List<Object> get props => [status];
+// }
 
 final class ChangeFilterStatus extends JobsStreamEvent {
   final List<ValueItem<dynamic>> filterStatusList;

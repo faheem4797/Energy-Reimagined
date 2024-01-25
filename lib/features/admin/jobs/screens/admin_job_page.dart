@@ -180,6 +180,9 @@ class AdminJobPage extends StatelessWidget {
                                       final bool isOnHold =
                                           jobs[index].status ==
                                               JobStatus.onHold;
+                                      final bool isRejected =
+                                          jobs[index].status ==
+                                              JobStatus.rejected;
                                       final bool isCancelled =
                                           jobs[index].status ==
                                               JobStatus.cancelled;
@@ -344,6 +347,8 @@ class AdminJobPage extends StatelessWidget {
                                                                               currentToolsRequestQrCode: jobs[index].currentToolsRequestQrCode,
                                                                               holdReason: jobs[index].holdReason,
                                                                               cancelReason: jobs[index].cancelReason,
+                                                                              rejectedReason: jobs[index].rejectedReason,
+                                                                              rejectedTimestamp: jobs[index].rejectedTimestamp,
                                                                               createdTimestamp: jobs[index].createdTimestamp,
                                                                               assignedTimestamp: jobs[index].assignedTimestamp,
                                                                               startedTimestamp: jobs[index].startedTimestamp,
@@ -359,7 +364,9 @@ class AdminJobPage extends StatelessWidget {
                                                       ),
                                                     ],
                                                   ))),
-                                          if (isOnHold || isCancelled)
+                                          if (isOnHold ||
+                                              isCancelled ||
+                                              isRejected)
                                             Positioned(
                                               top: 0,
                                               left: 0,
@@ -371,7 +378,9 @@ class AdminJobPage extends StatelessWidget {
                                                 child: Banner(
                                                   message: isOnHold
                                                       ? 'On Hold'
-                                                      : 'Cancelled',
+                                                      : isCancelled
+                                                          ? 'Cancelled'
+                                                          : 'Rejected',
                                                   location:
                                                       BannerLocation.topEnd,
                                                   color: ConstColors.redColor,

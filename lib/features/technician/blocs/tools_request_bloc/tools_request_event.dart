@@ -25,3 +25,17 @@ final class RemoveSelectedTool extends ToolsRequestEvent {
   @override
   List<Object> get props => [tool];
 }
+
+final class IncreaseQuantity extends ToolsRequestEvent {
+  final int index;
+  const IncreaseQuantity({required this.index});
+  @override
+  List<Object> get props => [index];
+}
+
+final class DecreaseQuantity extends ToolsRequestEvent {
+  final int index;
+  const DecreaseQuantity({required this.index});
+  @override
+  List<Object> get props => [index];
+}

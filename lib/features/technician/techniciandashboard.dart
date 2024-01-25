@@ -1,4 +1,6 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_job_detail_page.dart';
 import 'package:energy_reimagined/features/technician/technician_qrcode_page.dart';
@@ -115,6 +117,9 @@ class TechnicianDashboard extends StatelessWidget {
                                       final bool isOnHold =
                                           jobs[index].status ==
                                               JobStatus.onHold;
+                                      final bool isRejected =
+                                          jobs[index].status ==
+                                              JobStatus.rejected;
                                       final bool isCancelled =
                                           jobs[index].status ==
                                               JobStatus.cancelled;
@@ -126,9 +131,24 @@ class TechnicianDashboard extends StatelessWidget {
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          TechnicianJobDetailPage(
-                                                            jobModel:
-                                                                jobs[index],
+                                                          BlocProvider(
+                                                            create: (context) => RejectJobBloc(
+                                                                jobsRepository:
+                                                                    context.read<
+                                                                        JobsRepository>(),
+                                                                oldJobModel:
+                                                                    jobs[index],
+                                                                userId: context
+                                                                    .read<
+                                                                        AuthenticationBloc>()
+                                                                    .state
+                                                                    .userModel!
+                                                                    .id),
+                                                            child:
+                                                                TechnicianJobDetailPage(
+                                                              jobModel:
+                                                                  jobs[index],
+                                                            ),
                                                           )));
                                             },
                                             child: Card(
@@ -232,7 +252,9 @@ class TechnicianDashboard extends StatelessWidget {
                                                           )
                                                         : null)),
                                           ),
-                                          if (isOnHold || isCancelled)
+                                          if (isOnHold ||
+                                              isCancelled ||
+                                              isRejected)
                                             Positioned(
                                               top: 0,
                                               left: 0,
@@ -244,7 +266,9 @@ class TechnicianDashboard extends StatelessWidget {
                                                 child: Banner(
                                                   message: isOnHold
                                                       ? 'On Hold'
-                                                      : 'Cancelled',
+                                                      : isCancelled
+                                                          ? 'Cancelled'
+                                                          : 'Rejected',
                                                   location:
                                                       BannerLocation.topEnd,
                                                   color: ConstColors.redColor,

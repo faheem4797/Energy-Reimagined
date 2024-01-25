@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
-import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +24,122 @@ class TechnicianRequestToolsPage extends StatefulWidget {
 
 class _TechnicianRequestToolsPageState
     extends State<TechnicianRequestToolsPage> {
+  Future<void> _showToolsPopup(BuildContext blocContext) async {
+    return showDialog<void>(
+      context: blocContext,
+      builder: (BuildContext context) {
+        return BlocProvider.value(
+          value: blocContext.read<ToolsRequestBloc>(),
+          child: BlocBuilder<ToolsRequestBloc, ToolsRequestState>(
+            builder: (context, state) {
+              return AlertDialog(
+                title: const Text(
+                  'Are you sure you want to request these tools?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                content: state.selectedToolsList.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'No Tools Selected',
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (var tool in state.selectedToolsList)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  tool.name,
+                                  style: TextStyle(fontSize: 14.sp),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.remove,
+                                        color: ConstColors.blackColor,
+                                      ),
+                                      onPressed: () {
+                                        if (state.selectedToolsQuantityList[
+                                                state.selectedToolsList
+                                                    .indexOf(tool)] >
+                                            1) {
+                                          context.read<ToolsRequestBloc>().add(
+                                              DecreaseQuantity(
+                                                  index: state.selectedToolsList
+                                                      .indexOf(tool)));
+                                        }
+                                      },
+                                    ),
+                                    Text(
+                                      state.selectedToolsQuantityList[state
+                                              .selectedToolsList
+                                              .indexOf(tool)]
+                                          .toString(),
+                                      style: TextStyle(fontSize: 14.sp),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.add,
+                                        color: ConstColors.blackColor,
+                                      ),
+                                      onPressed: () {
+                                        context.read<ToolsRequestBloc>().add(
+                                            IncreaseQuantity(
+                                                index: state.selectedToolsList
+                                                    .indexOf(tool)));
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: ConstColors.blackColor,
+                                      ),
+                                      onPressed: () {
+                                        context.read<ToolsRequestBloc>().add(
+                                            RemoveSelectedTool(tool: tool));
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context
+                          .read<ToolsRequestBloc>()
+                          .add(RequestSelectedTools());
+                      // Perform checkout logic here
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Proceed'),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,12 +166,13 @@ class _TechnicianRequestToolsPageState
                 onPressed: state.status == ToolsRequestStatus.inProgress
                     ? null
                     : () async {
-                        if (!context.mounted) return;
-                        checkConnectionFunc(context, () {
-                          context
-                              .read<ToolsRequestBloc>()
-                              .add(RequestSelectedTools());
-                        });
+                        _showToolsPopup(context);
+                        // if (!context.mounted) return;
+                        // checkConnectionFunc(context, () {
+                        //   context
+                        //       .read<ToolsRequestBloc>()
+                        //       .add(RequestSelectedTools());
+                        // });
                       },
               );
             },
@@ -80,7 +196,7 @@ class _TechnicianRequestToolsPageState
               ..pop();
           }
         },
-        builder: (context, state) {
+        builder: (blocContext, state) {
           return state.status == ToolsRequestStatus.loading ||
                   state.status == ToolsRequestStatus.inProgress
               ? const Center(
@@ -92,23 +208,23 @@ class _TechnicianRequestToolsPageState
                     )
                   : Column(
                       children: [
-                        state.selectedToolsList.isEmpty
-                            ? Container()
-                            : SizedBox(
-                                height: 50,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: state.selectedToolsList
-                                      .map((tool) => Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8.w),
-                                            child: Chip(
-                                              label: Text(tool.name),
-                                            ),
-                                          ))
-                                      .toList(),
-                                ),
-                              ),
+                        // state.selectedToolsList.isEmpty
+                        //     ? Container()
+                        //     : SizedBox(
+                        //         height: 50,
+                        //         child: ListView(
+                        //           scrollDirection: Axis.horizontal,
+                        //           children: state.selectedToolsList
+                        //               .map((tool) => Padding(
+                        //                     padding: EdgeInsets.symmetric(
+                        //                         horizontal: 8.w),
+                        //                     child: Chip(
+                        //                       label: Text(tool.name),
+                        //                     ),
+                        //                   ))
+                        //               .toList(),
+                        //         ),
+                        //       ),
                         Expanded(
                           child: ListView.builder(
                             shrinkWrap: true,
@@ -123,57 +239,82 @@ class _TechnicianRequestToolsPageState
                                 elevation: 4,
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 8),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        tool.imageUrl),
-                                  ),
-                                  title: RichText(
-                                    text: TextSpan(
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Navigator.of(context).push(
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             BlocProvider.value(
+                                    //               value: blocContext
+                                    //                   .read<ToolsRequestBloc>(),
+                                    //               child:
+                                    //                   TechnicianToolDetailPage(
+                                    //                 toolModel: tool,
+                                    //               ),
+                                    //             )));
+                                  },
+                                  child: ExpansionTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    leading: CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              tool.imageUrl),
+                                    ),
+                                    title: RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: tool.name,
+                                            style: const TextStyle(
+                                              color: ConstColors.whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '${'  [${tool.category}'}]',
+                                            style: const TextStyle(
+                                              color: ConstColors.whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      children: [
-                                        TextSpan(
-                                          text: tool.name,
-                                          style: const TextStyle(
-                                            color: ConstColors.whiteColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '${'  [${tool.category}'}]',
-                                          style: const TextStyle(
-                                            color: ConstColors.whiteColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                  ),
-                                  subtitle: Text(
-                                    'Available Quantity: ${tool.quantity.toString()}',
-                                    style: const TextStyle(
-                                      color: ConstColors.whiteColor,
+                                    subtitle: Text(
+                                      'Available Quantity: ${tool.quantity.toString()}',
+                                      style: const TextStyle(
+                                        color: ConstColors.whiteColor,
+                                      ),
                                     ),
+                                    trailing: Checkbox(
+                                      activeColor:
+                                          ConstColors.backgroundDarkColor,
+                                      value: isSelected,
+                                      onChanged: (value) {
+                                        if (value!) {
+                                          context.read<ToolsRequestBloc>().add(
+                                              AddSelectedTool(
+                                                  tool: tool, toolQuantity: 1));
+                                        } else {
+                                          context.read<ToolsRequestBloc>().add(
+                                              RemoveSelectedTool(tool: tool));
+                                        }
+                                      },
+                                    ),
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: CachedNetworkImage(
+                                            imageUrl: tool.imageUrl),
+                                      ),
+                                    ],
                                   ),
-                                  // trailing:
-                                  //  Checkbox(
-                                  //   activeColor:
-                                  //       ConstColors.backgroundDarkColor,
-                                  //   value: isSelected,
-                                  //   onChanged: (value) {
-                                  //     if (value!) {
-                                  //       context
-                                  //           .read<ToolsRequestBloc>()
-                                  //           .add(AddSelectedTool(tool: tool));
-                                  //     } else {
-                                  //       context.read<ToolsRequestBloc>().add(
-                                  //           RemoveSelectedTool(tool: tool));
-                                  //     }
-                                  //   },
-                                  // ),
                                 ),
                               );
                             },

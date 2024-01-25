@@ -46,6 +46,8 @@ class JobModel extends Equatable {
   final String currentToolsRequestQrCode;
   final String holdReason;
   final String cancelReason;
+  final String rejectedReason;
+  final int rejectedTimestamp;
   final int createdTimestamp;
   final int assignedTimestamp;
   final int startedTimestamp;
@@ -67,6 +69,8 @@ class JobModel extends Equatable {
     required this.currentToolsRequestQrCode,
     required this.holdReason,
     required this.cancelReason,
+    required this.rejectedReason,
+    required this.rejectedTimestamp,
     required this.createdTimestamp,
     required this.assignedTimestamp,
     required this.startedTimestamp,
@@ -90,6 +94,8 @@ class JobModel extends Equatable {
       currentToolsRequestQrCode: '',
       holdReason: '',
       cancelReason: '',
+      rejectedReason: '',
+      rejectedTimestamp: 0,
       createdTimestamp: 0,
       assignedTimestamp: 0,
       startedTimestamp: 0,
@@ -112,6 +118,8 @@ class JobModel extends Equatable {
     String? currentToolsRequestQrCode,
     String? holdReason,
     String? cancelReason,
+    String? rejectedReason,
+    int? rejectedTimestamp,
     int? createdTimestamp,
     int? assignedTimestamp,
     int? startedTimestamp,
@@ -137,6 +145,8 @@ class JobModel extends Equatable {
           currentToolsRequestQrCode ?? this.currentToolsRequestQrCode,
       holdReason: holdReason ?? this.holdReason,
       cancelReason: cancelReason ?? this.cancelReason,
+      rejectedReason: rejectedReason ?? this.rejectedReason,
+      rejectedTimestamp: rejectedTimestamp ?? this.rejectedTimestamp,
       createdTimestamp: createdTimestamp ?? this.createdTimestamp,
       assignedTimestamp: assignedTimestamp ?? this.assignedTimestamp,
       startedTimestamp: startedTimestamp ?? this.startedTimestamp,
@@ -174,6 +184,8 @@ class JobModel extends Equatable {
       'currentToolsRequestQrCode': currentToolsRequestQrCode,
       'holdReason': holdReason,
       'cancelReason': cancelReason,
+      'rejectedReason': rejectedReason,
+      'rejectedTimestamp': rejectedTimestamp,
       'createdTimestamp': createdTimestamp,
       'assignedTimestamp': assignedTimestamp,
       'startedTimestamp': startedTimestamp,
@@ -201,6 +213,8 @@ class JobModel extends Equatable {
       currentToolsRequestQrCode: map['currentToolsRequestQrCode'] ?? '',
       holdReason: map['holdReason'] ?? '',
       cancelReason: map['cancelReason'] ?? '',
+      rejectedReason: map['rejectedReason'] ?? '',
+      rejectedTimestamp: map['rejectedTimestamp']?.toInt() ?? 0,
       createdTimestamp: map['createdTimestamp']?.toInt() ?? 0,
       assignedTimestamp: map['assignedTimestamp']?.toInt() ?? 0,
       startedTimestamp: map['startedTimestamp']?.toInt() ?? 0,
@@ -266,6 +280,13 @@ class JobModel extends Equatable {
     if (cancelReason != other.cancelReason) {
       addChangedField('cancelReason', cancelReason, other.cancelReason);
     }
+    if (rejectedReason != other.rejectedReason) {
+      addChangedField('rejectedReason', rejectedReason, other.rejectedReason);
+    }
+    if (rejectedTimestamp != other.rejectedTimestamp) {
+      addChangedField(
+          'rejectedTimestamp', rejectedTimestamp, other.rejectedTimestamp);
+    }
     if (holdTimestamp != other.holdTimestamp) {
       addChangedField('holdTimestamp', holdTimestamp, other.holdTimestamp);
     }
@@ -317,6 +338,8 @@ class JobModel extends Equatable {
       currentToolsRequestQrCode,
       holdReason,
       cancelReason,
+      rejectedReason,
+      rejectedTimestamp,
       createdTimestamp,
       assignedTimestamp,
       startedTimestamp,

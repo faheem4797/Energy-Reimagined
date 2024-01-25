@@ -27,52 +27,70 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
     on<LoadToolsList>(_loadToolsList);
     on<AddSelectedTool>(_addSelectedTool);
     on<RemoveSelectedTool>(_removeSelectedTool);
+    on<IncreaseQuantity>(_increaseQuantity);
+    on<DecreaseQuantity>(_decreaseQuantity);
+
     add(LoadToolsList());
   }
 
   FutureOr<void> _requestSelectedTools(
       RequestSelectedTools event, Emitter<ToolsRequestState> emit) async {
-    emit(state.copyWith(isValid: state.selectedToolsList.isNotEmpty));
-    if (!state.isValid) {
-      emit(state.copyWith(
-          status: ToolsRequestStatus.failure,
-          errorMessage: 'No Tools Selected'));
-      emit(state.copyWith(status: ToolsRequestStatus.initial));
-      return;
-    }
     emit(state.copyWith(status: ToolsRequestStatus.inProgress));
+    final currentTime = DateTime.now().microsecondsSinceEpoch;
+
     try {
-      final newSelectedToolsList =
-          state.selectedToolsList.map((tool) => tool.id).toList();
-      final newAllRequestedToolsList = oldJobModel.allToolsRequested
-          .where((element) => element.isNotEmpty)
-          .toList();
-      for (var element in newSelectedToolsList) {
-        if (!newAllRequestedToolsList.contains(element)) {
-          newAllRequestedToolsList.add(element);
+      if (state.selectedToolsList.isNotEmpty) {
+        final newSelectedToolsList =
+            state.selectedToolsList.map((tool) => tool.id).toList();
+        final newAllRequestedToolsList = oldJobModel.allToolsRequested
+            .where((element) => element.isNotEmpty)
+            .toList();
+        for (var element in newSelectedToolsList) {
+          if (!newAllRequestedToolsList.contains(element)) {
+            newAllRequestedToolsList.add(element);
+          }
         }
+
+        job_repository.JobModel newJobModel = oldJobModel.copyWith(
+          currentToolsRequestQrCode: const Uuid().v1(),
+          currentToolsRequestedIds: newSelectedToolsList,
+          currentToolsRequestedQuantity: state.selectedToolsQuantityList,
+          allToolsRequested: newAllRequestedToolsList,
+          status: job_repository.JobStatus.onHold,
+          holdReason: 'Tools Requested',
+          holdTimestamp: currentTime,
+        );
+
+        final mapOfUpdatedFields = oldJobModel.getChangedFields(newJobModel);
+        final update = job_repository.UpdateJobModel(
+            id: const Uuid().v1(),
+            updatedFields: mapOfUpdatedFields,
+            updatedBy: userId,
+            updatedTimeStamp: currentTime);
+
+        await _jobsRepository.updateJobData(newJobModel, oldJobModel, update);
+        emit(state.copyWith(status: ToolsRequestStatus.success));
+      } else {
+        job_repository.JobModel newJobModel = oldJobModel.copyWith(
+          currentToolsRequestQrCode: '',
+          currentToolsRequestedIds: [],
+          currentToolsRequestedQuantity: [],
+          holdReason: '',
+          holdTimestamp: 0,
+          status: job_repository.JobStatus.workInProgress,
+          startedTimestamp: currentTime,
+        );
+
+        final mapOfUpdatedFields = oldJobModel.getChangedFields(newJobModel);
+        final update = job_repository.UpdateJobModel(
+            id: const Uuid().v1(),
+            updatedFields: mapOfUpdatedFields,
+            updatedBy: userId,
+            updatedTimeStamp: currentTime);
+
+        await _jobsRepository.updateJobData(newJobModel, oldJobModel, update);
+        emit(state.copyWith(status: ToolsRequestStatus.success));
       }
-
-      final currentTime = DateTime.now().microsecondsSinceEpoch;
-      job_repository.JobModel newJobModel = oldJobModel.copyWith(
-        currentToolsRequestQrCode: const Uuid().v1(),
-        currentToolsRequestedIds: newSelectedToolsList,
-        currentToolsRequestedQuantity: state.selectedToolsQuantityList,
-        allToolsRequested: newAllRequestedToolsList,
-        status: job_repository.JobStatus.onHold,
-        holdReason: 'Tools Requested',
-        holdTimestamp: currentTime,
-      );
-
-      final mapOfUpdatedFields = oldJobModel.getChangedFields(newJobModel);
-      final update = job_repository.UpdateJobModel(
-          id: const Uuid().v1(),
-          updatedFields: mapOfUpdatedFields,
-          updatedBy: userId,
-          updatedTimeStamp: currentTime);
-
-      await _jobsRepository.updateJobData(newJobModel, oldJobModel, update);
-      emit(state.copyWith(status: ToolsRequestStatus.success));
     } on SetFirebaseDataFailure catch (e) {
       emit(state.copyWith(
           status: ToolsRequestStatus.failure, errorMessage: e.message));
@@ -139,5 +157,21 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
     emit(state.copyWith(
         selectedToolsList: tempSelectedList,
         selectedToolsQuantityList: tempSelectedQuantityList));
+  }
+
+  FutureOr<void> _increaseQuantity(
+      IncreaseQuantity event, Emitter<ToolsRequestState> emit) {
+    final List<int> tempSelectedQuantityList =
+        List.from(state.selectedToolsQuantityList);
+    tempSelectedQuantityList[event.index]++;
+    emit(state.copyWith(selectedToolsQuantityList: tempSelectedQuantityList));
+  }
+
+  FutureOr<void> _decreaseQuantity(
+      DecreaseQuantity event, Emitter<ToolsRequestState> emit) {
+    final List<int> tempSelectedQuantityList =
+        List.from(state.selectedToolsQuantityList);
+    tempSelectedQuantityList[event.index]--;
+    emit(state.copyWith(selectedToolsQuantityList: tempSelectedQuantityList));
   }
 }
