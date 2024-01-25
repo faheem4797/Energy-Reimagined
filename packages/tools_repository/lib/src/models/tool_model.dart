@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 class ToolModel extends Equatable {
   final String id;
   final String name;
+  final String description;
   final String category;
   final int quantity;
   final String imageUrl;
@@ -14,6 +15,7 @@ class ToolModel extends Equatable {
     required this.id,
     required this.name,
     required this.category,
+    required this.description,
     required this.quantity,
     required this.imageUrl,
     required this.lastUpdated,
@@ -22,6 +24,7 @@ class ToolModel extends Equatable {
   static const empty = ToolModel(
     id: '',
     name: '',
+    description: '',
     category: '',
     quantity: 0,
     imageUrl: '',
@@ -31,6 +34,7 @@ class ToolModel extends Equatable {
   ToolModel copyWith({
     String? id,
     String? name,
+    String? description,
     String? category,
     int? quantity,
     String? imageUrl,
@@ -39,6 +43,7 @@ class ToolModel extends Equatable {
     return ToolModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
       category: category ?? this.category,
       quantity: quantity ?? this.quantity,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -50,6 +55,7 @@ class ToolModel extends Equatable {
     return {
       'id': id,
       'name': name,
+      'description': description,
       'category': category,
       'quantity': quantity,
       'imageUrl': imageUrl,
@@ -61,6 +67,7 @@ class ToolModel extends Equatable {
     return ToolModel(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
+      description: map['description'] ?? '',
       category: map['category'] ?? '',
       quantity: map['quantity']?.toInt() ?? 0,
       imageUrl: map['imageUrl'] ?? '',
@@ -79,7 +86,7 @@ class ToolModel extends Equatable {
 
   @override
   String toString() {
-    return 'ToolModel(id: $id, name: $name, category: $category, quantity: $quantity, imageUrl: $imageUrl, lastUpdated: $lastUpdated)';
+    return 'ToolModel(id: $id, name: $name, description: $description, category: $category, quantity: $quantity, imageUrl: $imageUrl, lastUpdated: $lastUpdated)';
   }
 
   @override
@@ -87,6 +94,7 @@ class ToolModel extends Equatable {
     return [
       id,
       name,
+      description,
       category,
       quantity,
       imageUrl,

@@ -198,6 +198,8 @@ class AdminToolPage extends StatelessWidget {
                                                                             id: tools[index].id,
                                                                             name:
                                                                                 tools[index].name,
+                                                                            description:
+                                                                                tools[index].description,
                                                                             category:
                                                                                 tools[index].category,
                                                                             quantity:

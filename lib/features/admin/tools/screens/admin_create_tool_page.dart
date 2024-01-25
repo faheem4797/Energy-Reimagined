@@ -71,6 +71,25 @@ class AdminCreateToolPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   BlocBuilder<CreateToolBloc, CreateToolState>(
                     buildWhen: (previous, current) =>
+                        previous.tool.description != current.tool.description,
+                    builder: (context, state) {
+                      return SizedBox(
+                        child: CustomTextFormField(
+                          labelText: "Description",
+                          onChange: (description) {
+                            context.read<CreateToolBloc>().add(
+                                DescriptionChanged(description: description));
+                          },
+                          maxLines: 3,
+                          textInputType: TextInputType.name,
+                          errorText: state.displayError,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<CreateToolBloc, CreateToolState>(
+                    buildWhen: (previous, current) =>
                         previous.tool.category != current.tool.category,
                     builder: (context, state) {
                       return SizedBox(

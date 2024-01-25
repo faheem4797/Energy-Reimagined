@@ -18,6 +18,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         super(const CreateToolState()) {
     on<CreateToolWithDataModel>(_createToolWithDataModel);
     on<NameChanged>(_nameChanged);
+    on<DescriptionChanged>(_descriptionChanged);
     on<CategoryChanged>(_categoryChanged);
     on<QuantityChanged>(_quantityChanged);
     on<ImageChanged>(_imageChanged);
@@ -65,6 +66,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         tool: state.tool.copyWith(name: event.name),
         isValid: _validate(
           name: event.name,
+          description: state.tool.description,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
           imageToolFileBytes: state.imageToolFileBytes,
@@ -80,6 +82,32 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
     );
   }
 
+  FutureOr<void> _descriptionChanged(
+      DescriptionChanged event, Emitter<CreateToolState> emit) {
+    final DescriptionValidationStatus descriptionValidationStatus =
+        _validateDescription(event.description);
+    emit(
+      state.copyWith(
+        tool: state.tool.copyWith(description: event.description),
+        isValid: _validate(
+          name: state.tool.name,
+          description: event.description,
+          category: state.tool.category,
+          quantity: state.tool.quantity.toString(),
+          imageToolFileBytes: state.imageToolFileBytes,
+          imageToolFileNameFromFilePicker:
+              state.imageToolFileNameFromFilePicker,
+          imageToolFilePathFromFilePicker:
+              state.imageToolFilePathFromFilePicker,
+        ),
+        displayError:
+            descriptionValidationStatus == DescriptionValidationStatus.empty
+                ? 'Please enter a description'
+                : null,
+      ),
+    );
+  }
+
   FutureOr<void> _categoryChanged(
       CategoryChanged event, Emitter<CreateToolState> emit) {
     final CategoryValidationStatus categoryValidationStatus =
@@ -89,6 +117,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         tool: state.tool.copyWith(category: event.category),
         isValid: _validate(
           name: state.tool.name,
+          description: state.tool.description,
           category: event.category,
           quantity: state.tool.quantity.toString(),
           imageToolFileBytes: state.imageToolFileBytes,
@@ -114,6 +143,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         tool: state.tool.copyWith(quantity: int.tryParse(event.quantity) ?? 0),
         isValid: _validate(
           name: state.tool.name,
+          description: state.tool.description,
           category: state.tool.category,
           quantity: event.quantity,
           imageToolFileBytes: state.imageToolFileBytes,
@@ -149,6 +179,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         imageToolFilePathFromFilePicker: image?.path,
         isValid: _validate(
           name: state.tool.name,
+          description: state.tool.description,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
           imageToolFileBytes: imageBytes,
@@ -164,6 +195,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
 
   bool _validate({
     required String name,
+    required String description,
     required String category,
     required String quantity,
     required Uint8List? imageToolFileBytes,
@@ -171,7 +203,8 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
     required String? imageToolFileNameFromFilePicker,
   }) {
     final NameValidationStatus nameValidationStatus = _validateName(name);
-
+    final DescriptionValidationStatus descriptionValidationStatus =
+        _validateDescription(description);
     final CategoryValidationStatus categoryValidationStatus =
         _validateCategory(category);
     final QuantityValidationStatus quantityValidationStatus =
@@ -182,6 +215,7 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
         imageToolFileNameFromFilePicker);
 
     return nameValidationStatus == NameValidationStatus.valid &&
+        descriptionValidationStatus == DescriptionValidationStatus.valid &&
         categoryValidationStatus == CategoryValidationStatus.valid &&
         quantityValidationStatus == QuantityValidationStatus.valid &&
         imageValidationStatus == ImageValidationStatus.valid;
@@ -192,6 +226,14 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
       return NameValidationStatus.empty;
     } else {
       return NameValidationStatus.valid;
+    }
+  }
+
+  DescriptionValidationStatus _validateDescription(String description) {
+    if (description.isEmpty) {
+      return DescriptionValidationStatus.empty;
+    } else {
+      return DescriptionValidationStatus.valid;
     }
   }
 
@@ -228,6 +270,8 @@ class CreateToolBloc extends Bloc<CreateToolEvent, CreateToolState> {
 }
 
 enum NameValidationStatus { empty, valid }
+
+enum DescriptionValidationStatus { empty, valid }
 
 enum CategoryValidationStatus { empty, valid }
 

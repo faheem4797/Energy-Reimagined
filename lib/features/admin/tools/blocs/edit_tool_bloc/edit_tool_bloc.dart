@@ -19,6 +19,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
         super(EditToolState(tool: oldToolModel)) {
     on<EditToolWithUpdatedToolModel>(_editToolWithUpdatedToolModel);
     on<NameChanged>(_nameChanged);
+    on<DescriptionChanged>(_descriptionChanged);
     on<CategoryChanged>(_categoryChanged);
     on<QuantityChanged>(_quantityChanged);
     on<ImageChanged>(_imageChanged);
@@ -29,7 +30,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       EditToolWithUpdatedToolModel event, Emitter<EditToolState> emit) async {
     emit(state.copyWith(
       isValid: _validate(
-        name: state.tool.name,
+        name: state.tool.name, description: state.tool.description,
         category: state.tool.category,
         quantity: state.tool.quantity.toString(),
         // imageToolFileBytes: state.imageToolFileBytes,
@@ -71,7 +72,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       state.copyWith(
         tool: state.tool.copyWith(name: event.name),
         isValid: _validate(
-          name: event.name,
+          name: event.name, description: state.tool.description,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
           // imageToolFileBytes: state.imageToolFileBytes,
@@ -87,6 +88,31 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
     );
   }
 
+  FutureOr<void> _descriptionChanged(
+      DescriptionChanged event, Emitter<EditToolState> emit) {
+    final DescriptionValidationStatus descriptionValidationStatus =
+        _validateDescription(event.description);
+    emit(
+      state.copyWith(
+        tool: state.tool.copyWith(description: event.description),
+        isValid: _validate(
+          name: state.tool.name, description: event.description,
+          category: state.tool.category,
+          quantity: state.tool.quantity.toString(),
+          // imageToolFileBytes: state.imageToolFileBytes,
+          // imageToolFileNameFromFilePicker:
+          //     state.imageToolFileNameFromFilePicker,
+          // imageToolFilePathFromFilePicker:
+          //     state.imageToolFilePathFromFilePicker,
+        ),
+        displayError:
+            descriptionValidationStatus == DescriptionValidationStatus.empty
+                ? 'Please enter a description'
+                : null,
+      ),
+    );
+  }
+
   FutureOr<void> _quantityChanged(
       QuantityChanged event, Emitter<EditToolState> emit) {
     final QuantityValidationStatus quantityValidationStatus =
@@ -95,7 +121,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       state.copyWith(
         tool: state.tool.copyWith(quantity: int.tryParse(event.quantity) ?? 0),
         isValid: _validate(
-          name: state.tool.name,
+          name: state.tool.name, description: state.tool.description,
           category: state.tool.category,
           quantity: event.quantity,
           // imageToolFileBytes: state.imageToolFileBytes,
@@ -121,7 +147,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       state.copyWith(
         tool: state.tool.copyWith(category: event.category),
         isValid: _validate(
-          name: state.tool.name,
+          name: state.tool.name, description: state.tool.description,
           category: event.category,
           quantity: state.tool.quantity.toString(),
           // imageToolFileBytes: state.imageToolFileBytes,
@@ -155,6 +181,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
         imageToolFilePathFromFilePicker: image?.path,
         isValid: _validate(
           name: state.tool.name,
+          description: state.tool.description,
           category: state.tool.category,
           quantity: state.tool.quantity.toString(),
           // imageToolFileBytes: imageBytes,
@@ -170,6 +197,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
 
   bool _validate({
     required String name,
+    required String description,
     required String category,
     required String quantity,
     // required Uint8List? imageToolFileBytes,
@@ -177,6 +205,8 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
     // required String? imageToolFileNameFromFilePicker,
   }) {
     final NameValidationStatus nameValidationStatus = _validateName(name);
+    final DescriptionValidationStatus descriptionValidationStatus =
+        _validateDescription(description);
 
     final CategoryValidationStatus categoryValidationStatus =
         _validateCategory(category);
@@ -188,6 +218,7 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
     //     imageToolFileNameFromFilePicker);
 
     return nameValidationStatus == NameValidationStatus.valid &&
+            descriptionValidationStatus == DescriptionValidationStatus.valid &&
             categoryValidationStatus == CategoryValidationStatus.valid &&
             quantityValidationStatus == QuantityValidationStatus.valid
         // &&
@@ -200,6 +231,14 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
       return NameValidationStatus.empty;
     } else {
       return NameValidationStatus.valid;
+    }
+  }
+
+  DescriptionValidationStatus _validateDescription(String description) {
+    if (description.isEmpty) {
+      return DescriptionValidationStatus.empty;
+    } else {
+      return DescriptionValidationStatus.valid;
     }
   }
 
@@ -236,6 +275,8 @@ class EditToolBloc extends Bloc<EditToolEvent, EditToolState> {
 }
 
 enum NameValidationStatus { empty, valid }
+
+enum DescriptionValidationStatus { empty, valid }
 
 enum CategoryValidationStatus { empty, valid }
 

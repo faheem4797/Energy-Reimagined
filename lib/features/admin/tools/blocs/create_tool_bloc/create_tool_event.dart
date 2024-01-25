@@ -17,6 +17,14 @@ final class NameChanged extends CreateToolEvent {
   List<Object> get props => [name];
 }
 
+final class DescriptionChanged extends CreateToolEvent {
+  final String description;
+  const DescriptionChanged({required this.description});
+
+  @override
+  List<Object> get props => [description];
+}
+
 final class CategoryChanged extends CreateToolEvent {
   final String category;
   const CategoryChanged({required this.category});

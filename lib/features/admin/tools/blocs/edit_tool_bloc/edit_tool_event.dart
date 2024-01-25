@@ -17,6 +17,14 @@ final class NameChanged extends EditToolEvent {
   List<Object> get props => [name];
 }
 
+final class DescriptionChanged extends EditToolEvent {
+  final String description;
+  const DescriptionChanged({required this.description});
+
+  @override
+  List<Object> get props => [description];
+}
+
 final class CategoryChanged extends EditToolEvent {
   final String category;
   const CategoryChanged({required this.category});
