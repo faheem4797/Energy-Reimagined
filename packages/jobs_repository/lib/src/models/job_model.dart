@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 // workInProgress = technician is working on job
 // onHold = technician put job on hold (need more tools etc.)
 // completed = job is completed
+// rejected = job rejected by technician
 // cancelled = admin completed the job
 //also put onHold when technician requests tools
 
@@ -16,6 +17,7 @@ enum JobStatus {
   workInProgress,
   onHold,
   completed,
+  rejected,
   cancelled
 }
 

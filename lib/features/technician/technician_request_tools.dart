@@ -7,9 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tools_repository/tools_repository.dart';
 
-// TODO: 1. Change horizontal filter chips into multiple rows all shown at the same time
-//
-// TODO: 2. Change design of job detail page on technician side
 //
 // TODO: 2. For requesting tools, make each tile navigate to new page with tool details.
 // TODO: Add quantity buttons(increase/decrease) there as well. Then a button at the bottom
@@ -156,26 +153,27 @@ class _TechnicianRequestToolsPageState
                                     ),
                                   ),
                                   subtitle: Text(
-                                    'Quantity: ${tool.quantity.toString()}',
+                                    'Available Quantity: ${tool.quantity.toString()}',
                                     style: const TextStyle(
                                       color: ConstColors.whiteColor,
                                     ),
                                   ),
-                                  trailing: Checkbox(
-                                    activeColor:
-                                        ConstColors.backgroundDarkColor,
-                                    value: isSelected,
-                                    onChanged: (value) {
-                                      if (value!) {
-                                        context
-                                            .read<ToolsRequestBloc>()
-                                            .add(AddSelectedTool(tool: tool));
-                                      } else {
-                                        context.read<ToolsRequestBloc>().add(
-                                            RemoveSelectedTool(tool: tool));
-                                      }
-                                    },
-                                  ),
+                                  // trailing:
+                                  //  Checkbox(
+                                  //   activeColor:
+                                  //       ConstColors.backgroundDarkColor,
+                                  //   value: isSelected,
+                                  //   onChanged: (value) {
+                                  //     if (value!) {
+                                  //       context
+                                  //           .read<ToolsRequestBloc>()
+                                  //           .add(AddSelectedTool(tool: tool));
+                                  //     } else {
+                                  //       context.read<ToolsRequestBloc>().add(
+                                  //           RemoveSelectedTool(tool: tool));
+                                  //     }
+                                  //   },
+                                  // ),
                                 ),
                               );
                             },

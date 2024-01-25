@@ -24,7 +24,9 @@ class ToolRequestBloc extends Bloc<ToolRequestEvent, ToolRequestState> {
     try {
       final listOfTools = await _toolsRepository
           .getSomeTools(event.jobModel.currentToolsRequestedIds);
-      emit(ToolRequestSuccess(toolsList: listOfTools));
+      emit(ToolRequestSuccess(
+          toolsList: listOfTools,
+          toolsListQuantity: event.jobModel.currentToolsRequestedQuantity));
     } on SetFirebaseDataFailure catch (e) {
       emit(ToolRequestFailure(errorMessage: e.message));
     } catch (e) {

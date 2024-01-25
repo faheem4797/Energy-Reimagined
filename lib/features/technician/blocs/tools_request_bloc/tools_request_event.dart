@@ -13,9 +13,10 @@ final class LoadToolsList extends ToolsRequestEvent {}
 
 final class AddSelectedTool extends ToolsRequestEvent {
   final ToolModel tool;
-  const AddSelectedTool({required this.tool});
+  final int toolQuantity;
+  const AddSelectedTool({required this.tool, required this.toolQuantity});
   @override
-  List<Object> get props => [tool];
+  List<Object> get props => [tool, toolQuantity];
 }
 
 final class RemoveSelectedTool extends ToolsRequestEvent {

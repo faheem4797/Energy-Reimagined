@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 part 'jobs_stream_event.dart';
 part 'jobs_stream_state.dart';
@@ -23,8 +24,9 @@ class JobsStreamBloc extends Bloc<JobsStreamEvent, JobsStreamState> {
           selectedStatuses: state.selectedStatuses));
     });
     on<GetJobStream>(_getJobStream);
-    on<AddFilterStatus>(_addFilterStatus);
-    on<RemoveFilterStatus>(_removeFilterStatus);
+    on<ChangeFilterStatus>(
+        _changeFilterStatus); // on<AddFilterStatus>(_addFilterStatus);
+    // on<RemoveFilterStatus>(_removeFilterStatus);
   }
 
   FutureOr<void> _getJobStream(
@@ -38,25 +40,25 @@ class JobsStreamBloc extends Bloc<JobsStreamEvent, JobsStreamState> {
     }
   }
 
-  FutureOr<void> _addFilterStatus(
-      AddFilterStatus event, Emitter<JobsStreamState> emit) {
-    final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
-    tempSet.add(event.status);
+  // FutureOr<void> _addFilterStatus(
+  //     AddFilterStatus event, Emitter<JobsStreamState> emit) {
+  //   final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
+  //   tempSet.add(event.status);
 
-    final newFilteredList = _filterList(state.jobStream!, tempSet);
+  //   final newFilteredList = _filterList(state.jobStream!, tempSet);
 
-    emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
-  }
+  //   emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
+  // }
 
-  FutureOr<void> _removeFilterStatus(
-      RemoveFilterStatus event, Emitter<JobsStreamState> emit) {
-    final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
-    tempSet.remove(event.status);
+  // FutureOr<void> _removeFilterStatus(
+  //     RemoveFilterStatus event, Emitter<JobsStreamState> emit) {
+  //   final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
+  //   tempSet.remove(event.status);
 
-    final newFilteredList = _filterList(state.jobStream!, tempSet);
+  //   final newFilteredList = _filterList(state.jobStream!, tempSet);
 
-    emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
-  }
+  //   emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
+  // }
 
   List<JobModel> _filterList(List<JobModel> jobData, Set<JobStatus> filterSet) {
     final List<JobModel> tempFilteredJobs;
@@ -68,6 +70,18 @@ class JobsStreamBloc extends Bloc<JobsStreamEvent, JobsStreamState> {
           jobData.where((job) => filterSet.contains(job.status)).toList();
     }
     return tempFilteredJobs;
+  }
+
+  FutureOr<void> _changeFilterStatus(
+      ChangeFilterStatus event, Emitter<JobsStreamState> emit) {
+    Set<JobStatus> tempSet = {};
+    for (var element in event.filterStatusList) {
+      tempSet.add(element.value);
+    }
+
+    final newFilteredList = _filterList(state.jobStream!, tempSet);
+
+    emit(JobsStreamState.success(state.jobStream!, newFilteredList, tempSet));
   }
 
   @override

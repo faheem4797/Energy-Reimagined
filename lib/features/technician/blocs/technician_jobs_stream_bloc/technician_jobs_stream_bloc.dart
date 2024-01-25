@@ -28,9 +28,9 @@ class TechnicianJobsStreamBloc
           selectedStatuses: state.selectedStatuses));
     });
     on<GetJobStream>(_getJobStream);
-    on<AddFilterStatus>(_addFilterStatus);
-    on<RemoveFilterStatus>(_removeFilterStatus);
     on<ChangeFilterStatus>(_changeFilterStatus);
+    // on<AddFilterStatus>(_addFilterStatus);
+    // on<RemoveFilterStatus>(_removeFilterStatus);
   }
 
   FutureOr<void> _getJobStream(
@@ -57,27 +57,27 @@ class TechnicianJobsStreamBloc
         state.jobStream!, newFilteredList, tempSet));
   }
 
-  FutureOr<void> _addFilterStatus(
-      AddFilterStatus event, Emitter<TechnicianJobsStreamState> emit) {
-    final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
-    tempSet.add(event.status);
+  // FutureOr<void> _addFilterStatus(
+  //     AddFilterStatus event, Emitter<TechnicianJobsStreamState> emit) {
+  //   final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
+  //   tempSet.add(event.status);
 
-    final newFilteredList = _filterList(state.jobStream!, tempSet);
+  //   final newFilteredList = _filterList(state.jobStream!, tempSet);
 
-    emit(TechnicianJobsStreamState.success(
-        state.jobStream!, newFilteredList, tempSet));
-  }
+  //   emit(TechnicianJobsStreamState.success(
+  //       state.jobStream!, newFilteredList, tempSet));
+  // }
 
-  FutureOr<void> _removeFilterStatus(
-      RemoveFilterStatus event, Emitter<TechnicianJobsStreamState> emit) {
-    final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
-    tempSet.remove(event.status);
+  // FutureOr<void> _removeFilterStatus(
+  //     RemoveFilterStatus event, Emitter<TechnicianJobsStreamState> emit) {
+  //   final Set<JobStatus> tempSet = Set.from(state.selectedStatuses);
+  //   tempSet.remove(event.status);
 
-    final newFilteredList = _filterList(state.jobStream!, tempSet);
+  //   final newFilteredList = _filterList(state.jobStream!, tempSet);
 
-    emit(TechnicianJobsStreamState.success(
-        state.jobStream!, newFilteredList, tempSet));
-  }
+  //   emit(TechnicianJobsStreamState.success(
+  //       state.jobStream!, newFilteredList, tempSet));
+  // }
 
   List<JobModel> _filterList(List<JobModel> jobData, Set<JobStatus> filterSet) {
     final List<JobModel> tempFilteredJobs;

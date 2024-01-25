@@ -57,6 +57,7 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
       job_repository.JobModel newJobModel = oldJobModel.copyWith(
         currentToolsRequestQrCode: const Uuid().v1(),
         currentToolsRequestedIds: newSelectedToolsList,
+        currentToolsRequestedQuantity: state.selectedToolsQuantityList,
         allToolsRequested: newAllRequestedToolsList,
         status: job_repository.JobStatus.onHold,
         holdReason: 'Tools Requested',
@@ -94,7 +95,12 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
                 (toolId) => listOfTools.firstWhere((tool) => tool.id == toolId))
             .toList();
 
-        emit(state.copyWith(selectedToolsList: selectedTools));
+        List<int> selectedToolsQuantityList =
+            List.from(oldJobModel.currentToolsRequestedQuantity);
+
+        emit(state.copyWith(
+            selectedToolsList: selectedTools,
+            selectedToolsQuantityList: selectedToolsQuantityList));
       }
       emit(state.copyWith(
           toolsList: listOfTools, status: ToolsRequestStatus.initial));
@@ -110,14 +116,28 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
   FutureOr<void> _addSelectedTool(
       AddSelectedTool event, Emitter<ToolsRequestState> emit) {
     final List<ToolModel> tempSelectedList = List.from(state.selectedToolsList);
+    final List<int> tempSelectedQuantityList =
+        List.from(state.selectedToolsQuantityList);
+
     tempSelectedList.add(event.tool);
-    emit(state.copyWith(selectedToolsList: tempSelectedList));
+    tempSelectedQuantityList.add(event.toolQuantity);
+    emit(state.copyWith(
+        selectedToolsList: tempSelectedList,
+        selectedToolsQuantityList: tempSelectedQuantityList));
   }
 
   FutureOr<void> _removeSelectedTool(
       RemoveSelectedTool event, Emitter<ToolsRequestState> emit) {
     final List<ToolModel> tempSelectedList = List.from(state.selectedToolsList);
+    final List<int> tempSelectedQuantityList =
+        List.from(state.selectedToolsQuantityList);
+
+    final indexOfTool = tempSelectedList.indexOf(event.tool);
+
+    tempSelectedQuantityList.removeAt(indexOfTool);
     tempSelectedList.remove(event.tool);
-    emit(state.copyWith(selectedToolsList: tempSelectedList));
+    emit(state.copyWith(
+        selectedToolsList: tempSelectedList,
+        selectedToolsQuantityList: tempSelectedQuantityList));
   }
 }

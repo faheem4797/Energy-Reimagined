@@ -82,6 +82,9 @@ class TechnicianDashboard extends StatelessWidget {
                                         label: 'Cancelled',
                                         value: JobStatus.cancelled),
                                     ValueItem(
+                                        label: 'Rejected',
+                                        value: JobStatus.rejected),
+                                    ValueItem(
                                         label: 'Pending',
                                         value: JobStatus.pending),
                                   ],
@@ -179,7 +182,9 @@ class TechnicianDashboard extends StatelessWidget {
                                                                                 ? '  [In Progress]'
                                                                                 : jobs[index].status == JobStatus.onHold
                                                                                     ? '  [On Hold]'
-                                                                                    : '',
+                                                                                    : jobs[index].status == JobStatus.rejected
+                                                                                        ? '  [Rejected]'
+                                                                                        : '',
                                                             style:
                                                                 const TextStyle(
                                                               color: ConstColors
@@ -264,58 +269,61 @@ class TechnicianDashboard extends StatelessWidget {
         ));
   }
 
-  Widget _buildFilterChips() {
-    return SizedBox(
-      height: 150,
-      child: Wrap(
-        // direction: Axis.vertical,
-        // scrollDirection: Axis.horizontal,
-        children: [
-          _buildFilterChip(JobStatus.workInProgress),
-          _buildFilterChip(JobStatus.onHold),
-          _buildFilterChip(JobStatus.assigned),
-          _buildFilterChip(JobStatus.completed),
-          _buildFilterChip(JobStatus.cancelled),
-          _buildFilterChip(JobStatus.pending),
-        ],
-      ),
-    );
-  }
+  // Widget _buildFilterChips() {
+  //   return SizedBox(
+  //     height: 150,
+  //     child: Wrap(
+  //       // direction: Axis.vertical,
+  //       // scrollDirection: Axis.horizontal,
+  //       children: [
+  //         _buildFilterChip(JobStatus.workInProgress),
+  //         _buildFilterChip(JobStatus.onHold),
+  //         _buildFilterChip(JobStatus.assigned),
+  //         _buildFilterChip(JobStatus.completed),
+  //         _buildFilterChip(JobStatus.cancelled),
+  //         _buildFilterChip(JobStatus.rejected),
+  //         _buildFilterChip(JobStatus.pending),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildFilterChip(JobStatus status) {
-    return BlocBuilder<TechnicianJobsStreamBloc, TechnicianJobsStreamState>(
-      builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: FilterChip(
-            label: Text(status == JobStatus.workInProgress
-                ? 'In Progress'
-                : status == JobStatus.onHold
-                    ? 'On Hold'
-                    : status == JobStatus.assigned
-                        ? 'Assigned'
-                        : status == JobStatus.cancelled
-                            ? 'Cancelled'
-                            : status == JobStatus.completed
-                                ? 'Completed'
-                                : status == JobStatus.pending
-                                    ? 'Pending'
-                                    : ''),
-            selected: state.selectedStatuses.contains(status),
-            onSelected: (bool selected) {
-              if (selected) {
-                context
-                    .read<TechnicianJobsStreamBloc>()
-                    .add(AddFilterStatus(status: status));
-              } else {
-                context
-                    .read<TechnicianJobsStreamBloc>()
-                    .add(RemoveFilterStatus(status: status));
-              }
-            },
-          ),
-        );
-      },
-    );
-  }
+  // Widget _buildFilterChip(JobStatus status) {
+  //   return BlocBuilder<TechnicianJobsStreamBloc, TechnicianJobsStreamState>(
+  //     builder: (context, state) {
+  //       return Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 8.w),
+  //         child: FilterChip(
+  //           label: Text(status == JobStatus.workInProgress
+  //               ? 'In Progress'
+  //               : status == JobStatus.onHold
+  //                   ? 'On Hold'
+  //                   : status == JobStatus.assigned
+  //                       ? 'Assigned'
+  //                       : status == JobStatus.cancelled
+  //                           ? 'Cancelled'
+  //                           : status == JobStatus.completed
+  //                               ? 'Completed'
+  //                               : status == JobStatus.pending
+  //                                   ? 'Pending'
+  //                                   : status == JobStatus.rejected
+  //                                       ? 'Rejected'
+  //                                       : ''),
+  //           selected: state.selectedStatuses.contains(status),
+  //           onSelected: (bool selected) {
+  //             if (selected) {
+  //               context
+  //                   .read<TechnicianJobsStreamBloc>()
+  //                   .add(AddFilterStatus(status: status));
+  //             } else {
+  //               context
+  //                   .read<TechnicianJobsStreamBloc>()
+  //                   .add(RemoveFilterStatus(status: status));
+  //             }
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

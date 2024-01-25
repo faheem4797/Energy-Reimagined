@@ -11,9 +11,11 @@ final class ToolRequestInitial extends ToolRequestState {}
 
 final class ToolRequestSuccess extends ToolRequestState {
   final List<ToolModel> toolsList;
-  const ToolRequestSuccess({required this.toolsList});
+  final List<int> toolsListQuantity;
+  const ToolRequestSuccess(
+      {required this.toolsList, required this.toolsListQuantity});
   @override
-  List<Object> get props => [toolsList];
+  List<Object> get props => [toolsList, toolsListQuantity];
 }
 
 final class ToolRequestFailure extends ToolRequestState {

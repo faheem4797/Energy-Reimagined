@@ -139,7 +139,7 @@ class AdminToolsRequestPage extends StatelessWidget {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    'Quantity: ${state.toolsList[index].quantity.toString()}',
+                                    'Quantity Requested: ${state.toolsListQuantity[index].toString()}',
                                     style: const TextStyle(
                                       color: ConstColors.whiteColor,
                                     ),

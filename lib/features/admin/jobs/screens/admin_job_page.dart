@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class AdminJobPage extends StatelessWidget {
@@ -119,7 +120,58 @@ class AdminJobPage extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                _buildFilterChips(),
+                                MultiSelectDropDown(
+                                  showClearIcon: true,
+                                  onOptionSelected: (options) {
+                                    context.read<JobsStreamBloc>().add(
+                                        ChangeFilterStatus(
+                                            filterStatusList: options));
+
+                                    // debugPrint(options.toString());
+                                  },
+                                  options: const <ValueItem>[
+                                    ValueItem(
+                                        label: 'In Progress',
+                                        value: JobStatus.workInProgress),
+                                    ValueItem(
+                                        label: 'On Hold',
+                                        value: JobStatus.onHold),
+                                    ValueItem(
+                                        label: 'Assigned',
+                                        value: JobStatus.assigned),
+                                    ValueItem(
+                                        label: 'Completed',
+                                        value: JobStatus.completed),
+                                    ValueItem(
+                                        label: 'Cancelled',
+                                        value: JobStatus.cancelled),
+                                    ValueItem(
+                                        label: 'Rejected',
+                                        value: JobStatus.rejected),
+                                    ValueItem(
+                                        label: 'Pending',
+                                        value: JobStatus.pending),
+                                  ],
+                                  selectionType: SelectionType.multi,
+                                  chipConfig: const ChipConfig(
+                                      wrapType: WrapType.scroll,
+                                      backgroundColor:
+                                          ConstColors.backgroundDarkColor),
+                                  dropdownHeight: 300,
+                                  optionTextStyle:
+                                      const TextStyle(fontSize: 16),
+                                  selectedOptionBackgroundColor:
+                                      ConstColors.backgroundDarkColor,
+                                  selectedOptionTextColor:
+                                      ConstColors.whiteColor,
+                                  selectedOptionIcon: const Icon(
+                                    Icons.check_circle,
+                                    color: ConstColors.whiteColor,
+                                  ),
+                                  hint: 'Select Filter',
+                                ),
+
+                                // _buildFilterChips(),
                                 Expanded(
                                   child: ListView.builder(
                                     itemCount: state.filteredJobs?.length,
@@ -184,7 +236,9 @@ class AdminJobPage extends StatelessWidget {
                                                                               ? '  [In Progress]'
                                                                               : jobs[index].status == JobStatus.onHold
                                                                                   ? '  [On Hold]'
-                                                                                  : '',
+                                                                                  : jobs[index].status == JobStatus.rejected
+                                                                                      ? '  [Rejected]'
+                                                                                      : '',
                                                           style:
                                                               const TextStyle(
                                                             color: ConstColors
@@ -344,57 +398,60 @@ class AdminJobPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChips() {
-    return SizedBox(
-      height: 50,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          _buildFilterChip(JobStatus.pending),
-          _buildFilterChip(JobStatus.onHold),
-          _buildFilterChip(JobStatus.assigned),
-          _buildFilterChip(JobStatus.workInProgress),
-          _buildFilterChip(JobStatus.completed),
-          _buildFilterChip(JobStatus.cancelled),
-        ],
-      ),
-    );
-  }
+  // Widget _buildFilterChips() {
+  //   return SizedBox(
+  //     height: 50,
+  //     child: ListView(
+  //       scrollDirection: Axis.horizontal,
+  //       children: [
+  //         _buildFilterChip(JobStatus.pending),
+  //         _buildFilterChip(JobStatus.rejected),
+  //         _buildFilterChip(JobStatus.onHold),
+  //         _buildFilterChip(JobStatus.assigned),
+  //         _buildFilterChip(JobStatus.workInProgress),
+  //         _buildFilterChip(JobStatus.completed),
+  //         _buildFilterChip(JobStatus.cancelled),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildFilterChip(JobStatus status) {
-    return BlocBuilder<JobsStreamBloc, JobsStreamState>(
-      builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: FilterChip(
-            label: Text(status == JobStatus.pending
-                ? 'Pending'
-                : status == JobStatus.assigned
-                    ? 'Assigned'
-                    : status == JobStatus.cancelled
-                        ? 'Cancelled'
-                        : status == JobStatus.completed
-                            ? 'Completed'
-                            : status == JobStatus.workInProgress
-                                ? 'In Progress'
-                                : status == JobStatus.onHold
-                                    ? 'On Hold'
-                                    : ''),
-            selected: state.selectedStatuses.contains(status),
-            onSelected: (bool selected) {
-              if (selected) {
-                context
-                    .read<JobsStreamBloc>()
-                    .add(AddFilterStatus(status: status));
-              } else {
-                context
-                    .read<JobsStreamBloc>()
-                    .add(RemoveFilterStatus(status: status));
-              }
-            },
-          ),
-        );
-      },
-    );
-  }
+  // Widget _buildFilterChip(JobStatus status) {
+  //   return BlocBuilder<JobsStreamBloc, JobsStreamState>(
+  //     builder: (context, state) {
+  //       return Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 8.w),
+  //         child: FilterChip(
+  //           label: Text(status == JobStatus.pending
+  //               ? 'Pending'
+  //               : status == JobStatus.assigned
+  //                   ? 'Assigned'
+  //                   : status == JobStatus.cancelled
+  //                       ? 'Cancelled'
+  //                       : status == JobStatus.completed
+  //                           ? 'Completed'
+  //                           : status == JobStatus.workInProgress
+  //                               ? 'In Progress'
+  //                               : status == JobStatus.onHold
+  //                                   ? 'On Hold'
+  //                                   : status == JobStatus.rejected
+  //                                       ? 'Rejected'
+  //                                       : ''),
+  //           selected: state.selectedStatuses.contains(status),
+  //           onSelected: (bool selected) {
+  //             if (selected) {
+  //               context
+  //                   .read<JobsStreamBloc>()
+  //                   .add(AddFilterStatus(status: status));
+  //             } else {
+  //               context
+  //                   .read<JobsStreamBloc>()
+  //                   .add(RemoveFilterStatus(status: status));
+  //             }
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

@@ -67,7 +67,10 @@ class TechnicianJobDetailPage extends StatelessWidget {
                                         ? 'Completed'
                                         : jobModel.status == JobStatus.pending
                                             ? 'Pending'
-                                            : '',
+                                            : jobModel.status ==
+                                                    JobStatus.rejected
+                                                ? 'Rejected'
+                                                : '',
                     style: TextStyle(
                       color: ConstColors.blackColor,
                       fontSize: 16.sp,
@@ -216,23 +219,24 @@ class TechnicianJobDetailPage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => BlocProvider(
-                      //       create: (context) => ToolsRequestBloc(
-                      //           toolsRepository: context.read<ToolsRepository>(),
-                      //           jobsRepository: context.read<JobsRepository>(),
-                      //           oldJobModel: jobModel,
-                      //           userId: context
-                      //               .read<AuthenticationBloc>()
-                      //               .state
-                      //               .userModel!
-                      //               .id),
-                      //       child: const TechnicianRequestToolsPage(),
-                      //     ),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => ToolsRequestBloc(
+                                toolsRepository:
+                                    context.read<ToolsRepository>(),
+                                jobsRepository: context.read<JobsRepository>(),
+                                oldJobModel: jobModel,
+                                userId: context
+                                    .read<AuthenticationBloc>()
+                                    .state
+                                    .userModel!
+                                    .id),
+                            child: const TechnicianRequestToolsPage(),
+                          ),
+                        ),
+                      );
                     },
                     child: const Text(
                       "Accept Job",
