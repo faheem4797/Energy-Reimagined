@@ -17,9 +17,6 @@ import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:tools_repository/tools_repository.dart';
 
-//TODO: ADD A WAY TO ASSIGN JOBS TO TECHNICIANS
-//TODO: ADD A WAY FOR TECHNICIAN TO COMPLETE THE JOB AND ADD IMAGES FOR COMPLETION OF JOB AS WELL
-
 class AdminJobPage extends StatelessWidget {
   const AdminJobPage({super.key});
 

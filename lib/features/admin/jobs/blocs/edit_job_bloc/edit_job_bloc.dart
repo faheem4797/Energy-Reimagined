@@ -32,7 +32,6 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     on<LocationChanged>(_locationChanged);
     on<StatusChanged>(_statusChanged);
     on<MunicipalityChanged>(_municipalityChanged);
-    on<TechnicianSearchChanged>(_technicianSearchChanged);
     on<TechnicianSelected>(_technicianSelected);
   }
 
@@ -202,21 +201,6 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
                 : null,
       ),
     );
-  }
-
-  FutureOr<void> _technicianSearchChanged(
-      TechnicianSearchChanged event, Emitter<EditJobState> emit) {
-    final filteredUsersList = currentUserStream.where((user) {
-      final firstNameLower = user.firstName.toLowerCase().split(' ').join('');
-      final lastNameLower = user.lastName.toLowerCase().split(' ').join('');
-      final employeeNumberLower =
-          user.employeeNumber.toLowerCase().split(' ').join('');
-      final patternLower = event.search.toLowerCase().split(' ').join('');
-      return firstNameLower.contains(patternLower) ||
-          lastNameLower.contains(patternLower) ||
-          employeeNumberLower.contains(patternLower);
-    }).toList();
-    emit(state.copyWith(filteredUsers: filteredUsersList));
   }
 
   FutureOr<void> _technicianSelected(

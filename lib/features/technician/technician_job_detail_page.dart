@@ -263,47 +263,101 @@ class TechnicianJobDetailPage extends StatelessWidget {
                     : jobModel.status == JobStatus.cancelled ||
                             jobModel.status == JobStatus.rejected
                         ? Container()
-                        : ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  ConstColors.foregroundColor),
-                              padding:
-                                  MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 10),
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
-                                    create: (context) => ToolsRequestBloc(
-                                        toolsRepository:
-                                            context.read<ToolsRepository>(),
-                                        jobsRepository:
-                                            context.read<JobsRepository>(),
-                                        oldJobModel: jobModel,
-                                        userId: context
-                                            .read<AuthenticationBloc>()
-                                            .state
-                                            .userModel!
-                                            .id),
-                                    child: const TechnicianRequestToolsPage(),
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //TODO: COMPLETE JOB FROM HERE
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          ConstColors.greenColor),
+                                  padding: MaterialStateProperty.all<
+                                      EdgeInsetsGeometry>(
+                                    const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
+                                  ),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
-                            child: const Text(
-                              "Request Tools",
-                              style: TextStyle(color: ConstColors.whiteColor),
-                            ),
+                                onPressed: () {
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => BlocProvider(
+                                  //       create: (context) => ToolsRequestBloc(
+                                  //           toolsRepository:
+                                  //               context.read<ToolsRepository>(),
+                                  //           jobsRepository:
+                                  //               context.read<JobsRepository>(),
+                                  //           oldJobModel: jobModel,
+                                  //           userId: context
+                                  //               .read<AuthenticationBloc>()
+                                  //               .state
+                                  //               .userModel!
+                                  //               .id),
+                                  //       child:
+                                  //           const TechnicianRequestToolsPage(),
+                                  //     ),
+                                  //   ),
+                                  // );
+                                },
+                                child: const Text(
+                                  "Complete Job",
+                                  style:
+                                      TextStyle(color: ConstColors.whiteColor),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          ConstColors.foregroundColor),
+                                  padding: MaterialStateProperty.all<
+                                      EdgeInsetsGeometry>(
+                                    const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
+                                  ),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => ToolsRequestBloc(
+                                            toolsRepository:
+                                                context.read<ToolsRepository>(),
+                                            jobsRepository:
+                                                context.read<JobsRepository>(),
+                                            oldJobModel: jobModel,
+                                            userId: context
+                                                .read<AuthenticationBloc>()
+                                                .state
+                                                .userModel!
+                                                .id),
+                                        child:
+                                            const TechnicianRequestToolsPage(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  "Request Tools",
+                                  style:
+                                      TextStyle(color: ConstColors.whiteColor),
+                                ),
+                              ),
+                            ],
                           ),
                 SizedBox(
                   height: 20.h,

@@ -5,8 +5,9 @@ import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:user_data_repository/user_data_repository.dart';
 
 class AdminEditJobPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class AdminEditJobPage extends StatefulWidget {
 
 class _AdminEditJobPageState extends State<AdminEditJobPage> {
   final TextEditingController myController = TextEditingController();
+  late UserModel oldTechnicianUserModel;
 
   @override
   void initState() {
@@ -28,9 +30,16 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
         .firstWhere(
             (user) =>
                 user.id ==
-                context.read<EditJobBloc>().state.job.assignedTechnicianId,
+                context.read<EditJobBloc>().oldJobModel.assignedTechnicianId,
             orElse: () => UserModel.empty)
         .employeeNumber;
+
+    oldTechnicianUserModel = context
+        .read<EditJobBloc>()
+        .currentUserStream
+        .firstWhere((user) =>
+            user.id ==
+            context.read<EditJobBloc>().oldJobModel.assignedTechnicianId);
   }
 
   @override
@@ -110,111 +119,51 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 10.0),
-                  BlocBuilder<EditJobBloc, EditJobState>(
-                    buildWhen: (previous, current) =>
-                        //TODO: CHECK THIS LATER
-                        previous.job.currentToolsRequestQrCode !=
-                        current.job.currentToolsRequestQrCode,
-                    builder: (context, state) {
-                      return TypeAheadField<UserModel>(
-                        controller: myController,
-                        suggestionsCallback: (search) async {
-                          context
-                              .read<EditJobBloc>()
-                              .add(TechnicianSearchChanged(search: search));
-                          await Future.delayed(const Duration(microseconds: 5));
-                          if (!mounted) return [];
-                          return context
-                              .read<EditJobBloc>()
-                              .state
-                              .filteredUsers;
-                        },
-                        builder: (context, myController, focusNode) {
-                          return TextField(
-                              controller: myController,
-                              focusNode: focusNode,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Technician',
-                              ));
-                        },
-                        itemBuilder: (context, user) {
-                          return ListTile(
-                            title:
-                                Text('Employee Number: ${user.employeeNumber}'),
-                            subtitle: Text(
-                                'Name: ${user.firstName} ${user.lastName}'),
-                          );
-                        },
-                        onSelected: (user) {
-                          myController.text = user.employeeNumber;
-                          context
-                              .read<EditJobBloc>()
-                              .add(TechnicianSelected(technician: user));
-                          // Navigator.of(context).push<void>(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => CityPage(city: city),
-                          //   ),
-                          // );
-                        },
-                      );
-                    },
+                  Text(
+                    ' Assigned Technician',
+                    style: TextStyle(fontSize: 13.sp, color: Colors.grey[800]),
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.start,
-                  //   children: [
-                  //     const Text(
-                  //       'Assigned Technician: ',
-                  //       style: TextStyle(
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.bold,
-                  //         color: ConstColors.blackColor,
-                  //       ),
-                  //     ),
-                  //     const SizedBox(
-                  //       width: 10,
-                  //     ),
-                  //     BlocBuilder<EditJobBloc, EditJobState>(
-                  //       buildWhen: (previous, current) =>
-                  //           previous.job.status != current.job.status,
-                  //       builder: (context, state) {
-                  //         return TypeAheadField<UserModel>(
-                  //           suggestionsCallback: (search) =>
-                  //               List.generate(2, (index) => UserModel.empty),
-                  //           // CityService.of(context).find(search),
-                  //           builder: (context, controller, focusNode) {
-                  //             return CustomTextFormField(
-                  //               controller: controller,
-                  //               // focusNode: focusNode,
-                  //               // autofocus: true,
-                  //               // decoration: InputDecoration(
-                  //               //   border: OutlineInputBorder(),
-                  //               //   labelText: 'Technician',
-                  //               // )
-                  //             );
-                  //           },
-                  //           itemBuilder: (context, user) {
-                  //             return ListTile(
-                  //               title:
-                  //                   Text('${user.firstName} ${user.lastName}'),
-                  //               subtitle: Text(user.employeeNumber),
-                  //             );
-                  //           },
-                  //           onSelected: (city) {
-                  //             // Navigator.of(context).push<void>(
-                  //             //   MaterialPageRoute(
-                  //             //     builder: (context) => CityPage(city: city),
-                  //             //   ),
-                  //             // );
-                  //           },
-                  //         );
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
-
+                  const SizedBox(height: 4.0),
+                  MultiSelectDropDown(
+                    showClearIcon: false,
+                    selectedOptions: [
+                      ValueItem(
+                          label:
+                              '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
+                          value: oldTechnicianUserModel)
+                    ],
+                    onOptionRemoved: (index, option) {},
+                    onOptionSelected: (options) {
+                      if (options.isNotEmpty) {
+                        context.read<EditJobBloc>().add(TechnicianSelected(
+                            technician: options.first.value!));
+                      }
+                    },
+                    options: List.generate(
+                        context.read<EditJobBloc>().currentUserStream.length,
+                        (index) => ValueItem(
+                            label:
+                                '${context.read<EditJobBloc>().currentUserStream[index].firstName} ${context.read<EditJobBloc>().currentUserStream[index].lastName} [${context.read<EditJobBloc>().currentUserStream[index].employeeNumber}]',
+                            value: context
+                                .read<EditJobBloc>()
+                                .currentUserStream[index])),
+                    selectionType: SelectionType.single,
+                    searchEnabled: true,
+                    chipConfig: const ChipConfig(
+                        wrapType: WrapType.scroll,
+                        backgroundColor: ConstColors.backgroundDarkColor),
+                    dropdownHeight: 300,
+                    optionTextStyle: const TextStyle(fontSize: 16),
+                    selectedOptionBackgroundColor:
+                        ConstColors.backgroundDarkColor,
+                    selectedOptionTextColor: ConstColors.whiteColor,
+                    selectedOptionIcon: const Icon(
+                      Icons.check_circle,
+                      color: ConstColors.whiteColor,
+                    ),
+                    hint: 'Select Technician',
+                  ),
                   const SizedBox(height: 10.0),
                   BlocBuilder<EditJobBloc, EditJobState>(
                     buildWhen: (previous, current) =>
