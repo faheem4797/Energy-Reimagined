@@ -57,3 +57,17 @@ final class StatusChanged extends EditJobEvent {
   @override
   List<Object> get props => [isCancelled];
 }
+
+final class TechnicianSearchChanged extends EditJobEvent {
+  final String search;
+  const TechnicianSearchChanged({required this.search});
+  @override
+  List<Object> get props => [search];
+}
+
+final class TechnicianSelected extends EditJobEvent {
+  final UserModel technician;
+  const TechnicianSelected({required this.technician});
+  @override
+  List<Object> get props => [technician];
+}

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:user_data_repository/user_data_repository.dart';
 import 'package:uuid/uuid.dart';
 
 part 'edit_job_event.dart';
@@ -13,19 +14,26 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
   final JobsRepository _jobsRepository;
   final JobModel oldJobModel;
   final String userId;
+  final List<UserModel> currentUserStream;
 
   EditJobBloc({
     required JobsRepository jobsRepository,
     required this.oldJobModel,
     required this.userId,
+    required this.currentUserStream,
   })  : _jobsRepository = jobsRepository,
-        super(EditJobState(job: oldJobModel)) {
+        super(EditJobState(
+          job: oldJobModel,
+          filteredUsers: currentUserStream,
+        )) {
     on<EditJobWithUpdatedJobModel>(_editJobWithUpdatedJobModel);
     on<TitleChanged>(_titleChanged);
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
     on<StatusChanged>(_statusChanged);
     on<MunicipalityChanged>(_municipalityChanged);
+    on<TechnicianSearchChanged>(_technicianSearchChanged);
+    on<TechnicianSelected>(_technicianSelected);
   }
 
   FutureOr<void> _editJobWithUpdatedJobModel(
@@ -194,6 +202,41 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
                 : null,
       ),
     );
+  }
+
+  FutureOr<void> _technicianSearchChanged(
+      TechnicianSearchChanged event, Emitter<EditJobState> emit) {
+    final filteredUsersList = currentUserStream.where((user) {
+      final firstNameLower = user.firstName.toLowerCase().split(' ').join('');
+      final lastNameLower = user.lastName.toLowerCase().split(' ').join('');
+      final employeeNumberLower =
+          user.employeeNumber.toLowerCase().split(' ').join('');
+      final patternLower = event.search.toLowerCase().split(' ').join('');
+      return firstNameLower.contains(patternLower) ||
+          lastNameLower.contains(patternLower) ||
+          employeeNumberLower.contains(patternLower);
+    }).toList();
+    emit(state.copyWith(filteredUsers: filteredUsersList));
+  }
+
+  FutureOr<void> _technicianSelected(
+      TechnicianSelected event, Emitter<EditJobState> emit) {
+    if (event.technician.id == oldJobModel.assignedTechnicianId) {
+      emit(state.copyWith(
+          job: state.job.copyWith(
+        status: oldJobModel.status,
+        assignedTechnicianId: oldJobModel.assignedTechnicianId,
+        assignedTimestamp: oldJobModel.assignedTimestamp,
+      )));
+    } else {
+      final currentTime = DateTime.now().millisecondsSinceEpoch;
+      emit(state.copyWith(
+          job: state.job.copyWith(
+        status: JobStatus.assigned,
+        assignedTechnicianId: event.technician.id,
+        assignedTimestamp: currentTime,
+      )));
+    }
   }
 
   bool _validate({

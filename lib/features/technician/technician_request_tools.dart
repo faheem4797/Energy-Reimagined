@@ -233,95 +233,79 @@ class _TechnicianRequestToolsPageState
                                 elevation: 4,
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 8),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // Navigator.of(context).push(
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             BlocProvider.value(
-                                    //               value: blocContext
-                                    //                   .read<ToolsRequestBloc>(),
-                                    //               child:
-                                    //                   TechnicianToolDetailPage(
-                                    //                 toolModel: tool,
-                                    //               ),
-                                    //             )));
-                                  },
-                                  child: ExpansionTile(
-                                    expandedCrossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    leading: CircleAvatar(
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(
-                                              tool.imageUrl),
-                                    ),
-                                    title: RichText(
-                                      text: TextSpan(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: tool.name,
-                                            style: const TextStyle(
-                                              color: ConstColors.whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: '${'  [${tool.category}'}]',
-                                            style: const TextStyle(
-                                              color: ConstColors.whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      'Available Quantity: ${tool.quantity.toString()}',
+                                child: ExpansionTile(
+                                  expandedCrossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  leading: CircleAvatar(
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        tool.imageUrl),
+                                  ),
+                                  title: RichText(
+                                    text: TextSpan(
                                       style: const TextStyle(
-                                        color: ConstColors.whiteColor,
+                                        color: Colors.white,
+                                        fontSize: 16,
                                       ),
-                                    ),
-                                    trailing: Checkbox(
-                                      activeColor:
-                                          ConstColors.backgroundDarkColor,
-                                      value: isSelected,
-                                      onChanged: (value) {
-                                        if (value!) {
-                                          context.read<ToolsRequestBloc>().add(
-                                              AddSelectedTool(
-                                                  tool: tool, toolQuantity: 1));
-                                        } else {
-                                          context.read<ToolsRequestBloc>().add(
-                                              RemoveSelectedTool(tool: tool));
-                                        }
-                                      },
-                                    ),
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16.0, vertical: 8),
-                                        child: Text(
-                                          tool.description,
-                                          textAlign: TextAlign.left,
+                                      children: [
+                                        TextSpan(
+                                          text: tool.name,
                                           style: const TextStyle(
                                             color: ConstColors.whiteColor,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: CachedNetworkImage(
-                                            imageUrl: tool.imageUrl),
-                                      ),
-                                    ],
+                                        TextSpan(
+                                          text: '${'  [${tool.category}'}]',
+                                          style: const TextStyle(
+                                            color: ConstColors.whiteColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                  subtitle: Text(
+                                    'Available Quantity: ${tool.quantity.toString()}',
+                                    style: const TextStyle(
+                                      color: ConstColors.whiteColor,
+                                    ),
+                                  ),
+                                  trailing: Checkbox(
+                                    activeColor:
+                                        ConstColors.backgroundDarkColor,
+                                    value: isSelected,
+                                    onChanged: (value) {
+                                      if (value!) {
+                                        context.read<ToolsRequestBloc>().add(
+                                            AddSelectedTool(
+                                                tool: tool, toolQuantity: 1));
+                                      } else {
+                                        context.read<ToolsRequestBloc>().add(
+                                            RemoveSelectedTool(tool: tool));
+                                      }
+                                    },
+                                  ),
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0, vertical: 8),
+                                      child: Text(
+                                        tool.description,
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          color: ConstColors.whiteColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: CachedNetworkImage(
+                                          imageUrl: tool.imageUrl),
+                                    ),
+                                  ],
                                 ),
                               );
                             },

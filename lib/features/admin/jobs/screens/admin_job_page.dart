@@ -7,6 +7,7 @@ import 'package:energy_reimagined/features/admin/jobs/blocs/jobs_stream_bloc/job
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_create_job_page.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_edit_job_page.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_tools_request_page.dart';
+import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:tools_repository/tools_repository.dart';
+
+//TODO: ADD A WAY TO ASSIGN JOBS TO TECHNICIANS
+//TODO: ADD A WAY FOR TECHNICIAN TO COMPLETE THE JOB AND ADD IMAGES FOR COMPLETION OF JOB AS WELL
 
 class AdminJobPage extends StatelessWidget {
   const AdminJobPage({super.key});
@@ -318,6 +322,16 @@ class AdminJobPage extends StatelessWidget {
                                                         color: ConstColors
                                                             .whiteColor,
                                                         onPressed: () {
+                                                          final currentUserSteamList = context
+                                                                  .read<
+                                                                      UsersStreamBloc>()
+                                                                  .state
+                                                                  .userStream
+                                                                  ?.where((user) =>
+                                                                      user.role ==
+                                                                      'technician')
+                                                                  .toList() ??
+                                                              [];
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -330,6 +344,8 @@ class AdminJobPage extends StatelessWidget {
                                                                                 context.read<JobsRepository>(),
                                                                             userId:
                                                                                 context.read<AuthenticationBloc>().state.userModel!.id,
+                                                                            currentUserStream:
+                                                                                currentUserSteamList,
                                                                             oldJobModel:
                                                                                 JobModel(
                                                                               id: jobs[index].id,

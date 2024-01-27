@@ -2,12 +2,37 @@ import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/edit_job_bloc/edit_job_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
+import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:user_data_repository/user_data_repository.dart';
 
-class AdminEditJobPage extends StatelessWidget {
+class AdminEditJobPage extends StatefulWidget {
   const AdminEditJobPage({super.key});
+
+  @override
+  State<AdminEditJobPage> createState() => _AdminEditJobPageState();
+}
+
+class _AdminEditJobPageState extends State<AdminEditJobPage> {
+  final TextEditingController myController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    myController.text = context
+        .read<EditJobBloc>()
+        .currentUserStream
+        .firstWhere(
+            (user) =>
+                user.id ==
+                context.read<EditJobBloc>().state.job.assignedTechnicianId,
+            orElse: () => UserModel.empty)
+        .employeeNumber;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,15 +92,129 @@ class AdminEditJobPage extends StatelessWidget {
                           return Switch(
                             value: state.job.status == JobStatus.cancelled,
                             onChanged: (isCancelled) async {
-                              context
-                                  .read<EditJobBloc>()
-                                  .add(StatusChanged(isCancelled: isCancelled));
+                              if (isCancelled) {
+                                final confirmation = await WillPopScoopService()
+                                    .showCancelJobConfirmationDialog(context);
+                                if (confirmation) {
+                                  if (!context.mounted) return;
+                                  context.read<EditJobBloc>().add(
+                                      StatusChanged(isCancelled: isCancelled));
+                                }
+                              } else {
+                                context.read<EditJobBloc>().add(
+                                    StatusChanged(isCancelled: isCancelled));
+                              }
                             },
                           );
                         },
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 10.0),
+                  BlocBuilder<EditJobBloc, EditJobState>(
+                    buildWhen: (previous, current) =>
+                        //TODO: CHECK THIS LATER
+                        previous.job.currentToolsRequestQrCode !=
+                        current.job.currentToolsRequestQrCode,
+                    builder: (context, state) {
+                      return TypeAheadField<UserModel>(
+                        controller: myController,
+                        suggestionsCallback: (search) async {
+                          context
+                              .read<EditJobBloc>()
+                              .add(TechnicianSearchChanged(search: search));
+                          await Future.delayed(const Duration(microseconds: 5));
+                          if (!mounted) return [];
+                          return context
+                              .read<EditJobBloc>()
+                              .state
+                              .filteredUsers;
+                        },
+                        builder: (context, myController, focusNode) {
+                          return TextField(
+                              controller: myController,
+                              focusNode: focusNode,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Technician',
+                              ));
+                        },
+                        itemBuilder: (context, user) {
+                          return ListTile(
+                            title:
+                                Text('Employee Number: ${user.employeeNumber}'),
+                            subtitle: Text(
+                                'Name: ${user.firstName} ${user.lastName}'),
+                          );
+                        },
+                        onSelected: (user) {
+                          myController.text = user.employeeNumber;
+                          context
+                              .read<EditJobBloc>()
+                              .add(TechnicianSelected(technician: user));
+                          // Navigator.of(context).push<void>(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => CityPage(city: city),
+                          //   ),
+                          // );
+                        },
+                      );
+                    },
+                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     const Text(
+                  //       'Assigned Technician: ',
+                  //       style: TextStyle(
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.bold,
+                  //         color: ConstColors.blackColor,
+                  //       ),
+                  //     ),
+                  //     const SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     BlocBuilder<EditJobBloc, EditJobState>(
+                  //       buildWhen: (previous, current) =>
+                  //           previous.job.status != current.job.status,
+                  //       builder: (context, state) {
+                  //         return TypeAheadField<UserModel>(
+                  //           suggestionsCallback: (search) =>
+                  //               List.generate(2, (index) => UserModel.empty),
+                  //           // CityService.of(context).find(search),
+                  //           builder: (context, controller, focusNode) {
+                  //             return CustomTextFormField(
+                  //               controller: controller,
+                  //               // focusNode: focusNode,
+                  //               // autofocus: true,
+                  //               // decoration: InputDecoration(
+                  //               //   border: OutlineInputBorder(),
+                  //               //   labelText: 'Technician',
+                  //               // )
+                  //             );
+                  //           },
+                  //           itemBuilder: (context, user) {
+                  //             return ListTile(
+                  //               title:
+                  //                   Text('${user.firstName} ${user.lastName}'),
+                  //               subtitle: Text(user.employeeNumber),
+                  //             );
+                  //           },
+                  //           onSelected: (city) {
+                  //             // Navigator.of(context).push<void>(
+                  //             //   MaterialPageRoute(
+                  //             //     builder: (context) => CityPage(city: city),
+                  //             //   ),
+                  //             // );
+                  //           },
+                  //         );
+                  //       },
+                  //     ),
+                  //   ],
+                  // ),
+
                   const SizedBox(height: 10.0),
                   BlocBuilder<EditJobBloc, EditJobState>(
                     buildWhen: (previous, current) =>
