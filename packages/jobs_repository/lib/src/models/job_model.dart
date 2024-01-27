@@ -53,6 +53,7 @@ class JobModel extends Equatable {
   final int startedTimestamp;
   final int holdTimestamp;
   final int completedTimestamp;
+  final String completeImageUrl;
   const JobModel({
     required this.id,
     required this.title,
@@ -76,31 +77,34 @@ class JobModel extends Equatable {
     required this.startedTimestamp,
     required this.holdTimestamp,
     required this.completedTimestamp,
+    required this.completeImageUrl,
   });
 
   static const empty = JobModel(
-      id: '',
-      title: '',
-      description: '',
-      municipality: firstMunicipality,
-      status: JobStatus.pending,
-      assignedTechnicianId: '',
-      locationName: '',
-      locationLongitude: 0,
-      locationLatitude: 0,
-      allToolsRequested: [],
-      currentToolsRequestedIds: [],
-      currentToolsRequestedQuantity: [],
-      currentToolsRequestQrCode: '',
-      holdReason: '',
-      cancelReason: '',
-      rejectedReason: '',
-      rejectedTimestamp: 0,
-      createdTimestamp: 0,
-      assignedTimestamp: 0,
-      startedTimestamp: 0,
-      holdTimestamp: 0,
-      completedTimestamp: 0);
+    id: '',
+    title: '',
+    description: '',
+    municipality: firstMunicipality,
+    status: JobStatus.pending,
+    assignedTechnicianId: '',
+    locationName: '',
+    locationLongitude: 0,
+    locationLatitude: 0,
+    allToolsRequested: [],
+    currentToolsRequestedIds: [],
+    currentToolsRequestedQuantity: [],
+    currentToolsRequestQrCode: '',
+    holdReason: '',
+    cancelReason: '',
+    rejectedReason: '',
+    rejectedTimestamp: 0,
+    createdTimestamp: 0,
+    assignedTimestamp: 0,
+    startedTimestamp: 0,
+    holdTimestamp: 0,
+    completedTimestamp: 0,
+    completeImageUrl: '',
+  );
 
   JobModel copyWith({
     String? id,
@@ -125,6 +129,7 @@ class JobModel extends Equatable {
     int? startedTimestamp,
     int? holdTimestamp,
     int? completedTimestamp,
+    String? completeImageUrl,
   }) {
     return JobModel(
       id: id ?? this.id,
@@ -152,6 +157,7 @@ class JobModel extends Equatable {
       startedTimestamp: startedTimestamp ?? this.startedTimestamp,
       holdTimestamp: holdTimestamp ?? this.holdTimestamp,
       completedTimestamp: completedTimestamp ?? this.completedTimestamp,
+      completeImageUrl: completeImageUrl ?? this.completeImageUrl,
     );
   }
 
@@ -191,6 +197,7 @@ class JobModel extends Equatable {
       'startedTimestamp': startedTimestamp,
       'holdTimestamp': holdTimestamp,
       'completedTimestamp': completedTimestamp,
+      'completeImageUrl': completeImageUrl,
     };
   }
 
@@ -220,6 +227,7 @@ class JobModel extends Equatable {
       startedTimestamp: map['startedTimestamp']?.toInt() ?? 0,
       holdTimestamp: map['holdTimestamp']?.toInt() ?? 0,
       completedTimestamp: map['completedTimestamp']?.toInt() ?? 0,
+      completeImageUrl: map['completeImageUrl'] ?? '',
     );
   }
 
@@ -306,6 +314,10 @@ class JobModel extends Equatable {
       addChangedField(
           'startedTimestamp', startedTimestamp, other.startedTimestamp);
     }
+    if (completeImageUrl != other.completeImageUrl) {
+      addChangedField(
+          'completeImageUrl', completeImageUrl, other.completeImageUrl);
+    }
 
     return changedFieldsList;
   }
@@ -345,6 +357,7 @@ class JobModel extends Equatable {
       startedTimestamp,
       holdTimestamp,
       completedTimestamp,
+      completeImageUrl,
     ];
   }
 }

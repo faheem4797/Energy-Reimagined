@@ -1,24 +1,34 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_request_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 
-class TechnicianJobDetailPage extends StatelessWidget {
+class TechnicianJobDetailPage extends StatefulWidget {
   final JobModel jobModel;
   const TechnicianJobDetailPage({required this.jobModel, super.key});
+
   @override
-  Widget build(BuildContext context) {
+  State<TechnicianJobDetailPage> createState() =>
+      _TechnicianJobDetailPageState();
+}
+
+class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
+  @override
+  Widget build(BuildContext mainContext) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          jobModel.title,
+          widget.jobModel.title,
           style: const TextStyle(
             color: ConstColors.whiteColor,
           ),
@@ -28,21 +38,47 @@ class TechnicianJobDetailPage extends StatelessWidget {
           color: ConstColors.whiteColor,
         ),
       ),
-      body: BlocListener<RejectJobBloc, RejectJobState>(
-        listener: (context, state) {
-          if (state is RejectJobFailure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage),
-                ),
-              );
-          }
-          if (state is RejectJobSuccess) {
-            Navigator.of(context).pop();
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<RejectJobBloc, RejectJobState>(
+            listener: (context, state) {
+              if (state is RejectJobFailure) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Text(state.errorMessage),
+                    ),
+                  );
+              }
+              if (state is RejectJobSuccess) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          BlocListener<CompleteJobBloc, CompleteJobState>(
+              listener: (context, state) {
+            if (state.status == CompleteJobStatus.failure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content:
+                        Text(state.errorMessage ?? 'Failed to Upload iamge'),
+                  ),
+                );
+            } else if (state.status == CompleteJobStatus.success) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Job Completed Successfully'),
+                  ),
+                );
+              Navigator.of(context).pop();
+            }
+          }),
+        ],
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
@@ -63,19 +99,22 @@ class TechnicianJobDetailPage extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      jobModel.status == JobStatus.workInProgress
+                      widget.jobModel.status == JobStatus.workInProgress
                           ? 'In Progress'
-                          : jobModel.status == JobStatus.onHold
+                          : widget.jobModel.status == JobStatus.onHold
                               ? 'On Hold'
-                              : jobModel.status == JobStatus.assigned
+                              : widget.jobModel.status == JobStatus.assigned
                                   ? 'Assigned'
-                                  : jobModel.status == JobStatus.cancelled
+                                  : widget.jobModel.status ==
+                                          JobStatus.cancelled
                                       ? 'Cancelled'
-                                      : jobModel.status == JobStatus.completed
+                                      : widget.jobModel.status ==
+                                              JobStatus.completed
                                           ? 'Completed'
-                                          : jobModel.status == JobStatus.pending
+                                          : widget.jobModel.status ==
+                                                  JobStatus.pending
                                               ? 'Pending'
-                                              : jobModel.status ==
+                                              : widget.jobModel.status ==
                                                       JobStatus.rejected
                                                   ? 'Rejected'
                                                   : '',
@@ -110,7 +149,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: SingleChildScrollView(
-                              child: Text(jobModel.description)),
+                              child: Text(widget.jobModel.description)),
                         )),
                   ],
                 ),
@@ -138,7 +177,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: SingleChildScrollView(
-                              child: Text(jobModel.locationName)),
+                              child: Text(widget.jobModel.locationName)),
                         )),
                   ],
                 ),
@@ -156,7 +195,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      jobModel.municipality,
+                      widget.jobModel.municipality,
                       style: TextStyle(
                         color: ConstColors.blackColor,
                         fontSize: 16.sp,
@@ -167,7 +206,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                 SizedBox(
                   height: 40.h,
                 ),
-                jobModel.status == JobStatus.assigned
+                widget.jobModel.status == JobStatus.assigned
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -189,7 +228,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                             ),
                             onPressed: () {
                               Navigator.push(
-                                context,
+                                mainContext,
                                 MaterialPageRoute(
                                   builder: (context) => BlocProvider(
                                     create: (context) => ToolsRequestBloc(
@@ -197,7 +236,7 @@ class TechnicianJobDetailPage extends StatelessWidget {
                                             context.read<ToolsRepository>(),
                                         jobsRepository:
                                             context.read<JobsRepository>(),
-                                        oldJobModel: jobModel,
+                                        oldJobModel: widget.jobModel,
                                         userId: context
                                             .read<AuthenticationBloc>()
                                             .state
@@ -260,105 +299,137 @@ class TechnicianJobDetailPage extends StatelessWidget {
                           ),
                         ],
                       )
-                    : jobModel.status == JobStatus.cancelled ||
-                            jobModel.status == JobStatus.rejected
-                        ? Container()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    : widget.jobModel.status == JobStatus.completed
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              //TODO: COMPLETE JOB FROM HERE
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          ConstColors.greenColor),
-                                  padding: MaterialStateProperty.all<
-                                      EdgeInsetsGeometry>(
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 10),
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => BlocProvider(
-                                  //       create: (context) => ToolsRequestBloc(
-                                  //           toolsRepository:
-                                  //               context.read<ToolsRepository>(),
-                                  //           jobsRepository:
-                                  //               context.read<JobsRepository>(),
-                                  //           oldJobModel: jobModel,
-                                  //           userId: context
-                                  //               .read<AuthenticationBloc>()
-                                  //               .state
-                                  //               .userModel!
-                                  //               .id),
-                                  //       child:
-                                  //           const TechnicianRequestToolsPage(),
-                                  //     ),
-                                  //   ),
-                                  // );
-                                },
-                                child: const Text(
-                                  "Complete Job",
-                                  style:
-                                      TextStyle(color: ConstColors.whiteColor),
-                                ),
+                              Text(
+                                'Completed on: ',
+                                style: TextStyle(
+                                    color: ConstColors.blackColor,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          ConstColors.foregroundColor),
-                                  padding: MaterialStateProperty.all<
-                                      EdgeInsetsGeometry>(
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 10),
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                        create: (context) => ToolsRequestBloc(
-                                            toolsRepository:
-                                                context.read<ToolsRepository>(),
-                                            jobsRepository:
-                                                context.read<JobsRepository>(),
-                                            oldJobModel: jobModel,
-                                            userId: context
-                                                .read<AuthenticationBloc>()
-                                                .state
-                                                .userModel!
-                                                .id),
-                                        child:
-                                            const TechnicianRequestToolsPage(),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  "Request Tools",
-                                  style:
-                                      TextStyle(color: ConstColors.whiteColor),
+                              Text(
+                                DateFormat('dd-MM-yyyy HH:mm').format(
+                                    DateTime.fromMicrosecondsSinceEpoch(
+                                        widget.jobModel.completedTimestamp)),
+                                style: TextStyle(
+                                  color: ConstColors.blackColor,
+                                  fontSize: 16.sp,
                                 ),
                               ),
                             ],
-                          ),
+                          )
+                        : widget.jobModel.status == JobStatus.cancelled ||
+                                widget.jobModel.status == JobStatus.rejected
+                            ? Container()
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  BlocBuilder<CompleteJobBloc,
+                                      CompleteJobState>(
+                                    builder: (context, state) {
+                                      return ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  ConstColors.greenColor),
+                                          padding: MaterialStateProperty.all<
+                                              EdgeInsetsGeometry>(
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 14, vertical: 10),
+                                          ),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: state.status ==
+                                                CompleteJobStatus.inProgress
+                                            ? null
+                                            : () async {
+                                                await _showCompleteJobPopup(
+                                                    context);
+                                              },
+                                        child: state.status ==
+                                                CompleteJobStatus.inProgress
+                                            ? Center(
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.w),
+                                                  child:
+                                                      const CircularProgressIndicator(
+                                                    color:
+                                                        ConstColors.whiteColor,
+                                                  ),
+                                                ),
+                                              )
+                                            : const Text(
+                                                "Complete Job",
+                                                style: TextStyle(
+                                                    color:
+                                                        ConstColors.whiteColor),
+                                              ),
+                                      );
+                                    },
+                                  ),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              ConstColors.foregroundColor),
+                                      padding: MaterialStateProperty.all<
+                                          EdgeInsetsGeometry>(
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 14, vertical: 10),
+                                      ),
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        mainContext,
+                                        MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                            create: (context) =>
+                                                ToolsRequestBloc(
+                                                    toolsRepository:
+                                                        context.read<
+                                                            ToolsRepository>(),
+                                                    jobsRepository: context
+                                                        .read<JobsRepository>(),
+                                                    oldJobModel:
+                                                        widget.jobModel,
+                                                    userId: context
+                                                        .read<
+                                                            AuthenticationBloc>()
+                                                        .state
+                                                        .userModel!
+                                                        .id),
+                                            child:
+                                                const TechnicianRequestToolsPage(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Request Tools",
+                                      style: TextStyle(
+                                          color: ConstColors.whiteColor),
+                                    ),
+                                  ),
+                                ],
+                              ),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -420,6 +491,125 @@ class TechnicianJobDetailPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Future<void> _showCompleteJobPopup(BuildContext blocContext) async {
+    return showDialog<void>(
+      context: blocContext,
+      builder: (BuildContext context) {
+        return BlocProvider.value(
+          value: blocContext.read<CompleteJobBloc>(),
+          child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
+            builder: (context, state) {
+              return AlertDialog(
+                title: const Text(
+                  'Upload an image showing the solved issue',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                content: GestureDetector(
+                  onTap: () {
+                    context.read<CompleteJobBloc>().add(const ImageChanged());
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: ConstColors.greyColor,
+                          borderRadius: BorderRadius.all(Radius.circular(7.r))),
+                      height: 200.h,
+                      width: double.maxFinite,
+                      child: state.imageToolFileBytes == null ||
+                              state.imageToolFileNameFromFilePicker == null
+                          ? const Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_a_photo),
+                                  Text(
+                                    'Upload Image',
+                                    //style: kSmallBlackTextStyle,
+                                  )
+                                ],
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(7.r)),
+                              child: Image.memory(
+                                state.imageToolFileBytes!,
+                                fit: BoxFit.fill,
+                              ),
+                            )),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      checkConnectionFunc(context, () {
+                        context
+                            .read<CompleteJobBloc>()
+                            .add(const CompleteJob());
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget imageSelectContainer(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () async {
+            context.read<CompleteJobBloc>().add(const ImageChanged());
+          },
+          child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
+            builder: (context, state) {
+              return Container(
+                  decoration: BoxDecoration(
+                      color: ConstColors.greyColor,
+                      borderRadius: BorderRadius.all(Radius.circular(7.r))),
+                  height: 200.h,
+                  width: double.maxFinite,
+                  child: state.imageToolFileBytes == null ||
+                          state.imageToolFileNameFromFilePicker == null
+                      ? const Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_a_photo),
+                              Text(
+                                'Upload Image',
+                                //style: kSmallBlackTextStyle,
+                              )
+                            ],
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(7.r)),
+                          child: Image.memory(
+                            state.imageToolFileBytes!,
+                            fit: BoxFit.fill,
+                          ),
+                        ));
+            },
+          ),
+        ),
+      ],
     );
   }
 }

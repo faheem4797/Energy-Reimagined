@@ -1,13 +1,20 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
+import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class JobsRepository {
   final FirebaseFirestore _firebaseFirestore;
+  final FirebaseStorage _firebaseStorage;
 
-  JobsRepository({FirebaseFirestore? firebaseFirestore})
-      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+  JobsRepository(
+      {FirebaseFirestore? firebaseFirestore, FirebaseStorage? firebaseStorage})
+      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
+        _firebaseStorage = firebaseStorage ?? FirebaseStorage.instance;
 
   Stream<List<JobModel>> get getJobsStream {
     return _firebaseFirestore.collection('jobs').snapshots().map((snapshot) =>
@@ -27,6 +34,56 @@ class JobsRepository {
   Future<void> setJobData(JobModel job) async {
     try {
       await _firebaseFirestore.collection('jobs').doc(job.id).set(job.toMap());
+    } on FirebaseException catch (e) {
+      throw SetFirebaseDataFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SetFirebaseDataFailure();
+    }
+  }
+
+  Future<void> setJobDataWithCompleteImage(
+      JobModel job,
+      String jobImagePathFromFilePicker,
+      String jobImageNameFromFilePicker,
+      String currentUserId) async {
+    try {
+      int randomNumber = Random().nextInt(100000) + 100000;
+
+      final jobRef = _firebaseStorage.ref().child(
+          'job_image/${job.id}/$randomNumber$jobImageNameFromFilePicker');
+      UploadTask jobUploadTask =
+          jobRef.putFile(File(jobImagePathFromFilePicker));
+
+      final jobSnapshot = await jobUploadTask.whenComplete(() => {});
+      final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
+      if (job.completeImageUrl != '') {
+        await FirebaseStorage.instance
+            .refFromURL(job.completeImageUrl)
+            .delete();
+      }
+      final JobModel newJob = job.copyWith(
+        status: JobStatus.completed,
+        completedTimestamp: DateTime.now().microsecondsSinceEpoch,
+        completeImageUrl: jobUrlDownload,
+      );
+
+      final mapOfUpdatedFields = job.getChangedFields(newJob);
+      final update = UpdateJobModel(
+          id: const Uuid().v1(),
+          updatedFields: mapOfUpdatedFields,
+          updatedBy: currentUserId,
+          updatedTimeStamp: DateTime.now().microsecondsSinceEpoch);
+
+      await _firebaseFirestore
+          .collection('jobs')
+          .doc(newJob.id)
+          .set(newJob.toMap());
+      await _firebaseFirestore
+          .collection('jobs')
+          .doc(newJob.id)
+          .collection('updates')
+          .doc(update.id)
+          .set(update.toMap());
     } on FirebaseException catch (e) {
       throw SetFirebaseDataFailure.fromCode(e.code);
     } catch (_) {
@@ -58,10 +115,10 @@ class JobsRepository {
     try {
       await _firebaseFirestore.collection('jobs').doc(job.id).delete();
     } on FirebaseException catch (e) {
-      log(e.code);
+      developer.log(e.code);
       throw SetFirebaseDataFailure.fromCode(e.code);
     } catch (_) {
-      log(_.toString());
+      developer.log(_.toString());
       throw const SetFirebaseDataFailure();
     }
   }
@@ -76,7 +133,7 @@ class SetFirebaseDataFailure implements Exception {
   /// Create an authentication message
   /// from a firebase authentication exception code.
   factory SetFirebaseDataFailure.fromCode(code) {
-    log(code);
+    developer.log(code);
     switch (code) {
       // case 'invalid-email':
       //   return const SetFirebaseDataFailure(

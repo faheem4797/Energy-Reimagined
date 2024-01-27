@@ -1,5 +1,6 @@
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_job_detail_page.dart';
@@ -128,28 +129,41 @@ class TechnicianDashboard extends StatelessWidget {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          BlocProvider(
-                                                            create: (context) => RejectJobBloc(
-                                                                jobsRepository:
-                                                                    context.read<
-                                                                        JobsRepository>(),
-                                                                oldJobModel:
-                                                                    jobs[index],
-                                                                userId: context
-                                                                    .read<
-                                                                        AuthenticationBloc>()
-                                                                    .state
-                                                                    .userModel!
-                                                                    .id),
-                                                            child:
-                                                                TechnicianJobDetailPage(
-                                                              jobModel:
-                                                                  jobs[index],
-                                                            ),
-                                                          )));
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                      builder:
+                                                          (context) =>
+                                                              MultiBlocProvider(
+                                                                providers: [
+                                                                  BlocProvider(
+                                                                      create: (context) => RejectJobBloc(
+                                                                          jobsRepository: context.read<
+                                                                              JobsRepository>(),
+                                                                          oldJobModel: jobs[
+                                                                              index],
+                                                                          userId: context
+                                                                              .read<AuthenticationBloc>()
+                                                                              .state
+                                                                              .userModel!
+                                                                              .id)),
+                                                                  BlocProvider(
+                                                                      create: (context) => CompleteJobBloc(
+                                                                          jobsRepository: context.read<
+                                                                              JobsRepository>(),
+                                                                          jobModel: jobs[
+                                                                              index],
+                                                                          userId: context
+                                                                              .read<AuthenticationBloc>()
+                                                                              .state
+                                                                              .userModel!
+                                                                              .id))
+                                                                ],
+                                                                child:
+                                                                    TechnicianJobDetailPage(
+                                                                  jobModel: jobs[
+                                                                      index],
+                                                                ),
+                                                              )));
                                             },
                                             child: Card(
                                                 color:

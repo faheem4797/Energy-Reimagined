@@ -367,6 +367,7 @@ class AdminJobPage extends StatelessWidget {
                                                                               startedTimestamp: jobs[index].startedTimestamp,
                                                                               holdTimestamp: jobs[index].holdTimestamp,
                                                                               completedTimestamp: jobs[index].completedTimestamp,
+                                                                              completeImageUrl: jobs[index].completeImageUrl,
                                                                             ),
                                                                           ),
                                                                           child:
