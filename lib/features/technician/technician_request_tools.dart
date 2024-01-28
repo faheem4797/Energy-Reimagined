@@ -7,16 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tools_repository/tools_repository.dart';
 
-class TechnicianRequestToolsPage extends StatefulWidget {
+class TechnicianRequestToolsPage extends StatelessWidget {
   const TechnicianRequestToolsPage({super.key});
 
-  @override
-  State<TechnicianRequestToolsPage> createState() =>
-      _TechnicianRequestToolsPageState();
-}
-
-class _TechnicianRequestToolsPageState
-    extends State<TechnicianRequestToolsPage> {
   Future<void> _showToolsPopup(BuildContext blocContext) async {
     return showDialog<void>(
       context: blocContext,

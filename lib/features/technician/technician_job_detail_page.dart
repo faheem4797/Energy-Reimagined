@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
@@ -204,7 +205,7 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                   ],
                 ),
                 SizedBox(
-                  height: 40.h,
+                  height: 20.h,
                 ),
                 widget.jobModel.status == JobStatus.assigned
                     ? Row(
@@ -300,23 +301,42 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                         ],
                       )
                     : widget.jobModel.status == JobStatus.completed
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                        ? Column(
                             children: [
-                              Text(
-                                'Completed on: ',
-                                style: TextStyle(
-                                    color: ConstColors.blackColor,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Completed on: ',
+                                    style: TextStyle(
+                                        color: ConstColors.blackColor,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    DateFormat('dd-MM-yyyy HH:mm').format(
+                                        DateTime.fromMicrosecondsSinceEpoch(
+                                            widget
+                                                .jobModel.completedTimestamp)),
+                                    style: TextStyle(
+                                      color: ConstColors.blackColor,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                DateFormat('dd-MM-yyyy HH:mm').format(
-                                    DateTime.fromMicrosecondsSinceEpoch(
-                                        widget.jobModel.completedTimestamp)),
-                                style: TextStyle(
-                                  color: ConstColors.blackColor,
-                                  fontSize: 16.sp,
+                              SizedBox(height: 20.h),
+                              ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(7.r)),
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.fill,
+                                  imageUrl: widget.jobModel.completeImageUrl,
+                                  placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Center(
+                                          child: Text('Error loading image')),
                                 ),
                               ),
                             ],

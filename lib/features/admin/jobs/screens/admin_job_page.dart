@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/tool_request_bloc/tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:tools_repository/tools_repository.dart';
@@ -198,12 +200,19 @@ class AdminJobPage extends StatelessWidget {
                                                   const EdgeInsets.symmetric(
                                                       vertical: 8,
                                                       horizontal: 8),
-                                              child: ListTile(
+                                              child: ExpansionTile(
+                                                  expandedCrossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
                                                   title: RichText(
                                                     text: TextSpan(
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
                                                         color: Colors.white,
-                                                        fontSize: 16,
+                                                        fontSize: 18.sp,
                                                       ),
                                                       children: [
                                                         TextSpan(
@@ -377,7 +386,82 @@ class AdminJobPage extends StatelessWidget {
                                                         },
                                                       ),
                                                     ],
-                                                  ))),
+                                                  ),
+                                                  children: [
+                                                    jobs[index].status ==
+                                                            JobStatus.completed
+                                                        ? Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        16.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      'Completed on: ',
+                                                                      style: TextStyle(
+                                                                          color: ConstColors
+                                                                              .whiteColor,
+                                                                          fontSize: 16
+                                                                              .sp
+                                                                              .sp,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                    Text(
+                                                                      DateFormat(
+                                                                              'dd-MM-yyyy HH:mm')
+                                                                          .format(
+                                                                              DateTime.fromMicrosecondsSinceEpoch(jobs[index].completedTimestamp)),
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: ConstColors
+                                                                            .whiteColor,
+                                                                        fontSize:
+                                                                            16.sp,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                    height:
+                                                                        20.h),
+                                                                ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              7.r)),
+                                                                  child:
+                                                                      CachedNetworkImage(
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    imageUrl: jobs[
+                                                                            index]
+                                                                        .completeImageUrl,
+                                                                    placeholder: (context,
+                                                                            url) =>
+                                                                        const Center(
+                                                                            child:
+                                                                                CircularProgressIndicator()),
+                                                                    errorWidget: (context,
+                                                                            url,
+                                                                            error) =>
+                                                                        const Center(
+                                                                            child:
+                                                                                Text('Error loading image')),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        : const SizedBox()
+                                                  ])),
                                           if (isOnHold ||
                                               isCancelled ||
                                               isRejected)

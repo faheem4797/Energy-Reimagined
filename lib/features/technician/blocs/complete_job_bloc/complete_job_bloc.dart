@@ -28,7 +28,6 @@ class CompleteJobBloc extends Bloc<CompleteJobEvent, CompleteJobState> {
       CompleteJob event, Emitter<CompleteJobState> emit) async {
     if (state.imageToolFileBytes == null ||
         state.imageToolFilePathFromFilePicker == null) {
-      print('object');
       emit(state.copyWith(
           status: CompleteJobStatus.failure,
           errorMessage: 'Image Not Selected'));
