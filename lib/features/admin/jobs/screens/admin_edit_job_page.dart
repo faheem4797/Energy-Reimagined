@@ -10,10 +10,6 @@ import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:user_data_repository/user_data_repository.dart';
 
-//TODO: 1. technician can cancel the job even after accepting it now
-
-//TODO: 2. when cancelled or rejected 3 times. flag the job and forward to manager
-
 class AdminEditJobPage extends StatefulWidget {
   const AdminEditJobPage({super.key});
 
@@ -84,48 +80,65 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Cancelled: ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: ConstColors.blackColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      BlocBuilder<EditJobBloc, EditJobState>(
-                        buildWhen: (previous, current) =>
-                            previous.job.status != current.job.status,
-                        builder: (context, state) {
-                          return Switch(
-                            value: state.job.status == JobStatus.cancelled,
-                            onChanged: (isCancelled) async {
-                              if (isCancelled) {
-                                final confirmation = await WillPopScoopService()
-                                    .showCancelJobConfirmationDialog(context);
-                                if (confirmation) {
-                                  if (!context.mounted) return;
-                                  context.read<EditJobBloc>().add(
-                                      StatusChanged(isCancelled: isCancelled));
-                                }
-                              } else {
-                                context.read<EditJobBloc>().add(
-                                    StatusChanged(isCancelled: isCancelled));
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10.0),
+                  !(context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.rejected ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.completed)
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Cancelled: ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: ConstColors.blackColor,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            BlocBuilder<EditJobBloc, EditJobState>(
+                              buildWhen: (previous, current) =>
+                                  previous.job.status != current.job.status,
+                              builder: (context, state) {
+                                return Switch(
+                                  value:
+                                      state.job.status == JobStatus.cancelled,
+                                  onChanged: (isCancelled) async {
+                                    if (isCancelled) {
+                                      final confirmation =
+                                          await WillPopScoopService()
+                                              .showCancelJobConfirmationDialog(
+                                                  context);
+                                      if (confirmation) {
+                                        if (!context.mounted) return;
+                                        context.read<EditJobBloc>().add(
+                                            StatusChanged(
+                                                isCancelled: isCancelled));
+                                      }
+                                    } else {
+                                      context.read<EditJobBloc>().add(
+                                          StatusChanged(
+                                              isCancelled: isCancelled));
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
+                  !(context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.rejected ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.completed)
+                      ? const SizedBox(height: 10.0)
+                      : const SizedBox(),
                   context.read<EditJobBloc>().oldJobModel.status ==
-                          JobStatus.cancelled
+                              JobStatus.cancelled ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.rejected
                       ? Text(
                           ' Assigned Technician',
                           style: TextStyle(
@@ -133,11 +146,15 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
                         )
                       : const SizedBox(),
                   context.read<EditJobBloc>().oldJobModel.status ==
-                          JobStatus.cancelled
+                              JobStatus.cancelled ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.rejected
                       ? const SizedBox(height: 4.0)
                       : const SizedBox(),
                   context.read<EditJobBloc>().oldJobModel.status ==
-                          JobStatus.cancelled
+                              JobStatus.cancelled ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.rejected
                       ? MultiSelectDropDown(
                           showClearIcon: false,
                           selectedOptions: [

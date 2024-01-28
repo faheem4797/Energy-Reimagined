@@ -32,6 +32,7 @@ class RejectJobBloc extends Bloc<RejectJobEvent, RejectJobState> {
         rejectedReason: event.rejectReason,
         rejectedTimestamp: currentTime,
         status: JobStatus.rejected,
+        flagCounter: oldJobModel.flagCounter + 1,
       );
 
       final mapOfUpdatedFields = oldJobModel.getChangedFields(newJobModel);

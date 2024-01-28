@@ -260,6 +260,17 @@ class AdminJobPage extends StatelessWidget {
                                                                 FontWeight.bold,
                                                           ),
                                                         ),
+                                                        TextSpan(
+                                                          text:
+                                                              '  [${jobs[index].flagCounter.toString()}]',
+                                                          style:
+                                                              const TextStyle(
+                                                            color: ConstColors
+                                                                .whiteColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -377,6 +388,7 @@ class AdminJobPage extends StatelessWidget {
                                                                               holdTimestamp: jobs[index].holdTimestamp,
                                                                               completedTimestamp: jobs[index].completedTimestamp,
                                                                               completeImageUrl: jobs[index].completeImageUrl,
+                                                                              flagCounter: jobs[index].flagCounter,
                                                                             ),
                                                                           ),
                                                                           child:

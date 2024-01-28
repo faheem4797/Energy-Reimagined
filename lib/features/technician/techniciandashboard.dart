@@ -228,6 +228,18 @@ class TechnicianDashboard extends StatelessWidget {
                                                                       .bold,
                                                             ),
                                                           ),
+                                                          TextSpan(
+                                                            text:
+                                                                '  [${jobs[index].flagCounter.toString()}]',
+                                                            style:
+                                                                const TextStyle(
+                                                              color: ConstColors
+                                                                  .whiteColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          )
                                                         ],
                                                       ),
                                                     ),

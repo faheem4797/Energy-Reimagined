@@ -54,6 +54,7 @@ class JobModel extends Equatable {
   final int holdTimestamp;
   final int completedTimestamp;
   final String completeImageUrl;
+  final int flagCounter;
   const JobModel({
     required this.id,
     required this.title,
@@ -78,6 +79,7 @@ class JobModel extends Equatable {
     required this.holdTimestamp,
     required this.completedTimestamp,
     required this.completeImageUrl,
+    required this.flagCounter,
   });
 
   static const empty = JobModel(
@@ -104,6 +106,7 @@ class JobModel extends Equatable {
     holdTimestamp: 0,
     completedTimestamp: 0,
     completeImageUrl: '',
+    flagCounter: 0,
   );
 
   JobModel copyWith({
@@ -130,6 +133,7 @@ class JobModel extends Equatable {
     int? holdTimestamp,
     int? completedTimestamp,
     String? completeImageUrl,
+    int? flagCounter,
   }) {
     return JobModel(
       id: id ?? this.id,
@@ -158,6 +162,7 @@ class JobModel extends Equatable {
       holdTimestamp: holdTimestamp ?? this.holdTimestamp,
       completedTimestamp: completedTimestamp ?? this.completedTimestamp,
       completeImageUrl: completeImageUrl ?? this.completeImageUrl,
+      flagCounter: flagCounter ?? this.flagCounter,
     );
   }
 
@@ -198,6 +203,7 @@ class JobModel extends Equatable {
       'holdTimestamp': holdTimestamp,
       'completedTimestamp': completedTimestamp,
       'completeImageUrl': completeImageUrl,
+      'flagCounter': flagCounter,
     };
   }
 
@@ -228,6 +234,7 @@ class JobModel extends Equatable {
       holdTimestamp: map['holdTimestamp']?.toInt() ?? 0,
       completedTimestamp: map['completedTimestamp']?.toInt() ?? 0,
       completeImageUrl: map['completeImageUrl'] ?? '',
+      flagCounter: map['flagCounter']?.toInt() ?? 0,
     );
   }
 
@@ -318,6 +325,9 @@ class JobModel extends Equatable {
       addChangedField(
           'completeImageUrl', completeImageUrl, other.completeImageUrl);
     }
+    if (flagCounter != other.flagCounter) {
+      addChangedField('flagCounter', flagCounter, other.flagCounter);
+    }
 
     return changedFieldsList;
   }
@@ -358,6 +368,7 @@ class JobModel extends Equatable {
       holdTimestamp,
       completedTimestamp,
       completeImageUrl,
+      flagCounter,
     ];
   }
 }

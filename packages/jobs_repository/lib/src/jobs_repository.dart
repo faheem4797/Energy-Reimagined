@@ -73,7 +73,6 @@ class JobsRepository {
           updatedFields: mapOfUpdatedFields,
           updatedBy: currentUserId,
           updatedTimeStamp: DateTime.now().microsecondsSinceEpoch);
-
       await _firebaseFirestore
           .collection('jobs')
           .doc(newJob.id)
