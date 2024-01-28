@@ -207,100 +207,17 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                 SizedBox(
                   height: 20.h,
                 ),
-                widget.jobModel.status == JobStatus.assigned
+                widget.jobModel.status ==
+                        JobStatus.assigned //Accept job and reject job buttons
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  ConstColors.foregroundColor),
-                              padding:
-                                  MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 10),
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                mainContext,
-                                MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
-                                    create: (context) => ToolsRequestBloc(
-                                        toolsRepository:
-                                            context.read<ToolsRepository>(),
-                                        jobsRepository:
-                                            context.read<JobsRepository>(),
-                                        oldJobModel: widget.jobModel,
-                                        userId: context
-                                            .read<AuthenticationBloc>()
-                                            .state
-                                            .userModel!
-                                            .id),
-                                    child: const TechnicianRequestToolsPage(),
-                                  ),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              "Accept Job",
-                              style: TextStyle(color: ConstColors.blackColor),
-                            ),
-                          ),
-                          BlocBuilder<RejectJobBloc, RejectJobState>(
-                            builder: (context, state) {
-                              return ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.red),
-                                  padding: MaterialStateProperty.all<
-                                      EdgeInsetsGeometry>(
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 10),
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: state is RejectJobLoading
-                                    ? null
-                                    : () async {
-                                        String? rejectionReason =
-                                            await showRejectionDialog(context);
-
-                                        if (rejectionReason != null) {
-                                          if (!context.mounted) return;
-                                          context.read<RejectJobBloc>().add(
-                                              RejectJob(
-                                                  rejectReason:
-                                                      rejectionReason));
-                                        }
-                                      },
-                                child: state is RejectJobLoading
-                                    ? const Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : const Text(
-                                        "Reject Job",
-                                        style: TextStyle(
-                                            color: ConstColors.whiteColor),
-                                      ),
-                              );
-                            },
-                          ),
+                          acceptJobButton(mainContext),
+                          rejectJobButton(),
                         ],
                       )
-                    : widget.jobModel.status == JobStatus.completed
+                    : widget.jobModel.status ==
+                            JobStatus.completed //Completion time and image
                         ? Column(
                             children: [
                               Row(
@@ -341,115 +258,31 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                               ),
                             ],
                           )
-                        : widget.jobModel.status == JobStatus.cancelled ||
-                                widget.jobModel.status == JobStatus.rejected
-                            ? Container()
-                            : Row(
+                        : widget.jobModel.status == JobStatus.onHold
+                            ? Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  BlocBuilder<CompleteJobBloc,
-                                      CompleteJobState>(
-                                    builder: (context, state) {
-                                      return ElevatedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  ConstColors.greenColor),
-                                          padding: MaterialStateProperty.all<
-                                              EdgeInsetsGeometry>(
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 14, vertical: 10),
-                                          ),
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: state.status ==
-                                                CompleteJobStatus.inProgress
-                                            ? null
-                                            : () async {
-                                                await _showCompleteJobPopup(
-                                                    context);
-                                              },
-                                        child: state.status ==
-                                                CompleteJobStatus.inProgress
-                                            ? Center(
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 16.w),
-                                                  child:
-                                                      const CircularProgressIndicator(
-                                                    color:
-                                                        ConstColors.whiteColor,
-                                                  ),
-                                                ),
-                                              )
-                                            : const Text(
-                                                "Complete Job",
-                                                style: TextStyle(
-                                                    color:
-                                                        ConstColors.whiteColor),
-                                              ),
-                                      );
-                                    },
-                                  ),
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              ConstColors.foregroundColor),
-                                      padding: MaterialStateProperty.all<
-                                          EdgeInsetsGeometry>(
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 14, vertical: 10),
-                                      ),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        mainContext,
-                                        MaterialPageRoute(
-                                          builder: (context) => BlocProvider(
-                                            create: (context) =>
-                                                ToolsRequestBloc(
-                                                    toolsRepository:
-                                                        context.read<
-                                                            ToolsRepository>(),
-                                                    jobsRepository: context
-                                                        .read<JobsRepository>(),
-                                                    oldJobModel:
-                                                        widget.jobModel,
-                                                    userId: context
-                                                        .read<
-                                                            AuthenticationBloc>()
-                                                        .state
-                                                        .userModel!
-                                                        .id),
-                                            child:
-                                                const TechnicianRequestToolsPage(),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text(
-                                      "Request Tools",
-                                      style: TextStyle(
-                                          color: ConstColors.whiteColor),
-                                    ),
-                                  ),
+                                  requestToolsButton(mainContext),
+                                  rejectJobButton(),
                                 ],
-                              ),
+                              )
+                            : widget.jobModel.status == JobStatus.workInProgress
+                                ? Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          requestToolsButton(mainContext),
+                                          completeJobButton(),
+                                        ],
+                                      ),
+                                      SizedBox(height: 20.h),
+                                      rejectJobButton(),
+                                    ],
+                                  )
+                                : Container(),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -459,6 +292,159 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         ),
       ),
       //),
+    );
+  }
+
+  ElevatedButton acceptJobButton(BuildContext mainContext) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor:
+            MaterialStateProperty.all<Color>(ConstColors.foregroundColor),
+        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+      ),
+      onPressed: () {
+        Navigator.push(
+          mainContext,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => ToolsRequestBloc(
+                  toolsRepository: context.read<ToolsRepository>(),
+                  jobsRepository: context.read<JobsRepository>(),
+                  oldJobModel: widget.jobModel,
+                  userId:
+                      context.read<AuthenticationBloc>().state.userModel!.id),
+              child: const TechnicianRequestToolsPage(),
+            ),
+          ),
+        );
+      },
+      child: const Text(
+        "Accept Job",
+        style: TextStyle(color: ConstColors.blackColor),
+      ),
+    );
+  }
+
+  BlocBuilder<CompleteJobBloc, CompleteJobState> completeJobButton() {
+    return BlocBuilder<CompleteJobBloc, CompleteJobState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(ConstColors.greenColor),
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          ),
+          onPressed: state.status == CompleteJobStatus.inProgress
+              ? null
+              : () async {
+                  await _showCompleteJobPopup(context);
+                },
+          child: state.status == CompleteJobStatus.inProgress
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const CircularProgressIndicator(
+                      color: ConstColors.whiteColor,
+                    ),
+                  ),
+                )
+              : const Text(
+                  "Complete Job",
+                  style: TextStyle(color: ConstColors.whiteColor),
+                ),
+        );
+      },
+    );
+  }
+
+  ElevatedButton requestToolsButton(BuildContext mainContext) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor:
+            MaterialStateProperty.all<Color>(ConstColors.foregroundColor),
+        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+      ),
+      onPressed: () {
+        Navigator.push(
+          mainContext,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => ToolsRequestBloc(
+                  toolsRepository: context.read<ToolsRepository>(),
+                  jobsRepository: context.read<JobsRepository>(),
+                  oldJobModel: widget.jobModel,
+                  userId:
+                      context.read<AuthenticationBloc>().state.userModel!.id),
+              child: const TechnicianRequestToolsPage(),
+            ),
+          ),
+        );
+      },
+      child: const Text(
+        "Request Tools",
+        style: TextStyle(color: ConstColors.whiteColor),
+      ),
+    );
+  }
+
+  BlocBuilder<RejectJobBloc, RejectJobState> rejectJobButton() {
+    return BlocBuilder<RejectJobBloc, RejectJobState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          ),
+          onPressed: state is RejectJobLoading
+              ? null
+              : () async {
+                  String? rejectionReason = await showRejectionDialog(context);
+
+                  if (rejectionReason != null) {
+                    if (!context.mounted) return;
+                    context
+                        .read<RejectJobBloc>()
+                        .add(RejectJob(rejectReason: rejectionReason));
+                  }
+                },
+          child: state is RejectJobLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : const Text(
+                  "Reject Job",
+                  style: TextStyle(color: ConstColors.whiteColor),
+                ),
+        );
+      },
     );
   }
 

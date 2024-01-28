@@ -10,6 +10,10 @@ import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:user_data_repository/user_data_repository.dart';
 
+//TODO: 1. technician can cancel the job even after accepting it now
+
+//TODO: 2. when cancelled or rejected 3 times. flag the job and forward to manager
+
 class AdminEditJobPage extends StatefulWidget {
   const AdminEditJobPage({super.key});
 
@@ -120,50 +124,64 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
                     ],
                   ),
                   const SizedBox(height: 10.0),
-                  Text(
-                    ' Assigned Technician',
-                    style: TextStyle(fontSize: 13.sp, color: Colors.grey[800]),
-                  ),
-                  const SizedBox(height: 4.0),
-                  MultiSelectDropDown(
-                    showClearIcon: false,
-                    selectedOptions: [
-                      ValueItem(
-                          label:
-                              '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
-                          value: oldTechnicianUserModel)
-                    ],
-                    onOptionRemoved: (index, option) {},
-                    onOptionSelected: (options) {
-                      if (options.isNotEmpty) {
-                        context.read<EditJobBloc>().add(TechnicianSelected(
-                            technician: options.first.value!));
-                      }
-                    },
-                    options: List.generate(
-                        context.read<EditJobBloc>().currentUserStream.length,
-                        (index) => ValueItem(
-                            label:
-                                '${context.read<EditJobBloc>().currentUserStream[index].firstName} ${context.read<EditJobBloc>().currentUserStream[index].lastName} [${context.read<EditJobBloc>().currentUserStream[index].employeeNumber}]',
-                            value: context
-                                .read<EditJobBloc>()
-                                .currentUserStream[index])),
-                    selectionType: SelectionType.single,
-                    searchEnabled: true,
-                    chipConfig: const ChipConfig(
-                        wrapType: WrapType.scroll,
-                        backgroundColor: ConstColors.backgroundDarkColor),
-                    dropdownHeight: 300,
-                    optionTextStyle: const TextStyle(fontSize: 16),
-                    selectedOptionBackgroundColor:
-                        ConstColors.backgroundDarkColor,
-                    selectedOptionTextColor: ConstColors.whiteColor,
-                    selectedOptionIcon: const Icon(
-                      Icons.check_circle,
-                      color: ConstColors.whiteColor,
-                    ),
-                    hint: 'Select Technician',
-                  ),
+                  context.read<EditJobBloc>().oldJobModel.status ==
+                          JobStatus.cancelled
+                      ? Text(
+                          ' Assigned Technician',
+                          style: TextStyle(
+                              fontSize: 13.sp, color: Colors.grey[800]),
+                        )
+                      : const SizedBox(),
+                  context.read<EditJobBloc>().oldJobModel.status ==
+                          JobStatus.cancelled
+                      ? const SizedBox(height: 4.0)
+                      : const SizedBox(),
+                  context.read<EditJobBloc>().oldJobModel.status ==
+                          JobStatus.cancelled
+                      ? MultiSelectDropDown(
+                          showClearIcon: false,
+                          selectedOptions: [
+                            ValueItem(
+                                label:
+                                    '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
+                                value: oldTechnicianUserModel)
+                          ],
+                          onOptionRemoved: (index, option) {},
+                          onOptionSelected: (options) {
+                            if (options.isNotEmpty) {
+                              context.read<EditJobBloc>().add(
+                                  TechnicianSelected(
+                                      technician: options.first.value!));
+                            }
+                          },
+                          options: List.generate(
+                              context
+                                  .read<EditJobBloc>()
+                                  .currentUserStream
+                                  .length,
+                              (index) => ValueItem(
+                                  label:
+                                      '${context.read<EditJobBloc>().currentUserStream[index].firstName} ${context.read<EditJobBloc>().currentUserStream[index].lastName} [${context.read<EditJobBloc>().currentUserStream[index].employeeNumber}]',
+                                  value: context
+                                      .read<EditJobBloc>()
+                                      .currentUserStream[index])),
+                          selectionType: SelectionType.single,
+                          searchEnabled: true,
+                          chipConfig: const ChipConfig(
+                              wrapType: WrapType.scroll,
+                              backgroundColor: ConstColors.backgroundDarkColor),
+                          dropdownHeight: 300,
+                          optionTextStyle: const TextStyle(fontSize: 16),
+                          selectedOptionBackgroundColor:
+                              ConstColors.backgroundDarkColor,
+                          selectedOptionTextColor: ConstColors.whiteColor,
+                          selectedOptionIcon: const Icon(
+                            Icons.check_circle,
+                            color: ConstColors.whiteColor,
+                          ),
+                          hint: 'Select Technician',
+                        )
+                      : const SizedBox(),
                   const SizedBox(height: 10.0),
                   BlocBuilder<EditJobBloc, EditJobState>(
                     buildWhen: (previous, current) =>
