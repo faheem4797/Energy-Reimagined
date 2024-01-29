@@ -8,7 +8,6 @@ import 'package:equatable/equatable.dart';
 // onHold = technician put job on hold (need more tools etc.)
 // completed = job is completed
 // rejected = job rejected by technician
-// cancelled = admin completed the job
 //also put onHold when technician requests tools
 
 enum JobStatus {
@@ -18,7 +17,6 @@ enum JobStatus {
   onHold,
   completed,
   rejected,
-  cancelled
 }
 
 const List<String> municipalities = [

@@ -2,7 +2,6 @@ import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/edit_job_bloc/edit_job_bloc.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
-import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -80,81 +79,78 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  !(context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.rejected ||
-                          context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.completed)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Cancelled: ',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: ConstColors.blackColor,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            BlocBuilder<EditJobBloc, EditJobState>(
-                              buildWhen: (previous, current) =>
-                                  previous.job.status != current.job.status,
-                              builder: (context, state) {
-                                return Switch(
-                                  value:
-                                      state.job.status == JobStatus.cancelled,
-                                  onChanged: (isCancelled) async {
-                                    if (isCancelled) {
-                                      final confirmation =
-                                          await WillPopScoopService()
-                                              .showCancelJobConfirmationDialog(
-                                                  context);
-                                      if (confirmation) {
-                                        if (!context.mounted) return;
-                                        context.read<EditJobBloc>().add(
-                                            StatusChanged(
-                                                isCancelled: isCancelled));
-                                      }
-                                    } else {
-                                      context.read<EditJobBloc>().add(
-                                          StatusChanged(
-                                              isCancelled: isCancelled));
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        )
-                      : const SizedBox(),
-                  !(context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.rejected ||
-                          context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.completed)
-                      ? const SizedBox(height: 10.0)
-                      : const SizedBox(),
+                  // !(context.read<EditJobBloc>().oldJobModel.status ==
+                  //             JobStatus.rejected ||
+                  //         context.read<EditJobBloc>().oldJobModel.status ==
+                  //             JobStatus.completed)
+                  //     ? Row(
+                  //         mainAxisAlignment: MainAxisAlignment.start,
+                  //         children: [
+                  //           const Text(
+                  //             'Cancelled: ',
+                  //             style: TextStyle(
+                  //               fontSize: 16,
+                  //               fontWeight: FontWeight.bold,
+                  //               color: ConstColors.blackColor,
+                  //             ),
+                  //           ),
+                  //           const SizedBox(
+                  //             width: 10,
+                  //           ),
+                  //           BlocBuilder<EditJobBloc, EditJobState>(
+                  //             buildWhen: (previous, current) =>
+                  //                 previous.job.status != current.job.status,
+                  //             builder: (context, state) {
+                  //               return Switch(
+                  //                 value:
+                  //                     state.job.status == JobStatus.cancelled,
+                  //                 onChanged: (isCancelled) async {
+                  //                   if (isCancelled) {
+                  //                     final confirmation =
+                  //                         await WillPopScoopService()
+                  //                             .showCancelJobConfirmationDialog(
+                  //                                 context);
+                  //                     if (confirmation) {
+                  //                       if (!context.mounted) return;
+                  //                       context.read<EditJobBloc>().add(
+                  //                           StatusChanged(
+                  //                               isCancelled: isCancelled));
+                  //                     }
+                  //                   } else {
+                  //                     context.read<EditJobBloc>().add(
+                  //                         StatusChanged(
+                  //                             isCancelled: isCancelled));
+                  //                   }
+                  //                 },
+                  //               );
+                  //             },
+                  //           ),
+                  //         ],
+                  //       )
+                  //     : const SizedBox(),
+                  // !(context.read<EditJobBloc>().oldJobModel.status ==
+                  //             JobStatus.rejected ||
+                  //         context.read<EditJobBloc>().oldJobModel.status ==
+                  //             JobStatus.completed)
+                  //     ? const SizedBox(height: 10.0)
+                  //     : const SizedBox(),
+
                   context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.cancelled ||
-                          context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.rejected
+                          JobStatus.rejected
                       ? Text(
                           ' Assigned Technician',
                           style: TextStyle(
                               fontSize: 13.sp, color: Colors.grey[800]),
                         )
                       : const SizedBox(),
+
                   context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.cancelled ||
-                          context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.rejected
+                          JobStatus.rejected
                       ? const SizedBox(height: 4.0)
                       : const SizedBox(),
+
                   context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.cancelled ||
-                          context.read<EditJobBloc>().oldJobModel.status ==
-                              JobStatus.rejected
+                          JobStatus.rejected
                       ? MultiSelectDropDown(
                           showClearIcon: false,
                           selectedOptions: [

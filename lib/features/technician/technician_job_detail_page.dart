@@ -107,18 +107,15 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                               : widget.jobModel.status == JobStatus.assigned
                                   ? 'Assigned'
                                   : widget.jobModel.status ==
-                                          JobStatus.cancelled
-                                      ? 'Cancelled'
+                                          JobStatus.completed
+                                      ? 'Completed'
                                       : widget.jobModel.status ==
-                                              JobStatus.completed
-                                          ? 'Completed'
+                                              JobStatus.pending
+                                          ? 'Pending'
                                           : widget.jobModel.status ==
-                                                  JobStatus.pending
-                                              ? 'Pending'
-                                              : widget.jobModel.status ==
-                                                      JobStatus.rejected
-                                                  ? 'Rejected'
-                                                  : '',
+                                                  JobStatus.rejected
+                                              ? 'Rejected'
+                                              : '',
                       style: TextStyle(
                         color: ConstColors.blackColor,
                         fontSize: 16.sp,

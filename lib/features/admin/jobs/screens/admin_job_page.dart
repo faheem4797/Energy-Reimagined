@@ -146,9 +146,6 @@ class AdminJobPage extends StatelessWidget {
                                         label: 'Completed',
                                         value: JobStatus.completed),
                                     ValueItem(
-                                        label: 'Cancelled',
-                                        value: JobStatus.cancelled),
-                                    ValueItem(
                                         label: 'Rejected',
                                         value: JobStatus.rejected),
                                     ValueItem(
@@ -186,9 +183,6 @@ class AdminJobPage extends StatelessWidget {
                                       final bool isRejected =
                                           jobs[index].status ==
                                               JobStatus.rejected;
-                                      final bool isCancelled =
-                                          jobs[index].status ==
-                                              JobStatus.cancelled;
 
                                       return Stack(
                                         children: [
@@ -240,18 +234,16 @@ class AdminJobPage extends StatelessWidget {
                                                                   : jobs[index]
                                                                               .status ==
                                                                           JobStatus
-                                                                              .cancelled
-                                                                      ? '  [Cancelled]'
+                                                                              .completed
+                                                                      ? '  [Completed]'
                                                                       : jobs[index].status ==
-                                                                              JobStatus.completed
-                                                                          ? '  [Completed]'
-                                                                          : jobs[index].status == JobStatus.workInProgress
-                                                                              ? '  [In Progress]'
-                                                                              : jobs[index].status == JobStatus.onHold
-                                                                                  ? '  [On Hold]'
-                                                                                  : jobs[index].status == JobStatus.rejected
-                                                                                      ? '  [Rejected]'
-                                                                                      : '',
+                                                                              JobStatus.workInProgress
+                                                                          ? '  [In Progress]'
+                                                                          : jobs[index].status == JobStatus.onHold
+                                                                              ? '  [On Hold]'
+                                                                              : jobs[index].status == JobStatus.rejected
+                                                                                  ? '  [Rejected]'
+                                                                                  : '',
                                                           style:
                                                               const TextStyle(
                                                             color: ConstColors
@@ -474,9 +466,7 @@ class AdminJobPage extends StatelessWidget {
                                                           )
                                                         : const SizedBox()
                                                   ])),
-                                          if (isOnHold ||
-                                              isCancelled ||
-                                              isRejected)
+                                          if (isOnHold || isRejected)
                                             Positioned(
                                               top: 0,
                                               left: 0,
@@ -488,9 +478,7 @@ class AdminJobPage extends StatelessWidget {
                                                 child: Banner(
                                                   message: isOnHold
                                                       ? 'On Hold'
-                                                      : isCancelled
-                                                          ? 'Cancelled'
-                                                          : 'Rejected',
+                                                      : 'Rejected',
                                                   location:
                                                       BannerLocation.topEnd,
                                                   color: ConstColors.redColor,

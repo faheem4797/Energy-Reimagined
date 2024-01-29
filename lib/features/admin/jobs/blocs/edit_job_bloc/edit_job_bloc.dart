@@ -30,7 +30,7 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     on<TitleChanged>(_titleChanged);
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
-    on<StatusChanged>(_statusChanged);
+    // on<StatusChanged>(_statusChanged);
     on<MunicipalityChanged>(_municipalityChanged);
     on<TechnicianSelected>(_technicianSelected);
   }
@@ -60,7 +60,8 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
 //TODO: CHECKED FLAG COUNTER HERE
       if (mapOfUpdatedFields.any((map) =>
           map['field'] == 'status' &&
-          (map['newValue'] == 'cancelled' || map['newValue'] == 'rejected'))) {
+          ( //map['newValue'] == 'cancelled' ||
+              map['newValue'] == 'rejected'))) {
         emit(state.copyWith(
             job: state.job.copyWith(flagCounter: state.job.flagCounter + 1)));
         newMapOfUpdatedFields = oldJobModel.getChangedFields(state.job);
@@ -163,34 +164,34 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     );
   }
 
-  FutureOr<void> _statusChanged(
-      StatusChanged event, Emitter<EditJobState> emit) {
-    emit(
-      state.copyWith(
-        job: state.job.copyWith(
-          status: event.isCancelled
-              ? JobStatus.cancelled
-              : (oldJobModel.status == JobStatus.cancelled &&
-                      state.job.assignedTechnicianId.isNotEmpty)
-                  ? JobStatus.assigned
-                  : oldJobModel.status,
-          // status: event.isCancelled
-          //     ? JobStatus.cancelled
-          //     : oldJobModel.status == JobStatus.cancelled
-          //         ? JobStatus.pending
-          //         : JobStatus.cancelled,
-        ),
-        isValid: _validate(
-          title: state.job.title,
-          description: state.job.description,
-          locationName: state.job.locationName,
-          // locationLatitude: event.locationLatitude,
-          // locationLongitude: event.locationLongitude,
-          municipality: state.job.municipality,
-        ),
-      ),
-    );
-  }
+  // FutureOr<void> _statusChanged(
+  //     StatusChanged event, Emitter<EditJobState> emit) {
+  //   emit(
+  //     state.copyWith(
+  //       job: state.job.copyWith(
+  //         status: event.isCancelled
+  //             ? JobStatus.cancelled
+  //             : (oldJobModel.status == JobStatus.cancelled &&
+  //                     state.job.assignedTechnicianId.isNotEmpty)
+  //                 ? JobStatus.assigned
+  //                 : oldJobModel.status,
+  //         // status: event.isCancelled
+  //         //     ? JobStatus.cancelled
+  //         //     : oldJobModel.status == JobStatus.cancelled
+  //         //         ? JobStatus.pending
+  //         //         : JobStatus.cancelled,
+  //       ),
+  //       isValid: _validate(
+  //         title: state.job.title,
+  //         description: state.job.description,
+  //         locationName: state.job.locationName,
+  //         // locationLatitude: event.locationLatitude,
+  //         // locationLongitude: event.locationLongitude,
+  //         municipality: state.job.municipality,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   FutureOr<void> _municipalityChanged(
       MunicipalityChanged event, Emitter<EditJobState> emit) {
