@@ -50,13 +50,13 @@ final class LocationChanged extends EditJobEvent {
       ];
 }
 
-final class StatusChanged extends EditJobEvent {
-  final bool isCancelled;
-  const StatusChanged({required this.isCancelled});
+// final class StatusChanged extends EditJobEvent {
+//   final bool isCancelled;
+//   const StatusChanged({required this.isCancelled});
 
-  @override
-  List<Object> get props => [isCancelled];
-}
+//   @override
+//   List<Object> get props => [isCancelled];
+// }
 
 final class TechnicianSelected extends EditJobEvent {
   final UserModel technician;

@@ -105,9 +105,14 @@ class AdminJobPage extends StatelessWidget {
                                               builder: (context) =>
                                                   BlocProvider(
                                                 create: (context) => CreateJobBloc(
-                                                    jobsRepository:
-                                                        context.read<
-                                                            JobsRepository>()),
+                                                    jobsRepository: context
+                                                        .read<JobsRepository>(),
+                                                    currentUserStream: context
+                                                            .read<
+                                                                UsersStreamBloc>()
+                                                            .state
+                                                            .userStream ??
+                                                        []),
                                                 child:
                                                     const AdminCreateJobPage(),
                                               ),

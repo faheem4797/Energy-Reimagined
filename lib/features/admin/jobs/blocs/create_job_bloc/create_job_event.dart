@@ -49,3 +49,10 @@ final class LocationChanged extends CreateJobEvent {
         //locationLatitude, locationLongitude
       ];
 }
+
+final class TechnicianSelected extends CreateJobEvent {
+  final UserModel technician;
+  const TechnicianSelected({required this.technician});
+  @override
+  List<Object> get props => [technician];
+}

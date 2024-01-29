@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:user_data_repository/user_data_repository.dart';
 import 'package:uuid/uuid.dart';
 
 part 'create_job_event.dart';
@@ -19,6 +20,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
     on<MunicipalityChanged>(_municipalityChanged);
+    on<TechnicianSelected>(_technicianSelected);
   }
 
   FutureOr<void> _createJobWithDataModel(
@@ -154,6 +156,17 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
                 : null,
       ),
     );
+  }
+
+  FutureOr<void> _technicianSelected(
+      TechnicianSelected event, Emitter<CreateJobState> emit) {
+    final currentTime = DateTime.now().millisecondsSinceEpoch;
+    emit(state.copyWith(
+        job: state.job.copyWith(
+      status: JobStatus.assigned,
+      assignedTechnicianId: event.technician.id,
+      assignedTimestamp: currentTime,
+    )));
   }
 
   bool _validate({
