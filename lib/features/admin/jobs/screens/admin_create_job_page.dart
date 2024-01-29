@@ -8,8 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
-//TODO: ADD ASSIGNING DROPDOWN WHILE CREATING USER
-
 class AdminCreateJobPage extends StatelessWidget {
   const AdminCreateJobPage({super.key});
 

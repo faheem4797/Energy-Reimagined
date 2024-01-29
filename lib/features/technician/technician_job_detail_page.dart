@@ -499,9 +499,12 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
   }
 
   Future<void> _showCompleteJobPopup(BuildContext blocContext) async {
+    final formKey = GlobalKey<FormState>();
     return showDialog<void>(
       context: blocContext,
       builder: (BuildContext context) {
+        String workDoneDescription = '';
+
         return BlocProvider.value(
           value: blocContext.read<CompleteJobBloc>(),
           child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
@@ -512,39 +515,65 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16),
                 ),
-                content: GestureDetector(
-                  onTap: () {
-                    context.read<CompleteJobBloc>().add(const ImageChanged());
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: ConstColors.greyColor,
-                          borderRadius: BorderRadius.all(Radius.circular(7.r))),
-                      height: 200.h,
-                      width: double.maxFinite,
-                      child: state.imageToolFileBytes == null ||
-                              state.imageToolFileNameFromFilePicker == null
-                          ? const Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.add_a_photo),
-                                  Text(
-                                    'Upload Image',
-                                    //style: kSmallBlackTextStyle,
-                                  )
-                                ],
-                              ),
-                            )
-                          : ClipRRect(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context
+                            .read<CompleteJobBloc>()
+                            .add(const AfterCompletionImageChanged());
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: ConstColors.greyColor,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(7.r)),
-                              child: Image.memory(
-                                state.imageToolFileBytes!,
-                                fit: BoxFit.fill,
-                              ),
-                            )),
+                                  BorderRadius.all(Radius.circular(7.r))),
+                          height: 200.h,
+                          width: double.maxFinite,
+                          child: state.imageToolFileBytes == null ||
+                                  state.imageToolFileNameFromFilePicker == null
+                              ? const Center(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.add_a_photo),
+                                      Text(
+                                        'Upload Image',
+                                        //style: kSmallBlackTextStyle,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7.r)),
+                                  child: Image.memory(
+                                    state.imageToolFileBytes!,
+                                    fit: BoxFit.fill,
+                                  ),
+                                )),
+                    ),
+                    const SizedBox(height: 10),
+                    Form(
+                      key: formKey,
+                      child: TextFormField(
+                        initialValue: workDoneDescription,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a reason';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(labelText: 'Reason'),
+                        onChanged: (value) {
+                          workDoneDescription = value;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 actions: <Widget>[
                   TextButton(
@@ -555,12 +584,13 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      checkConnectionFunc(context, () {
-                        context
-                            .read<CompleteJobBloc>()
-                            .add(const CompleteJob());
-                      });
-                      Navigator.of(context).pop();
+                      if (formKey.currentState!.validate()) {
+                        checkConnectionFunc(context, () {
+                          context.read<CompleteJobBloc>().add(CompleteJob(
+                              workDoneDescription: workDoneDescription));
+                        });
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: const Text('Submit'),
                   ),
@@ -578,7 +608,9 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
       children: [
         GestureDetector(
           onTap: () async {
-            context.read<CompleteJobBloc>().add(const ImageChanged());
+            context
+                .read<CompleteJobBloc>()
+                .add(const AfterCompletionImageChanged());
           },
           child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
             builder: (context, state) {

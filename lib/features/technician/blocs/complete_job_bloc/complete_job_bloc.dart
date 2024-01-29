@@ -20,7 +20,7 @@ class CompleteJobBloc extends Bloc<CompleteJobEvent, CompleteJobState> {
       required this.userId})
       : _jobsRepository = jobsRepository,
         super(CompleteJobState(job: jobModel)) {
-    on<ImageChanged>(_imageChanged);
+    on<AfterCompletionImageChanged>(_afterCompletionImageChanged);
     on<CompleteJob>(_completeJob);
   }
 
@@ -36,6 +36,9 @@ class CompleteJobBloc extends Bloc<CompleteJobEvent, CompleteJobState> {
     }
     emit(state.copyWith(status: CompleteJobStatus.inProgress));
     try {
+      emit(state.copyWith(
+          job: state.job
+              .copyWith(workDoneDescription: event.workDoneDescription)));
       await _jobsRepository.setJobDataWithCompleteImage(
           state.job,
           state.imageToolFilePathFromFilePicker!,
@@ -54,8 +57,8 @@ class CompleteJobBloc extends Bloc<CompleteJobEvent, CompleteJobState> {
     }
   }
 
-  FutureOr<void> _imageChanged(
-      ImageChanged event, Emitter<CompleteJobState> emit) async {
+  FutureOr<void> _afterCompletionImageChanged(
+      AfterCompletionImageChanged event, Emitter<CompleteJobState> emit) async {
     final ImagePicker picker = ImagePicker();
 
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
