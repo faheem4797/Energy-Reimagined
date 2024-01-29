@@ -384,8 +384,10 @@ class AdminJobPage extends StatelessWidget {
                                                                               startedTimestamp: jobs[index].startedTimestamp,
                                                                               holdTimestamp: jobs[index].holdTimestamp,
                                                                               completedTimestamp: jobs[index].completedTimestamp,
-                                                                              completeImageUrl: jobs[index].completeImageUrl,
+                                                                              beforeCompleteImageUrl: jobs[index].beforeCompleteImageUrl,
                                                                               flagCounter: jobs[index].flagCounter,
+                                                                              afterCompleteImageUrl: jobs[index].afterCompleteImageUrl,
+                                                                              workDoneDescription: jobs[index].workDoneDescription,
                                                                             ),
                                                                           ),
                                                                           child:
@@ -452,7 +454,7 @@ class AdminJobPage extends StatelessWidget {
                                                                         .fill,
                                                                     imageUrl: jobs[
                                                                             index]
-                                                                        .completeImageUrl,
+                                                                        .afterCompleteImageUrl,
                                                                     placeholder: (context,
                                                                             url) =>
                                                                         const Center(

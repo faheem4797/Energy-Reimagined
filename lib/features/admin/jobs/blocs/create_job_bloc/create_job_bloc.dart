@@ -12,7 +12,9 @@ part 'create_job_state.dart';
 
 class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
   final JobsRepository _jobsRepository;
-  CreateJobBloc({required JobsRepository jobsRepository})
+  final List<UserModel> currentUserStream;
+  CreateJobBloc(
+      {required JobsRepository jobsRepository, required this.currentUserStream})
       : _jobsRepository = jobsRepository,
         super(const CreateJobState()) {
     on<CreateJobWithDataModel>(_createJobWithDataModel);

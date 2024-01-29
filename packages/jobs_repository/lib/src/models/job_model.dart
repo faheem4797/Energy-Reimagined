@@ -51,7 +51,9 @@ class JobModel extends Equatable {
   final int startedTimestamp;
   final int holdTimestamp;
   final int completedTimestamp;
-  final String completeImageUrl;
+  final String beforeCompleteImageUrl;
+  final String afterCompleteImageUrl;
+  final String workDoneDescription;
   final int flagCounter;
   const JobModel({
     required this.id,
@@ -76,7 +78,9 @@ class JobModel extends Equatable {
     required this.startedTimestamp,
     required this.holdTimestamp,
     required this.completedTimestamp,
-    required this.completeImageUrl,
+    required this.beforeCompleteImageUrl,
+    required this.afterCompleteImageUrl,
+    required this.workDoneDescription,
     required this.flagCounter,
   });
 
@@ -103,7 +107,9 @@ class JobModel extends Equatable {
     startedTimestamp: 0,
     holdTimestamp: 0,
     completedTimestamp: 0,
-    completeImageUrl: '',
+    beforeCompleteImageUrl: '',
+    afterCompleteImageUrl: '',
+    workDoneDescription: '',
     flagCounter: 0,
   );
 
@@ -130,7 +136,9 @@ class JobModel extends Equatable {
     int? startedTimestamp,
     int? holdTimestamp,
     int? completedTimestamp,
-    String? completeImageUrl,
+    String? beforeCompleteImageUrl,
+    String? afterCompleteImageUrl,
+    String? workDoneDescription,
     int? flagCounter,
   }) {
     return JobModel(
@@ -159,7 +167,11 @@ class JobModel extends Equatable {
       startedTimestamp: startedTimestamp ?? this.startedTimestamp,
       holdTimestamp: holdTimestamp ?? this.holdTimestamp,
       completedTimestamp: completedTimestamp ?? this.completedTimestamp,
-      completeImageUrl: completeImageUrl ?? this.completeImageUrl,
+      beforeCompleteImageUrl:
+          beforeCompleteImageUrl ?? this.beforeCompleteImageUrl,
+      afterCompleteImageUrl:
+          afterCompleteImageUrl ?? this.afterCompleteImageUrl,
+      workDoneDescription: workDoneDescription ?? this.workDoneDescription,
       flagCounter: flagCounter ?? this.flagCounter,
     );
   }
@@ -200,7 +212,9 @@ class JobModel extends Equatable {
       'startedTimestamp': startedTimestamp,
       'holdTimestamp': holdTimestamp,
       'completedTimestamp': completedTimestamp,
-      'completeImageUrl': completeImageUrl,
+      'beforeCompleteImageUrl': beforeCompleteImageUrl,
+      'afterCompleteImageUrl': afterCompleteImageUrl,
+      'workDoneDescription': workDoneDescription,
       'flagCounter': flagCounter,
     };
   }
@@ -231,7 +245,9 @@ class JobModel extends Equatable {
       startedTimestamp: map['startedTimestamp']?.toInt() ?? 0,
       holdTimestamp: map['holdTimestamp']?.toInt() ?? 0,
       completedTimestamp: map['completedTimestamp']?.toInt() ?? 0,
-      completeImageUrl: map['completeImageUrl'] ?? '',
+      beforeCompleteImageUrl: map['beforeCompleteImageUrl'] ?? '',
+      afterCompleteImageUrl: map['afterCompleteImageUrl'] ?? '',
+      workDoneDescription: map['workDoneDescription'] ?? '',
       flagCounter: map['flagCounter']?.toInt() ?? 0,
     );
   }
@@ -319,9 +335,17 @@ class JobModel extends Equatable {
       addChangedField(
           'startedTimestamp', startedTimestamp, other.startedTimestamp);
     }
-    if (completeImageUrl != other.completeImageUrl) {
-      addChangedField(
-          'completeImageUrl', completeImageUrl, other.completeImageUrl);
+    if (beforeCompleteImageUrl != other.beforeCompleteImageUrl) {
+      addChangedField('beforeCompleteImageUrl', beforeCompleteImageUrl,
+          other.beforeCompleteImageUrl);
+    }
+    if (afterCompleteImageUrl != other.afterCompleteImageUrl) {
+      addChangedField('afterCompleteImageUrl', afterCompleteImageUrl,
+          other.afterCompleteImageUrl);
+    }
+    if (workDoneDescription != other.workDoneDescription) {
+      addChangedField('workDoneDescription', workDoneDescription,
+          other.workDoneDescription);
     }
     if (flagCounter != other.flagCounter) {
       addChangedField('flagCounter', flagCounter, other.flagCounter);
@@ -365,7 +389,9 @@ class JobModel extends Equatable {
       startedTimestamp,
       holdTimestamp,
       completedTimestamp,
-      completeImageUrl,
+      beforeCompleteImageUrl,
+      afterCompleteImageUrl,
+      workDoneDescription,
       flagCounter,
     ];
   }

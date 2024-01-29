@@ -56,15 +56,16 @@ class JobsRepository {
 
       final jobSnapshot = await jobUploadTask.whenComplete(() => {});
       final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
-      if (job.completeImageUrl != '') {
+      //TODO: CHECK THIS LATER
+      if (job.afterCompleteImageUrl != '') {
         await FirebaseStorage.instance
-            .refFromURL(job.completeImageUrl)
+            .refFromURL(job.afterCompleteImageUrl)
             .delete();
       }
       final JobModel newJob = job.copyWith(
         status: JobStatus.completed,
         completedTimestamp: DateTime.now().microsecondsSinceEpoch,
-        completeImageUrl: jobUrlDownload,
+        afterCompleteImageUrl: jobUrlDownload,
       );
 
       final mapOfUpdatedFields = job.getChangedFields(newJob);

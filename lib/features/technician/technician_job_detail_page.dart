@@ -245,7 +245,8 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                     BorderRadius.all(Radius.circular(7.r)),
                                 child: CachedNetworkImage(
                                   fit: BoxFit.fill,
-                                  imageUrl: widget.jobModel.completeImageUrl,
+                                  imageUrl:
+                                      widget.jobModel.afterCompleteImageUrl,
                                   placeholder: (context, url) => const Center(
                                       child: CircularProgressIndicator()),
                                   errorWidget: (context, url, error) =>
