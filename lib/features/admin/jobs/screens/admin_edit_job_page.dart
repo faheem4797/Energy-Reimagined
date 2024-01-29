@@ -36,9 +36,11 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
     oldTechnicianUserModel = context
         .read<EditJobBloc>()
         .currentUserStream
-        .firstWhere((user) =>
-            user.id ==
-            context.read<EditJobBloc>().oldJobModel.assignedTechnicianId);
+        .firstWhere(
+            (user) =>
+                user.id ==
+                context.read<EditJobBloc>().oldJobModel.assignedTechnicianId,
+            orElse: () => UserModel.empty);
   }
 
   @override
@@ -136,7 +138,9 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
                   //     : const SizedBox(),
 
                   context.read<EditJobBloc>().oldJobModel.status ==
-                          JobStatus.rejected
+                              JobStatus.rejected ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.pending
                       ? Text(
                           ' Assigned Technician',
                           style: TextStyle(
@@ -145,26 +149,34 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
                       : const SizedBox(),
 
                   context.read<EditJobBloc>().oldJobModel.status ==
-                          JobStatus.rejected
+                              JobStatus.rejected ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.pending
                       ? const SizedBox(height: 4.0)
                       : const SizedBox(),
 
                   context.read<EditJobBloc>().oldJobModel.status ==
-                          JobStatus.rejected
+                              JobStatus.rejected ||
+                          context.read<EditJobBloc>().oldJobModel.status ==
+                              JobStatus.pending
                       ? MultiSelectDropDown(
                           showClearIcon: false,
-                          selectedOptions: [
-                            ValueItem(
-                                label:
-                                    '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
-                                value: oldTechnicianUserModel)
-                          ],
+                          selectedOptions:
+                              oldTechnicianUserModel == UserModel.empty
+                                  ? []
+                                  : [
+                                      ValueItem(
+                                          label:
+                                              '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
+                                          value: oldTechnicianUserModel)
+                                    ],
                           onOptionRemoved: (index, option) {},
                           onOptionSelected: (options) {
                             if (options.isNotEmpty) {
                               context.read<EditJobBloc>().add(
                                   TechnicianSelected(
-                                      technician: options.first.value!));
+                                      technician:
+                                          options.first.value! as UserModel));
                             }
                           },
                           options: List.generate(

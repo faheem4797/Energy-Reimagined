@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/before_completion_image_bloc/before_completion_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
@@ -74,6 +75,28 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                 ..showSnackBar(
                   const SnackBar(
                     content: Text('Job Completed Successfully'),
+                  ),
+                );
+              Navigator.of(context).pop();
+            }
+          }),
+          BlocListener<BeforeCompletionImageBloc, BeforeCompletionImageState>(
+              listener: (context, state) {
+            if (state.status == BeforeCompletionImageStatus.failure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content:
+                        Text(state.errorMessage ?? 'Failed to Upload Image'),
+                  ),
+                );
+            } else if (state.status == BeforeCompletionImageStatus.success) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Uploaded Image Successfully'),
                   ),
                 );
               Navigator.of(context).pop();
@@ -257,27 +280,51 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                             ],
                           )
                         : widget.jobModel.status == JobStatus.onHold
-                            ? Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                            ? Column(
                                 children: [
-                                  requestToolsButton(mainContext),
-                                  rejectJobButton(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      requestToolsButton(mainContext),
+                                      rejectJobButton(),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  widget.jobModel.beforeCompleteImageUrl == ''
+                                      ? beforeCompletionImageButton()
+                                      : Container(),
                                 ],
                               )
                             : widget.jobModel.status == JobStatus.workInProgress
                                 ? Column(
                                     children: [
+                                      widget.jobModel.beforeCompleteImageUrl ==
+                                              ''
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                requestToolsButton(mainContext),
+                                                beforeCompletionImageButton(),
+                                              ],
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                requestToolsButton(mainContext),
+                                              ],
+                                            ),
+                                      SizedBox(height: 20.h),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          requestToolsButton(mainContext),
                                           completeJobButton(),
+                                          rejectJobButton(),
                                         ],
                                       ),
-                                      SizedBox(height: 20.h),
-                                      rejectJobButton(),
                                     ],
                                   )
                                 : Container(),
@@ -347,9 +394,22 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
             ),
           ),
           onPressed: state.status == CompleteJobStatus.inProgress
+              // ||
+              //         state.job.beforeCompleteImageUrl == ''
               ? null
               : () async {
-                  await _showCompleteJobPopup(context);
+                  if (state.job.beforeCompleteImageUrl == '') {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Please add a before image of the issue first'),
+                        ),
+                      );
+                  } else {
+                    await _showCompleteJobPopup(context);
+                  }
                 },
           child: state.status == CompleteJobStatus.inProgress
               ? Center(
@@ -362,6 +422,46 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                 )
               : const Text(
                   "Complete Job",
+                  style: TextStyle(color: ConstColors.whiteColor),
+                ),
+        );
+      },
+    );
+  }
+
+  BlocBuilder<BeforeCompletionImageBloc, BeforeCompletionImageState>
+      beforeCompletionImageButton() {
+    return BlocBuilder<BeforeCompletionImageBloc, BeforeCompletionImageState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(ConstColors.backgroundColor),
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          ),
+          onPressed: state.status == BeforeCompletionImageStatus.inProgress
+              ? null
+              : () async {
+                  await _showAddBeforeCompletionImagePopup(context);
+                },
+          child: state.status == BeforeCompletionImageStatus.inProgress
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const CircularProgressIndicator(
+                      color: ConstColors.whiteColor,
+                    ),
+                  ),
+                )
+              : const Text(
+                  "Before Image",
                   style: TextStyle(color: ConstColors.whiteColor),
                 ),
         );
@@ -515,14 +615,123 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16),
                 ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context
+                              .read<CompleteJobBloc>()
+                              .add(const AfterCompletionImageChanged());
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: ConstColors.greyColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(7.r))),
+                            height: 200.h,
+                            width: double.maxFinite,
+                            child: state.imageToolFileBytes == null ||
+                                    state.imageToolFileNameFromFilePicker ==
+                                        null
+                                ? const Center(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.add_a_photo),
+                                        Text(
+                                          'Upload Image',
+                                          //style: kSmallBlackTextStyle,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(7.r)),
+                                    child: Image.memory(
+                                      state.imageToolFileBytes!,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  )),
+                      ),
+                      const SizedBox(height: 10),
+                      Form(
+                        key: formKey,
+                        child: TextFormField(
+                          initialValue: workDoneDescription,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter description of the work you have done';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                              errorMaxLines: 2, labelText: 'Work Description'),
+                          onChanged: (value) {
+                            workDoneDescription = value;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        checkConnectionFunc(context, () {
+                          context.read<CompleteJobBloc>().add(CompleteJob(
+                              workDoneDescription: workDoneDescription));
+                        });
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showAddBeforeCompletionImagePopup(
+      BuildContext blocContext) async {
+    return showDialog<void>(
+      context: blocContext,
+      builder: (BuildContext context) {
+        return BlocProvider.value(
+          value: blocContext.read<BeforeCompletionImageBloc>(),
+          child: BlocBuilder<BeforeCompletionImageBloc,
+              BeforeCompletionImageState>(
+            builder: (context, state) {
+              return AlertDialog(
+                title: const Text(
+                  'Upload an image showing the issue',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     GestureDetector(
                       onTap: () {
                         context
-                            .read<CompleteJobBloc>()
-                            .add(const AfterCompletionImageChanged());
+                            .read<BeforeCompletionImageBloc>()
+                            .add(const BeforeCompletionImageChanged());
                       },
                       child: Container(
                           decoration: BoxDecoration(
@@ -556,23 +765,6 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                   ),
                                 )),
                     ),
-                    const SizedBox(height: 10),
-                    Form(
-                      key: formKey,
-                      child: TextFormField(
-                        initialValue: workDoneDescription,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a reason';
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(labelText: 'Reason'),
-                        onChanged: (value) {
-                          workDoneDescription = value;
-                        },
-                      ),
-                    ),
                   ],
                 ),
                 actions: <Widget>[
@@ -584,13 +776,12 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        checkConnectionFunc(context, () {
-                          context.read<CompleteJobBloc>().add(CompleteJob(
-                              workDoneDescription: workDoneDescription));
-                        });
-                        Navigator.of(context).pop();
-                      }
+                      checkConnectionFunc(context, () {
+                        context
+                            .read<BeforeCompletionImageBloc>()
+                            .add(const UpdateJobWithBeforeImage());
+                      });
+                      Navigator.of(context).pop();
                     },
                     child: const Text('Submit'),
                   ),
@@ -603,49 +794,49 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
     );
   }
 
-  Widget imageSelectContainer(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () async {
-            context
-                .read<CompleteJobBloc>()
-                .add(const AfterCompletionImageChanged());
-          },
-          child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
-            builder: (context, state) {
-              return Container(
-                  decoration: BoxDecoration(
-                      color: ConstColors.greyColor,
-                      borderRadius: BorderRadius.all(Radius.circular(7.r))),
-                  height: 200.h,
-                  width: double.maxFinite,
-                  child: state.imageToolFileBytes == null ||
-                          state.imageToolFileNameFromFilePicker == null
-                      ? const Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_a_photo),
-                              Text(
-                                'Upload Image',
-                                //style: kSmallBlackTextStyle,
-                              )
-                            ],
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(7.r)),
-                          child: Image.memory(
-                            state.imageToolFileBytes!,
-                            fit: BoxFit.fill,
-                          ),
-                        ));
-            },
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget imageSelectContainer(BuildContext context) {
+  //   return Column(
+  //     children: [
+  //       GestureDetector(
+  //         onTap: () async {
+  //           context
+  //               .read<CompleteJobBloc>()
+  //               .add(const AfterCompletionImageChanged());
+  //         },
+  //         child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
+  //           builder: (context, state) {
+  //             return Container(
+  //                 decoration: BoxDecoration(
+  //                     color: ConstColors.greyColor,
+  //                     borderRadius: BorderRadius.all(Radius.circular(7.r))),
+  //                 height: 200.h,
+  //                 width: double.maxFinite,
+  //                 child: state.imageToolFileBytes == null ||
+  //                         state.imageToolFileNameFromFilePicker == null
+  //                     ? const Center(
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.center,
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             Icon(Icons.add_a_photo),
+  //                             Text(
+  //                               'Upload Image',
+  //                               //style: kSmallBlackTextStyle,
+  //                             )
+  //                           ],
+  //                         ),
+  //                       )
+  //                     : ClipRRect(
+  //                         borderRadius: BorderRadius.all(Radius.circular(7.r)),
+  //                         child: Image.memory(
+  //                           state.imageToolFileBytes!,
+  //                           fit: BoxFit.fill,
+  //                         ),
+  //                       ));
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

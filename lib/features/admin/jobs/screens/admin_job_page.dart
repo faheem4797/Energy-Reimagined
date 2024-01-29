@@ -99,20 +99,27 @@ class AdminJobPage extends StatelessWidget {
                                           ),
                                         ),
                                         onPressed: () {
+                                          final currentUserSteamList = context
+                                                  .read<UsersStreamBloc>()
+                                                  .state
+                                                  .userStream
+                                                  ?.where((user) =>
+                                                      user.role == 'technician')
+                                                  .toList() ??
+                                              [];
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   BlocProvider(
-                                                create: (context) => CreateJobBloc(
-                                                    jobsRepository: context
-                                                        .read<JobsRepository>(),
-                                                    currentUserStream: context
-                                                            .read<
-                                                                UsersStreamBloc>()
-                                                            .state
-                                                            .userStream ??
-                                                        []),
+                                                create: (context) =>
+                                                    CreateJobBloc(
+                                                        jobsRepository:
+                                                            context.read<
+                                                                JobsRepository>(),
+                                                        //TODO:
+                                                        currentUserStream:
+                                                            currentUserSteamList),
                                                 child:
                                                     const AdminCreateJobPage(),
                                               ),

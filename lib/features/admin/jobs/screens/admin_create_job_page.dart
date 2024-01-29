@@ -69,6 +69,51 @@ class AdminCreateJobPage extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 10),
+                  Text(
+                    ' Assigned Technician',
+                    style: TextStyle(fontSize: 13.sp, color: Colors.grey[800]),
+                  ),
+                  const SizedBox(height: 4.0),
+                  MultiSelectDropDown(
+                    showClearIcon: false,
+                    // selectedOptions: [
+                    //   ValueItem(
+                    //       label:
+                    //           '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
+                    //       value: oldTechnicianUserModel)
+                    // ],
+                    onOptionRemoved: (index, option) {},
+                    onOptionSelected: (options) {
+                      if (options.isNotEmpty) {
+                        context.read<CreateJobBloc>().add(TechnicianSelected(
+                            technician: options.first.value!));
+                      }
+                    },
+                    options: List.generate(
+                        context.read<CreateJobBloc>().currentUserStream.length,
+                        (index) => ValueItem(
+                            label:
+                                '${context.read<CreateJobBloc>().currentUserStream[index].firstName} ${context.read<CreateJobBloc>().currentUserStream[index].lastName} [${context.read<CreateJobBloc>().currentUserStream[index].employeeNumber}]',
+                            value: context
+                                .read<CreateJobBloc>()
+                                .currentUserStream[index])),
+                    selectionType: SelectionType.single,
+                    searchEnabled: true,
+                    chipConfig: const ChipConfig(
+                        wrapType: WrapType.scroll,
+                        backgroundColor: ConstColors.backgroundDarkColor),
+                    dropdownHeight: 300,
+                    optionTextStyle: const TextStyle(fontSize: 16),
+                    selectedOptionBackgroundColor:
+                        ConstColors.backgroundDarkColor,
+                    selectedOptionTextColor: ConstColors.whiteColor,
+                    selectedOptionIcon: const Icon(
+                      Icons.check_circle,
+                      color: ConstColors.whiteColor,
+                    ),
+                    hint: 'Select Technician',
+                  ),
+                  const SizedBox(height: 10.0),
                   BlocBuilder<CreateJobBloc, CreateJobState>(
                     buildWhen: (previous, current) =>
                         previous.job.locationName != current.job.locationName,
@@ -142,51 +187,6 @@ class AdminCreateJobPage extends StatelessWidget {
                         ),
                       );
                     },
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    ' Assigned Technician',
-                    style: TextStyle(fontSize: 13.sp, color: Colors.grey[800]),
-                  ),
-                  const SizedBox(height: 4.0),
-                  MultiSelectDropDown(
-                    showClearIcon: false,
-                    // selectedOptions: [
-                    //   ValueItem(
-                    //       label:
-                    //           '${oldTechnicianUserModel.firstName} ${oldTechnicianUserModel.lastName} [${oldTechnicianUserModel.employeeNumber}]',
-                    //       value: oldTechnicianUserModel)
-                    // ],
-                    onOptionRemoved: (index, option) {},
-                    onOptionSelected: (options) {
-                      if (options.isNotEmpty) {
-                        context.read<CreateJobBloc>().add(TechnicianSelected(
-                            technician: options.first.value!));
-                      }
-                    },
-                    options: List.generate(
-                        context.read<CreateJobBloc>().currentUserStream.length,
-                        (index) => ValueItem(
-                            label:
-                                '${context.read<CreateJobBloc>().currentUserStream[index].firstName} ${context.read<CreateJobBloc>().currentUserStream[index].lastName} [${context.read<CreateJobBloc>().currentUserStream[index].employeeNumber}]',
-                            value: context
-                                .read<CreateJobBloc>()
-                                .currentUserStream[index])),
-                    selectionType: SelectionType.single,
-                    searchEnabled: true,
-                    chipConfig: const ChipConfig(
-                        wrapType: WrapType.scroll,
-                        backgroundColor: ConstColors.backgroundDarkColor),
-                    dropdownHeight: 300,
-                    optionTextStyle: const TextStyle(fontSize: 16),
-                    selectedOptionBackgroundColor:
-                        ConstColors.backgroundDarkColor,
-                    selectedOptionTextColor: ConstColors.whiteColor,
-                    selectedOptionIcon: const Icon(
-                      Icons.check_circle,
-                      color: ConstColors.whiteColor,
-                    ),
-                    hint: 'Select Technician',
                   ),
                   const SizedBox(height: 10.0),
                   Center(
