@@ -1,7 +1,8 @@
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
-import 'package:energy_reimagined/features/technician/blocs/bloc/technician_qr_code_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/technician_qr_code_bloc/technician_qr_code_bloc.dart';
+import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,11 +84,16 @@ class TechnicianQRCodePage extends StatelessWidget {
                     ),
                     onPressed: state is TechnicianQrCodeLoading
                         ? null
-                        : () async {
-                            checkConnectionFunc(context, () {
-                              context
-                                  .read<TechnicianQrCodeBloc>()
-                                  .add(const ConfirmToolsDelivery());
+                        : () {
+                            checkConnectionFunc(context, () async {
+                              var confirm = await WillPopScoopService()
+                                  .showToolRequestConfirmationDialog(context);
+                              if (confirm) {
+                                if (!context.mounted) return;
+                                context
+                                    .read<TechnicianQrCodeBloc>()
+                                    .add(const ConfirmToolsDelivery());
+                              }
                             });
                           },
                     child: state is TechnicianQrCodeLoading

@@ -42,20 +42,57 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
       if (state.selectedToolsList.isNotEmpty) {
         final newSelectedToolsList =
             state.selectedToolsList.map((tool) => tool.id).toList();
-        final newAllRequestedToolsList = oldJobModel.allToolsRequested
-            .where((element) => element.isNotEmpty)
-            .toList();
-        for (var element in newSelectedToolsList) {
-          if (!newAllRequestedToolsList.contains(element)) {
-            newAllRequestedToolsList.add(element);
+        final List<int> newSelectedToolsQuantityList =
+            List.from(state.selectedToolsQuantityList);
+        final newAllRequestedToolsList =
+            state.allRequestedToolsList.map((tool) => tool.id).toList();
+        final List<int> newAllRequestedToolsQuantityList =
+            List.from(state.allRequestedToolsQuantityList);
+
+        // final newAllRequestedToolsList =
+        //     state.allRequestedToolsList //oldJobModel.allToolsRequested
+        //         .where((element) => element.isNotEmpty)
+        //         .toList();
+
+        for (int i = 0; i < newSelectedToolsList.length; i++) {
+          if (!newAllRequestedToolsList.contains(newSelectedToolsList[i])) {
+            newAllRequestedToolsList.add(newSelectedToolsList[i]);
+            newAllRequestedToolsQuantityList
+                .add(newSelectedToolsQuantityList[i]);
+          } else {
+            //if tool is new and first time requested
+            final index =
+                newAllRequestedToolsList.indexOf(newSelectedToolsList[i]);
+            if (index != -1) {
+              newAllRequestedToolsQuantityList[index] =
+                  newAllRequestedToolsQuantityList[index] +
+                      newSelectedToolsQuantityList[i];
+            }
           }
         }
+        //
+        //
+        //
+        // for (var element in newSelectedToolsList) {
+        //   if (!newAllRequestedToolsList.contains(element)) {
+        //     newAllRequestedToolsList.add(element);
+        //     newAllRequestedToolsQuantityList.add();
+        //     //TODO:
+        //   } else {
+        //     //if tool is new and first time requested
+        //   }
+        // }
+        print(newSelectedToolsList);
+        print(state.selectedToolsQuantityList);
+        print(newAllRequestedToolsList);
+        print(newAllRequestedToolsQuantityList);
 
         job_repository.JobModel newJobModel = oldJobModel.copyWith(
           currentToolsRequestQrCode: const Uuid().v1(),
           currentToolsRequestedIds: newSelectedToolsList,
           currentToolsRequestedQuantity: state.selectedToolsQuantityList,
           allToolsRequested: newAllRequestedToolsList,
+          allToolsRequestedQuantity: newAllRequestedToolsQuantityList,
           status: job_repository.JobStatus.onHold,
           holdReason: 'Tools Requested',
           holdTimestamp: currentTime,
