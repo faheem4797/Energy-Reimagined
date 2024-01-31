@@ -20,6 +20,7 @@ class CustomTextFormField extends StatelessWidget {
     this.errorText,
     this.initialValue,
     this.inputFormatters,
+    this.enabled,
   });
 
   final TextEditingController? controller;
@@ -37,6 +38,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? errorText;
   final String? initialValue;
   final List<TextInputFormatter>? inputFormatters;
+  final bool? enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,7 @@ class CustomTextFormField extends StatelessWidget {
               ),
         ),
         child: TextFormField(
+          enabled: enabled,
           initialValue: initialValue,
           maxLines: maxLines ?? 1,
           controller: controller,

@@ -456,25 +456,26 @@ class AdminJobPage extends StatelessWidget {
                                                                       BorderRadius.all(
                                                                           Radius.circular(
                                                                               7.r)),
-                                                                  child:
-                                                                      CachedNetworkImage(
-                                                                    fit: BoxFit
-                                                                        .fill,
-                                                                    imageUrl: jobs[
-                                                                            index]
-                                                                        .afterCompleteImageUrl,
-                                                                    placeholder: (context,
-                                                                            url) =>
-                                                                        const Center(
-                                                                            child:
-                                                                                CircularProgressIndicator()),
-                                                                    errorWidget: (context,
-                                                                            url,
-                                                                            error) =>
-                                                                        const Center(
-                                                                            child:
-                                                                                Text('Error loading image')),
-                                                                  ),
+                                                                  child: Text(
+                                                                      'Show image here'),
+                                                                  //     CachedNetworkImage(
+                                                                  //   fit: BoxFit
+                                                                  //       .fill,
+                                                                  //   imageUrl: jobs[
+                                                                  //           index]
+                                                                  //       .afterCompleteImageUrl,
+                                                                  //   placeholder: (context,
+                                                                  //           url) =>
+                                                                  //       const Center(
+                                                                  //           child:
+                                                                  //               CircularProgressIndicator()),
+                                                                  //   errorWidget: (context,
+                                                                  //           url,
+                                                                  //           error) =>
+                                                                  //       const Center(
+                                                                  //           child:
+                                                                  //               Text('Error loading image')),
+                                                                  // ),
                                                                 ),
                                                               ],
                                                             ),

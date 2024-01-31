@@ -48,32 +48,94 @@ class JobsRepository {
     }
   }
 
-  Future<void> setJobDataWithCompleteImage(
-      JobModel job,
-      String jobImagePathFromFilePicker,
-      String jobImageNameFromFilePicker,
-      String currentUserId) async {
+  // Future<void> setJobDataWithCompleteImage(
+  //     JobModel job,
+  //     String jobImagePathFromFilePicker,
+  //     String jobImageNameFromFilePicker,
+  //     String currentUserId) async {
+  //   try {
+  //     int randomNumber = Random().nextInt(100000) + 100000;
+
+  //     final jobRef = _firebaseStorage.ref().child(
+  //         'job_image/${job.id}/$randomNumber$jobImageNameFromFilePicker');
+  //     UploadTask jobUploadTask =
+  //         jobRef.putFile(File(jobImagePathFromFilePicker));
+
+  //     final jobSnapshot = await jobUploadTask.whenComplete(() => {});
+  //     final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
+  //     //TODO: CHECK THIS LATER
+  //     if (job.afterCompleteImageUrl != '') {
+  //       await FirebaseStorage.instance
+  //           .refFromURL(job.afterCompleteImageUrl)
+  //           .delete();
+  //     }
+  //     final JobModel newJob = job.copyWith(
+  //       status: JobStatus.completed,
+  //       completedTimestamp: DateTime.now().microsecondsSinceEpoch,
+  //       afterCompleteImageUrl: jobUrlDownload,
+  //     );
+
+  //     final mapOfUpdatedFields = job.getChangedFields(newJob);
+  //     final update = UpdateJobModel(
+  //         id: const Uuid().v1(),
+  //         updatedFields: mapOfUpdatedFields,
+  //         updatedBy: currentUserId,
+  //         updatedTimeStamp: DateTime.now().microsecondsSinceEpoch);
+  //     await _firebaseFirestore
+  //         .collection('jobs')
+  //         .doc(newJob.id)
+  //         .set(newJob.toMap());
+  //     await _firebaseFirestore
+  //         .collection('jobs')
+  //         .doc(newJob.id)
+  //         .collection('updates')
+  //         .doc(update.id)
+  //         .set(update.toMap());
+  //   } on FirebaseException catch (e) {
+  //     throw SetFirebaseDataFailure.fromCode(e.code);
+  //   } catch (_) {
+  //     throw const SetFirebaseDataFailure();
+  //   }
+  // }
+
+  Future<void> setJobImage(
+    JobModel job,
+    List<String> jobImagePathFromFilePicker,
+    List<String> jobImageNameFromFilePicker,
+    String currentUserId,
+    bool isBeforeImage,
+  ) async {
     try {
       int randomNumber = Random().nextInt(100000) + 100000;
+      List<String> jobImagesUrlDownload = [];
 
-      final jobRef = _firebaseStorage.ref().child(
-          'job_image/${job.id}/$randomNumber$jobImageNameFromFilePicker');
-      UploadTask jobUploadTask =
-          jobRef.putFile(File(jobImagePathFromFilePicker));
+      for (int i = 0; i < jobImagePathFromFilePicker.length; i++) {
+        final jobRef = _firebaseStorage.ref().child(
+            'job_image/${job.id}/$randomNumber${jobImageNameFromFilePicker[i]}');
+        UploadTask jobUploadTask =
+            jobRef.putFile(File(jobImagePathFromFilePicker[i]));
 
-      final jobSnapshot = await jobUploadTask.whenComplete(() => {});
-      final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
-      //TODO: CHECK THIS LATER
-      if (job.afterCompleteImageUrl != '') {
-        await FirebaseStorage.instance
-            .refFromURL(job.afterCompleteImageUrl)
-            .delete();
+        final jobSnapshot = await jobUploadTask.whenComplete(() => {});
+        final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
+        jobImagesUrlDownload.add(jobUrlDownload);
       }
-      final JobModel newJob = job.copyWith(
-        status: JobStatus.completed,
-        completedTimestamp: DateTime.now().microsecondsSinceEpoch,
-        afterCompleteImageUrl: jobUrlDownload,
-      );
+      if (isBeforeImage
+          ? job.beforeCompleteImageUrl.isNotEmpty
+          : job.afterCompleteImageUrl.isNotEmpty) {
+        for (var i in isBeforeImage
+            ? job.beforeCompleteImageUrl
+            : job.afterCompleteImageUrl) {
+          await FirebaseStorage.instance.refFromURL(i).delete();
+        }
+      }
+
+      final JobModel newJob = isBeforeImage
+          ? job.copyWith(
+              beforeCompleteImageUrl: jobImagesUrlDownload,
+            )
+          : job.copyWith(
+              afterCompleteImageUrl: jobImagesUrlDownload,
+            );
 
       final mapOfUpdatedFields = job.getChangedFields(newJob);
       final update = UpdateJobModel(
@@ -98,53 +160,53 @@ class JobsRepository {
     }
   }
 
-  Future<void> setJobDataWithBeforeImage(
-      JobModel job,
-      String jobImagePathFromFilePicker,
-      String jobImageNameFromFilePicker,
-      String currentUserId) async {
-    try {
-      int randomNumber = Random().nextInt(100000) + 100000;
+  // Future<void> setJobDataWithBeforeImage(
+  //     JobModel job,
+  //     String jobImagePathFromFilePicker,
+  //     String jobImageNameFromFilePicker,
+  //     String currentUserId) async {
+  //   try {
+  //     int randomNumber = Random().nextInt(100000) + 100000;
 
-      final jobRef = _firebaseStorage.ref().child(
-          'job_image/${job.id}/$randomNumber$jobImageNameFromFilePicker');
-      UploadTask jobUploadTask =
-          jobRef.putFile(File(jobImagePathFromFilePicker));
+  //     final jobRef = _firebaseStorage.ref().child(
+  //         'job_image/${job.id}/$randomNumber$jobImageNameFromFilePicker');
+  //     UploadTask jobUploadTask =
+  //         jobRef.putFile(File(jobImagePathFromFilePicker));
 
-      final jobSnapshot = await jobUploadTask.whenComplete(() => {});
-      final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
-      //TODO: CHECK THIS LATER
-      if (job.beforeCompleteImageUrl != '') {
-        await FirebaseStorage.instance
-            .refFromURL(job.beforeCompleteImageUrl)
-            .delete();
-      }
-      final JobModel newJob = job.copyWith(
-        beforeCompleteImageUrl: jobUrlDownload,
-      );
+  //     final jobSnapshot = await jobUploadTask.whenComplete(() => {});
+  //     final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
+  //     //TODO: CHECK THIS LATER
+  //     if (job.beforeCompleteImageUrl != '') {
+  //       await FirebaseStorage.instance
+  //           .refFromURL(job.beforeCompleteImageUrl)
+  //           .delete();
+  //     }
+  //     final JobModel newJob = job.copyWith(
+  //       beforeCompleteImageUrl: jobUrlDownload,
+  //     );
 
-      final mapOfUpdatedFields = job.getChangedFields(newJob);
-      final update = UpdateJobModel(
-          id: const Uuid().v1(),
-          updatedFields: mapOfUpdatedFields,
-          updatedBy: currentUserId,
-          updatedTimeStamp: DateTime.now().microsecondsSinceEpoch);
-      await _firebaseFirestore
-          .collection('jobs')
-          .doc(newJob.id)
-          .set(newJob.toMap());
-      await _firebaseFirestore
-          .collection('jobs')
-          .doc(newJob.id)
-          .collection('updates')
-          .doc(update.id)
-          .set(update.toMap());
-    } on FirebaseException catch (e) {
-      throw SetFirebaseDataFailure.fromCode(e.code);
-    } catch (_) {
-      throw const SetFirebaseDataFailure();
-    }
-  }
+  //     final mapOfUpdatedFields = job.getChangedFields(newJob);
+  //     final update = UpdateJobModel(
+  //         id: const Uuid().v1(),
+  //         updatedFields: mapOfUpdatedFields,
+  //         updatedBy: currentUserId,
+  //         updatedTimeStamp: DateTime.now().microsecondsSinceEpoch);
+  //     await _firebaseFirestore
+  //         .collection('jobs')
+  //         .doc(newJob.id)
+  //         .set(newJob.toMap());
+  //     await _firebaseFirestore
+  //         .collection('jobs')
+  //         .doc(newJob.id)
+  //         .collection('updates')
+  //         .doc(update.id)
+  //         .set(update.toMap());
+  //   } on FirebaseException catch (e) {
+  //     throw SetFirebaseDataFailure.fromCode(e.code);
+  //   } catch (_) {
+  //     throw const SetFirebaseDataFailure();
+  //   }
+  // }
 
   Future<void> updateJobData(JobModel currentJobModel, JobModel oldJobModel,
       UpdateJobModel updateModel) async {

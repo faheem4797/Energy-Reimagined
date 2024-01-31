@@ -52,8 +52,8 @@ class JobModel extends Equatable {
   final int startedTimestamp;
   final int holdTimestamp;
   final int completedTimestamp;
-  final String beforeCompleteImageUrl;
-  final String afterCompleteImageUrl;
+  final List<String> beforeCompleteImageUrl;
+  final List<String> afterCompleteImageUrl;
   final String workDoneDescription;
   final int flagCounter;
   const JobModel({
@@ -110,8 +110,8 @@ class JobModel extends Equatable {
     startedTimestamp: 0,
     holdTimestamp: 0,
     completedTimestamp: 0,
-    beforeCompleteImageUrl: '',
-    afterCompleteImageUrl: '',
+    beforeCompleteImageUrl: [],
+    afterCompleteImageUrl: [],
     workDoneDescription: '',
     flagCounter: 0,
   );
@@ -140,8 +140,8 @@ class JobModel extends Equatable {
     int? startedTimestamp,
     int? holdTimestamp,
     int? completedTimestamp,
-    String? beforeCompleteImageUrl,
-    String? afterCompleteImageUrl,
+    List<String>? beforeCompleteImageUrl,
+    List<String>? afterCompleteImageUrl,
     String? workDoneDescription,
     int? flagCounter,
   }) {
@@ -254,8 +254,8 @@ class JobModel extends Equatable {
       startedTimestamp: map['startedTimestamp']?.toInt() ?? 0,
       holdTimestamp: map['holdTimestamp']?.toInt() ?? 0,
       completedTimestamp: map['completedTimestamp']?.toInt() ?? 0,
-      beforeCompleteImageUrl: map['beforeCompleteImageUrl'] ?? '',
-      afterCompleteImageUrl: map['afterCompleteImageUrl'] ?? '',
+      beforeCompleteImageUrl: List<String>.from(map['beforeCompleteImageUrl']),
+      afterCompleteImageUrl: List<String>.from(map['afterCompleteImageUrl']),
       workDoneDescription: map['workDoneDescription'] ?? '',
       flagCounter: map['flagCounter']?.toInt() ?? 0,
     );
