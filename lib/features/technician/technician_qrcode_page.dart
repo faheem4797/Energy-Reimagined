@@ -1,4 +1,6 @@
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/constants/helper_functions.dart';
+import 'package:energy_reimagined/features/technician/blocs/bloc/technician_qr_code_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +29,9 @@ class TechnicianQRCodePage extends StatelessWidget {
                 ),
               );
             Future.delayed(const Duration(seconds: 2), () {
-              Navigator.of(context).pop();
+              Navigator.of(context)
+                ..pop()
+                ..pop();
             });
           }
         }
@@ -48,12 +52,55 @@ class TechnicianQRCodePage extends StatelessWidget {
         ),
         body: Container(
           color: ConstColors.whiteColor,
-          child: Center(
-            child: QrImageView(
-              data: jobModel.currentToolsRequestQrCode,
-              version: QrVersions.auto,
-              size: 200.r,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Spacer(),
+              Center(
+                child: QrImageView(
+                  data: jobModel.currentToolsRequestQrCode,
+                  version: QrVersions.auto,
+                  size: 200.r,
+                ),
+              ),
+              const Spacer(),
+              BlocBuilder<TechnicianQrCodeBloc, TechnicianQrCodeState>(
+                builder: (context, state) {
+                  return ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          ConstColors.foregroundColor),
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: state is TechnicianQrCodeLoading
+                        ? null
+                        : () async {
+                            checkConnectionFunc(context, () {
+                              context
+                                  .read<TechnicianQrCodeBloc>()
+                                  .add(const ConfirmToolsDelivery());
+                            });
+                          },
+                    child: state is TechnicianQrCodeLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : const Text(
+                            "Confirm Tool Request Manually",
+                            style: TextStyle(color: ConstColors.blackColor),
+                          ),
+                  );
+                },
+              ),
+              SizedBox(height: 20.h),
+            ],
           ),
         ),
       ),

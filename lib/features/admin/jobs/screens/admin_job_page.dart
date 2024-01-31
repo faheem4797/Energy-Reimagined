@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/tool_request_bloc/tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
@@ -456,8 +457,42 @@ class AdminJobPage extends StatelessWidget {
                                                                       BorderRadius.all(
                                                                           Radius.circular(
                                                                               7.r)),
-                                                                  child: Text(
-                                                                      'Show image here'),
+                                                                  //TODO:
+                                                                  child:
+                                                                      CarouselSlider(
+                                                                    options:
+                                                                        CarouselOptions(
+                                                                      enableInfiniteScroll:
+                                                                          false,
+                                                                    ),
+                                                                    items: jobs[
+                                                                            index]
+                                                                        .afterCompleteImageUrl
+                                                                        .map(
+                                                                            (i) {
+                                                                      return Builder(
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return Container(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width,
+                                                                            margin:
+                                                                                EdgeInsets.symmetric(horizontal: 5.w),
+                                                                            child:
+                                                                                CachedNetworkImage(
+                                                                              fit: BoxFit.fill,
+                                                                              imageUrl: i,
+                                                                              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                                              errorWidget: (context, url, error) => const Center(child: Text('Error loading image')),
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    }).toList(),
+                                                                  ),
+                                                                  // Text(
+                                                                  //     'Show image here'),
                                                                   //     CachedNetworkImage(
                                                                   //   fit: BoxFit
                                                                   //       .fill,

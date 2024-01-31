@@ -7,6 +7,7 @@ import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_request_tools.dart';
 import 'package:energy_reimagined/widgets/custom_textfield.dart';
@@ -786,13 +787,23 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         Navigator.push(
           mainContext,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => ToolsRequestBloc(
-                  toolsRepository: context.read<ToolsRepository>(),
-                  jobsRepository: context.read<JobsRepository>(),
-                  oldJobModel: jobModel,
-                  userId:
-                      context.read<AuthenticationBloc>().state.userModel!.id),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => ToolsRequestBloc(
+                      toolsRepository: context.read<ToolsRepository>(),
+                      jobsRepository: context.read<JobsRepository>(),
+                      oldJobModel: jobModel,
+                      userId: context
+                          .read<AuthenticationBloc>()
+                          .state
+                          .userModel!
+                          .id),
+                ),
+                BlocProvider.value(
+                  value: context.read<TechnicianJobsStreamBloc>(),
+                ),
+              ],
               child: const TechnicianRequestToolsPage(),
             ),
           ),
@@ -916,13 +927,23 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         Navigator.push(
           mainContext,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => ToolsRequestBloc(
-                  toolsRepository: context.read<ToolsRepository>(),
-                  jobsRepository: context.read<JobsRepository>(),
-                  oldJobModel: jobModel,
-                  userId:
-                      context.read<AuthenticationBloc>().state.userModel!.id),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => ToolsRequestBloc(
+                      toolsRepository: context.read<ToolsRepository>(),
+                      jobsRepository: context.read<JobsRepository>(),
+                      oldJobModel: jobModel,
+                      userId: context
+                          .read<AuthenticationBloc>()
+                          .state
+                          .userModel!
+                          .id),
+                ),
+                BlocProvider.value(
+                  value: mainContext.read<TechnicianJobsStreamBloc>(),
+                ),
+              ],
               child: const TechnicianRequestToolsPage(),
             ),
           ),

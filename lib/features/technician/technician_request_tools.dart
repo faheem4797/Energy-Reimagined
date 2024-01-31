@@ -1,14 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
+import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/bloc/technician_qr_code_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
+import 'package:energy_reimagined/features/technician/technician_qrcode_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class TechnicianRequestToolsPage extends StatelessWidget {
-  const TechnicianRequestToolsPage({super.key});
+  // final JobModel jobModel;
+  const TechnicianRequestToolsPage(
+      {
+      //required this.jobModel,
+      super.key});
 
   //TODO: SHIFT THE BUTTON FROM THE APPBAR TO THE LOWER SIDE OF SCREEN WHICH IS ALWAYS VISIBLE.
   //TODO: ADD ANOTHER BUTTON THAT SHOWS QR CODE OR MANUALLY CONFIRMING THAT TECHNICAN RECEIVED TOOLS
@@ -145,29 +154,9 @@ class TechnicianRequestToolsPage extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: ConstColors.whiteColor,
         ),
-        actions: <Widget>[
-          BlocBuilder<ToolsRequestBloc, ToolsRequestState>(
-            builder: (context, state) {
-              return IconButton(
-                icon: const Icon(
-                  Icons.remove_from_queue,
-                  color: ConstColors.whiteColor,
-                ),
-                onPressed: state.status == ToolsRequestStatus.inProgress
-                    ? null
-                    : () async {
-                        _showToolsPopup(context);
-                        // if (!context.mounted) return;
-                        // checkConnectionFunc(context, () {
-                        //   context
-                        //       .read<ToolsRequestBloc>()
-                        //       .add(RequestSelectedTools());
-                        // });
-                      },
-              );
-            },
-          ),
-        ],
+        // actions: <Widget>[
+
+        // ],
       ),
       body: BlocConsumer<ToolsRequestBloc, ToolsRequestState>(
         listener: (context, state) {
@@ -198,119 +187,241 @@ class TechnicianRequestToolsPage extends StatelessWidget {
                     )
                   : Column(
                       children: [
-                        // state.selectedToolsList.isEmpty
-                        //     ? Container()
-                        //     : SizedBox(
-                        //         height: 50,
-                        //         child: ListView(
-                        //           scrollDirection: Axis.horizontal,
-                        //           children: state.selectedToolsList
-                        //               .map((tool) => Padding(
-                        //                     padding: EdgeInsets.symmetric(
-                        //                         horizontal: 8.w),
-                        //                     child: Chip(
-                        //                       label: Text(tool.name),
-                        //                     ),
-                        //                   ))
-                        //               .toList(),
-                        //         ),
-                        //       ),
                         Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: state.toolsList.length,
-                            itemBuilder: (context, index) {
-                              ToolModel tool = state.toolsList[index];
-                              bool isSelected =
-                                  state.selectedToolsList.contains(tool);
+                          child: Column(
+                            children: [
+                              // state.selectedToolsList.isEmpty
+                              //     ? Container()
+                              //     : SizedBox(
+                              //         height: 50,
+                              //         child: ListView(
+                              //           scrollDirection: Axis.horizontal,
+                              //           children: state.selectedToolsList
+                              //               .map((tool) => Padding(
+                              //                     padding: EdgeInsets.symmetric(
+                              //                         horizontal: 8.w),
+                              //                     child: Chip(
+                              //                       label: Text(tool.name),
+                              //                     ),
+                              //                   ))
+                              //               .toList(),
+                              //         ),
+                              //       ),
+                              Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: state.toolsList.length,
+                                  itemBuilder: (context, index) {
+                                    ToolModel tool = state.toolsList[index];
+                                    bool isSelected =
+                                        state.selectedToolsList.contains(tool);
 
-                              return Card(
-                                color: ConstColors.backgroundColor,
-                                elevation: 4,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ExpansionTile(
-                                  expandedCrossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  leading: CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        tool.imageUrl),
-                                  ),
-                                  title: RichText(
-                                    text: TextSpan(
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: tool.name,
-                                          style: const TextStyle(
-                                            color: ConstColors.whiteColor,
-                                            fontWeight: FontWeight.bold,
+                                    return Card(
+                                      color: ConstColors.backgroundColor,
+                                      elevation: 4,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ExpansionTile(
+                                        expandedCrossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        leading: CircleAvatar(
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                                  tool.imageUrl),
+                                        ),
+                                        title: RichText(
+                                          text: TextSpan(
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: tool.name,
+                                                style: const TextStyle(
+                                                  color: ConstColors.whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    '${'  [${tool.category}'}]',
+                                                style: const TextStyle(
+                                                  color: ConstColors.whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        TextSpan(
-                                          text: '${'  [${tool.category}'}]',
+                                        subtitle: Text(
+                                          'Available Quantity: ${tool.quantity.toString()}',
                                           style: const TextStyle(
                                             color: ConstColors.whiteColor,
-                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    'Available Quantity: ${tool.quantity.toString()}',
-                                    style: const TextStyle(
-                                      color: ConstColors.whiteColor,
-                                    ),
-                                  ),
-                                  trailing: Checkbox(
-                                    activeColor:
-                                        ConstColors.backgroundDarkColor,
-                                    value: isSelected,
-                                    onChanged: (value) {
-                                      if (value!) {
-                                        context.read<ToolsRequestBloc>().add(
-                                            AddSelectedTool(
-                                                tool: tool, toolQuantity: 1));
-                                      } else {
-                                        context.read<ToolsRequestBloc>().add(
-                                            RemoveSelectedTool(tool: tool));
-                                      }
-                                    },
-                                  ),
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0, vertical: 8),
-                                      child: Text(
-                                        tool.description,
-                                        textAlign: TextAlign.left,
-                                        style: const TextStyle(
-                                          color: ConstColors.whiteColor,
+                                        trailing: Checkbox(
+                                          activeColor:
+                                              ConstColors.backgroundDarkColor,
+                                          value: isSelected,
+                                          onChanged: (value) {
+                                            if (value!) {
+                                              context
+                                                  .read<ToolsRequestBloc>()
+                                                  .add(AddSelectedTool(
+                                                      tool: tool,
+                                                      toolQuantity: 1));
+                                            } else {
+                                              context
+                                                  .read<ToolsRequestBloc>()
+                                                  .add(RemoveSelectedTool(
+                                                      tool: tool));
+                                            }
+                                          },
                                         ),
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16.0, vertical: 8),
+                                            child: Text(
+                                              tool.description,
+                                              textAlign: TextAlign.left,
+                                              style: const TextStyle(
+                                                color: ConstColors.whiteColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: CachedNetworkImage(
+                                                imageUrl: tool.imageUrl),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: CachedNetworkImage(
-                                          imageUrl: tool.imageUrl),
-                                    ),
-                                  ],
+                                    );
+                                  },
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           ),
                         ),
+                        context
+                                    .read<ToolsRequestBloc>()
+                                    .oldJobModel
+                                    .currentToolsRequestQrCode ==
+                                ''
+                            ? Center(
+                                child: requestToolsButton(),
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  requestToolsButton(),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              ConstColors.foregroundColor),
+                                      padding: MaterialStateProperty.all<
+                                          EdgeInsetsGeometry>(
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 14, vertical: 10),
+                                      ),
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      final jobStreamProvider = context
+                                          .read<TechnicianJobsStreamBloc>();
+
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MultiBlocProvider(
+                                                    providers: [
+                                                      BlocProvider.value(
+                                                        value:
+                                                            jobStreamProvider,
+                                                      ),
+                                                      BlocProvider(
+                                                          create: (context) =>
+                                                              TechnicianQrCodeBloc(
+                                                                jobsRepository:
+                                                                    context.read<
+                                                                        JobsRepository>(),
+                                                                jobModel: blocContext
+                                                                    .read<
+                                                                        ToolsRequestBloc>()
+                                                                    .oldJobModel,
+                                                                userId: context
+                                                                    .read<
+                                                                        AuthenticationBloc>()
+                                                                    .state
+                                                                    .userModel!
+                                                                    .id,
+                                                              )),
+                                                    ],
+                                                    child: TechnicianQRCodePage(
+                                                      jobModel: blocContext
+                                                          .read<
+                                                              ToolsRequestBloc>()
+                                                          .oldJobModel,
+                                                    ),
+                                                  )));
+                                    },
+                                    child: const Text(
+                                      "QR Code",
+                                      style: TextStyle(
+                                          color: ConstColors.blackColor),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        SizedBox(height: 20.h),
                       ],
                     );
         },
       ),
+    );
+  }
+
+  BlocBuilder<ToolsRequestBloc, ToolsRequestState> requestToolsButton() {
+    return BlocBuilder<ToolsRequestBloc, ToolsRequestState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(ConstColors.foregroundColor),
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          ),
+          onPressed: state.status == ToolsRequestStatus.inProgress
+              ? null
+              : () async {
+                  _showToolsPopup(context);
+                },
+          child: const Text(
+            "Request Tools",
+            style: TextStyle(color: ConstColors.blackColor),
+          ),
+        );
+      },
     );
   }
 }
