@@ -1,5 +1,6 @@
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/accept_job_bloc/accept_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc/add_after_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_work_description_bloc/add_work_description_bloc.dart';
@@ -138,6 +139,17 @@ class TechnicianDashboard extends StatelessWidget {
                                                                 providers: [
                                                                   BlocProvider(
                                                                       create: (context) => RejectJobBloc(
+                                                                          jobsRepository: context.read<
+                                                                              JobsRepository>(),
+                                                                          oldJobModel: jobs[
+                                                                              index],
+                                                                          userId: context
+                                                                              .read<AuthenticationBloc>()
+                                                                              .state
+                                                                              .userModel!
+                                                                              .id)),
+                                                                  BlocProvider(
+                                                                      create: (context) => AcceptJobBloc(
                                                                           jobsRepository: context.read<
                                                                               JobsRepository>(),
                                                                           oldJobModel: jobs[

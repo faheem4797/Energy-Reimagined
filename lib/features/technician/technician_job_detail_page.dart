@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/accept_job_bloc/accept_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc/add_after_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_work_description_bloc/add_work_description_bloc.dart';
@@ -830,30 +831,34 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         ),
       ),
       onPressed: () {
-        Navigator.push(
-          mainContext,
-          MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => ToolsRequestBloc(
-                      toolsRepository: context.read<ToolsRepository>(),
-                      jobsRepository: context.read<JobsRepository>(),
-                      oldJobModel: jobModel,
-                      userId: context
-                          .read<AuthenticationBloc>()
-                          .state
-                          .userModel!
-                          .id),
-                ),
-                BlocProvider.value(
-                  value: context.read<TechnicianJobsStreamBloc>(),
-                ),
-              ],
-              child: const TechnicianRequestToolsPage(),
-            ),
-          ),
-        );
+        checkConnectionFunc(context, () {
+          context.read<AcceptJobBloc>().add(const AcceptJob());
+        });
+        // Navigator.push(
+        //   mainContext,
+        //   MaterialPageRoute(
+        //     builder: (context) => MultiBlocProvider(
+        //       providers: [
+        //         BlocProvider(
+        //           create: (context) => ToolsRequestBloc(
+        //               toolsRepository: context.read<ToolsRepository>(),
+        //               jobsRepository: context.read<JobsRepository>(),
+        //               oldJobModel: jobModel,
+        //               userId: context
+        //                   .read<AuthenticationBloc>()
+        //                   .state
+        //                   .userModel!
+        //                   .id),
+        //         ),
+        //         //TODO: NOT GETTING STREAMBLOC
+        //         BlocProvider.value(
+        //           value: mainContext.read<TechnicianJobsStreamBloc>(),
+        //         ),
+        //       ],
+        //       child: const TechnicianRequestToolsPage(),
+        //     ),
+        //   ),
+        // );
       },
       child: const Text(
         "Accept Job",
