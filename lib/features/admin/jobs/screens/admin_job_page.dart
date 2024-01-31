@@ -113,14 +113,11 @@ class AdminJobPage extends StatelessWidget {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   BlocProvider(
-                                                create: (context) =>
-                                                    CreateJobBloc(
-                                                        jobsRepository:
-                                                            context.read<
-                                                                JobsRepository>(),
-                                                        //TODO:
-                                                        currentUserStream:
-                                                            currentUserSteamList),
+                                                create: (context) => CreateJobBloc(
+                                                    jobsRepository: context
+                                                        .read<JobsRepository>(),
+                                                    currentUserStream:
+                                                        currentUserSteamList),
                                                 child:
                                                     const AdminCreateJobPage(),
                                               ),
@@ -457,7 +454,7 @@ class AdminJobPage extends StatelessWidget {
                                                                       BorderRadius.all(
                                                                           Radius.circular(
                                                                               7.r)),
-                                                                  //TODO:
+
                                                                   child:
                                                                       CarouselSlider(
                                                                     options:

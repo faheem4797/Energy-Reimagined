@@ -26,7 +26,6 @@ class JobDetailBloc extends Bloc<JobDetailEvent, JobDetailState> {
 
   FutureOr<void> _getCurrentJobStream(
       GetCurrentJobStream event, Emitter<JobDetailState> emit) {
-    print('something new');
     try {
       emit(JobDetailState.success(
         event.job,

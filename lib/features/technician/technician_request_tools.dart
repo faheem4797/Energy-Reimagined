@@ -19,9 +19,6 @@ class TechnicianRequestToolsPage extends StatelessWidget {
       //required this.jobModel,
       super.key});
 
-  //TODO: SHIFT THE BUTTON FROM THE APPBAR TO THE LOWER SIDE OF SCREEN WHICH IS ALWAYS VISIBLE.
-  //TODO: ADD ANOTHER BUTTON THAT SHOWS QR CODE OR MANUALLY CONFIRMING THAT TECHNICAN RECEIVED TOOLS
-
   Future<void> _showToolsPopup(BuildContext blocContext) async {
     return showDialog<void>(
       context: blocContext,

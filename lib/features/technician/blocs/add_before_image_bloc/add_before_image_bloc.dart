@@ -12,7 +12,6 @@ part 'add_before_image_state.dart';
 class AddBeforeImageBloc
     extends Bloc<AddBeforeImageEvent, AddBeforeImageState> {
   final JobsRepository _jobsRepository;
-
   final String userId;
   AddBeforeImageBloc(
       {required JobsRepository jobsRepository, required this.userId})
@@ -28,7 +27,6 @@ class AddBeforeImageBloc
     final List<XFile> imageList = await picker.pickMultiImage();
     emit(state.copyWith(status: AddBeforeImageStatus.inProgress));
 
-    print(state.status);
     final List<String> imageNames = [];
     final List<String> imageFilePaths = [];
 

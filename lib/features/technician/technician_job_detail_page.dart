@@ -5,6 +5,8 @@ import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc/add_after_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/add_work_description_bloc/add_work_description_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
@@ -18,11 +20,8 @@ import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class TechnicianJobDetailPage extends StatefulWidget {
-  // final JobModel jobModel;
-  const TechnicianJobDetailPage(
-      {
-      // required this.jobModel,
-      super.key});
+  final JobModel job;
+  const TechnicianJobDetailPage({required this.job, super.key});
 
   @override
   State<TechnicianJobDetailPage> createState() =>
@@ -30,6 +29,14 @@ class TechnicianJobDetailPage extends StatefulWidget {
 }
 
 class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
+  final TextEditingController myController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    myController.text = widget.job.workDoneDescription;
+  }
+
   @override
   Widget build(BuildContext mainContext) {
     return BlocBuilder<JobDetailBloc, JobDetailState>(
@@ -70,33 +77,58 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                 );
                             }
                             if (state is RejectJobSuccess) {
-                              Navigator.of(context).pop();
+                              // Navigator.of(context).pop();
                             }
                           },
                         ),
-                        // BlocListener<CompleteJobBloc, CompleteJobState>(
-                        //     listener: (context, state) {
-                        //   if (state.status == CompleteJobStatus.failure) {
-                        //     ScaffoldMessenger.of(context)
-                        //       ..hideCurrentSnackBar()
-                        //       ..showSnackBar(
-                        //         SnackBar(
-                        //           content: Text(state.errorMessage ??
-                        //               'Failed to Upload iamge'),
-                        //         ),
-                        //       );
-                        //   } else if (state.status ==
-                        //       CompleteJobStatus.success) {
-                        //     ScaffoldMessenger.of(context)
-                        //       ..hideCurrentSnackBar()
-                        //       ..showSnackBar(
-                        //         const SnackBar(
-                        //           content: Text('Job Completed Successfully'),
-                        //         ),
-                        //       );
-                        //     Navigator.of(context).pop();
-                        //   }
-                        // }),
+                        BlocListener<AddWorkDescriptionBloc,
+                                AddWorkDescriptionState>(
+                            listener: (context, state) {
+                          if (state.status ==
+                              AddWorkDescriptionStatus.failure) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: Text(state.errorMessage ??
+                                      'Error Occured While Uploading Work Description'),
+                                ),
+                              );
+                          } else if (state.status ==
+                              AddWorkDescriptionStatus.success) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Work Description Uploaded Successfully'),
+                                ),
+                              );
+                          }
+                        }),
+                        BlocListener<CompleteJobBloc, CompleteJobState>(
+                            listener: (context, state) {
+                          if (state.status == CompleteJobStatus.failure) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: Text(state.errorMessage ??
+                                      'Error Occured While Completing Job'),
+                                ),
+                              );
+                          } else if (state.status ==
+                              CompleteJobStatus.success) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                const SnackBar(
+                                  content: Text('Job Completed Successfully'),
+                                ),
+                              );
+                            // Navigator.of(context).pop();
+                          }
+                        }),
                         BlocListener<AddBeforeImageBloc, AddBeforeImageState>(
                             listener: (context, state) {
                           if (state.status == AddBeforeImageStatus.failure) {
@@ -502,7 +534,6 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        //TODO: ADD BEFORE WORK IMAGE HERE
                                         Visibility(
                                           visible: jobDetailState.job.status ==
                                                   JobStatus.workInProgress ||
@@ -605,7 +636,7 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                               color: ConstColors.blackColor,
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.bold),
-                                        ), //TODO: ADD AFTER WORK IMAGE HERE
+                                        ),
                                         Visibility(
                                           visible: jobDetailState.job.status ==
                                                   JobStatus.workInProgress ||
@@ -699,19 +730,33 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                     JobStatus.assigned,
                                 child: CustomTextFormField(
                                   labelText: 'Work Description',
+                                  controller: myController,
                                   enabled: jobDetailState.job.status ==
                                           JobStatus.workInProgress ||
                                       jobDetailState.job.status ==
                                           JobStatus.onHold,
-                                  initialValue:
-                                      'WORK DESCRIPTION WILL COME HERE',
-                                  hintText: '',
+                                  // initialValue:
+                                  //     jobDetailState.job.workDoneDescription,
                                   suffixIcon: jobDetailState.job.status ==
                                               JobStatus.workInProgress ||
                                           jobDetailState.job.status ==
                                               JobStatus.onHold
                                       ? IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                            checkConnectionFunc(context, () {
+                                              context
+                                                  .read<
+                                                      AddWorkDescriptionBloc>()
+                                                  .add(
+                                                      UpdateJobWithWorkDescription(
+                                                          workDescription:
+                                                              myController.text,
+                                                          job: jobDetailState
+                                                              .job));
+                                            });
+                                          },
                                           icon: const Icon(Icons.add_circle))
                                       : null,
                                 ),
@@ -751,7 +796,8 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                // completeJobButton(),
+                                                completeJobButton(
+                                                    jobDetailState.job),
                                                 rejectJobButton(),
                                               ],
                                             )
@@ -816,57 +862,47 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
     );
   }
 
-  // BlocBuilder<CompleteJobBloc, CompleteJobState> completeJobButton() {
-  //   return BlocBuilder<CompleteJobBloc, CompleteJobState>(
-  //     builder: (context, state) {
-  //       return ElevatedButton(
-  //         style: ButtonStyle(
-  //           backgroundColor:
-  //               MaterialStateProperty.all<Color>(ConstColors.greenColor),
-  //           padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-  //             const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-  //           ),
-  //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-  //             RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8.0),
-  //             ),
-  //           ),
-  //         ),
-  //         onPressed: state.status == CompleteJobStatus.inProgress
-  //             // ||
-  //             //         state.job.beforeCompleteImageUrl == ''
-  //             ? null
-  //             : () async {
-  //                 if (state.job.beforeCompleteImageUrl == '') {
-  //                   ScaffoldMessenger.of(context)
-  //                     ..hideCurrentSnackBar()
-  //                     ..showSnackBar(
-  //                       const SnackBar(
-  //                         content: Text(
-  //                             'Please add a before image of the issue first'),
-  //                       ),
-  //                     );
-  //                 } else {
-  //                   await _showCompleteJobPopup(context);
-  //                 }
-  //               },
-  //         child: state.status == CompleteJobStatus.inProgress
-  //             ? Center(
-  //                 child: Padding(
-  //                   padding: EdgeInsets.symmetric(horizontal: 16.w),
-  //                   child: const CircularProgressIndicator(
-  //                     color: ConstColors.whiteColor,
-  //                   ),
-  //                 ),
-  //               )
-  //             : const Text(
-  //                 "Complete Job",
-  //                 style: TextStyle(color: ConstColors.whiteColor),
-  //               ),
-  //       );
-  //     },
-  //   );
-  // }
+  BlocBuilder<CompleteJobBloc, CompleteJobState> completeJobButton(
+      JobModel job) {
+    return BlocBuilder<CompleteJobBloc, CompleteJobState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(ConstColors.greenColor),
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          ),
+          onPressed: state.status == CompleteJobStatus.inProgress
+              ? null
+              : () async {
+                  checkConnectionFunc(context, () {
+                    context.read<CompleteJobBloc>().add(CompleteJob(job: job));
+                  });
+                },
+          child: state.status == CompleteJobStatus.inProgress
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const CircularProgressIndicator(
+                      color: ConstColors.whiteColor,
+                    ),
+                  ),
+                )
+              : const Text(
+                  "Complete Job",
+                  style: TextStyle(color: ConstColors.whiteColor),
+                ),
+        );
+      },
+    );
+  }
 
   // BlocBuilder<BeforeCompletionImageBloc, BeforeCompletionImageState>
   //     beforeCompletionImageButton() {

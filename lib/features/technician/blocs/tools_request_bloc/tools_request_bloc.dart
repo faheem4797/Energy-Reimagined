@@ -70,22 +70,11 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
             }
           }
         }
-        //
-        //
-        //
-        // for (var element in newSelectedToolsList) {
-        //   if (!newAllRequestedToolsList.contains(element)) {
-        //     newAllRequestedToolsList.add(element);
-        //     newAllRequestedToolsQuantityList.add();
-        //     //TODO:
-        //   } else {
-        //     //if tool is new and first time requested
-        //   }
-        // }
-        print(newSelectedToolsList);
-        print(state.selectedToolsQuantityList);
-        print(newAllRequestedToolsList);
-        print(newAllRequestedToolsQuantityList);
+
+        // print(newSelectedToolsList);
+        // print(state.selectedToolsQuantityList);
+        // print(newAllRequestedToolsList);
+        // print(newAllRequestedToolsQuantityList);
 
         job_repository.JobModel newJobModel = oldJobModel.copyWith(
           currentToolsRequestQrCode: const Uuid().v1(),

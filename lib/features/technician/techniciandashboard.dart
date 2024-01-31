@@ -2,6 +2,8 @@ import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc/add_after_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/add_work_description_bloc/add_work_description_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
@@ -146,6 +148,16 @@ class TechnicianDashboard extends StatelessWidget {
                                                                               .userModel!
                                                                               .id)),
                                                                   BlocProvider(
+                                                                      create: (context) => CompleteJobBloc(
+                                                                          jobsRepository: context.read<
+                                                                              JobsRepository>(),
+                                                                          userId: context
+                                                                              .read<AuthenticationBloc>()
+                                                                              .state
+                                                                              .userModel!
+                                                                              .id)),
+
+                                                                  BlocProvider(
                                                                       create: (context) => AddAfterImageBloc(
                                                                           jobsRepository: context.read<
                                                                               JobsRepository>(),
@@ -156,6 +168,15 @@ class TechnicianDashboard extends StatelessWidget {
                                                                               .id)),
                                                                   BlocProvider(
                                                                       create: (context) => AddBeforeImageBloc(
+                                                                          jobsRepository: context.read<
+                                                                              JobsRepository>(),
+                                                                          userId: context
+                                                                              .read<AuthenticationBloc>()
+                                                                              .state
+                                                                              .userModel!
+                                                                              .id)),
+                                                                  BlocProvider(
+                                                                      create: (context) => AddWorkDescriptionBloc(
                                                                           jobsRepository: context.read<
                                                                               JobsRepository>(),
                                                                           userId: context
@@ -202,8 +223,9 @@ class TechnicianDashboard extends StatelessWidget {
                                                                   //
                                                                   //
                                                                 ],
-                                                                child:
-                                                                    const TechnicianJobDetailPage(),
+                                                                child: TechnicianJobDetailPage(
+                                                                    job: jobs[
+                                                                        index]),
                                                               )));
                                             },
                                             child: Card(
