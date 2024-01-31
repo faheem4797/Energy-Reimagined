@@ -2,9 +2,12 @@ import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/before_completion_image_bloc/before_completion_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_job_detail_page.dart';
+// import 'package:energy_reimagined/features/technician/old_technician_job_detail_page.dart';
 import 'package:energy_reimagined/features/technician/technician_qrcode_page.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:tools_repository/tools_repository.dart';
 
 class TechnicianDashboard extends StatelessWidget {
   const TechnicianDashboard({super.key});
@@ -162,13 +166,42 @@ class TechnicianDashboard extends StatelessWidget {
                                                                               .read<AuthenticationBloc>()
                                                                               .state
                                                                               .userModel!
-                                                                              .id))
+                                                                              .id)),
+
+                                                                  BlocProvider(
+                                                                    create: (context) => ToolsRequestBloc(
+                                                                        toolsRepository:
+                                                                            context.read<
+                                                                                ToolsRepository>(),
+                                                                        jobsRepository:
+                                                                            context.read<
+                                                                                JobsRepository>(),
+                                                                        oldJobModel:
+                                                                            jobs[
+                                                                                index],
+                                                                        userId: context
+                                                                            .read<AuthenticationBloc>()
+                                                                            .state
+                                                                            .userModel!
+                                                                            .id),
+                                                                  ),
+                                                                  BlocProvider(
+                                                                    create: (context) =>
+                                                                        JobDetailBloc(
+                                                                      jobsRepository:
+                                                                          context
+                                                                              .read<JobsRepository>(),
+                                                                      jobId: jobs[
+                                                                              index]
+                                                                          .id,
+                                                                    ),
+                                                                  ),
+
+                                                                  //
+                                                                  //
                                                                 ],
                                                                 child:
-                                                                    TechnicianJobDetailPage(
-                                                                  jobModel: jobs[
-                                                                      index],
-                                                                ),
+                                                                    const TechnicianJobDetailPage(),
                                                               )));
                                             },
                                             child: Card(

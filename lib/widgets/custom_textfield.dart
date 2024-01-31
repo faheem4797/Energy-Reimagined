@@ -10,6 +10,7 @@ class CustomTextFormField extends StatelessWidget {
     this.hintText,
     this.labelText,
     this.prefixIcon,
+    this.suffixIcon,
     this.textInputType,
     this.readOnly,
     this.validator,
@@ -32,6 +33,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool? readOnly;
   final bool? obscureText;
   final Icon? prefixIcon;
+  final IconButton? suffixIcon;
   final String? errorText;
   final String? initialValue;
   final List<TextInputFormatter>? inputFormatters;
@@ -66,6 +68,7 @@ class CustomTextFormField extends StatelessWidget {
             //floatingLabelBehavior: FloatingLabelBehavior.never,
             errorText: errorText,
             prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
             //fillColor: kTextFieldColor,
             //filled: true,
             hintText: hintText,

@@ -379,6 +379,7 @@ class AdminJobPage extends StatelessWidget {
                                                                               locationLatitude: jobs[index].locationLatitude,
                                                                               locationLongitude: jobs[index].locationLongitude,
                                                                               allToolsRequested: jobs[index].allToolsRequested,
+                                                                              allToolsRequestedQuantity: jobs[index].allToolsRequestedQuantity,
                                                                               currentToolsRequestedIds: jobs[index].currentToolsRequestedIds,
                                                                               currentToolsRequestedQuantity: jobs[index].currentToolsRequestedQuantity,
                                                                               currentToolsRequestQrCode: jobs[index].currentToolsRequestQrCode,

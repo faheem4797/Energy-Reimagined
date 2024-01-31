@@ -120,6 +120,17 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
             selectedToolsList: selectedTools,
             selectedToolsQuantityList: selectedToolsQuantityList));
       }
+      List<ToolModel> allRequestedTools = oldJobModel.allToolsRequested
+          .where((toolId) => listOfTools.any((tool) => tool.id == toolId))
+          .map((toolId) => listOfTools.firstWhere((tool) => tool.id == toolId))
+          .toList();
+
+      List<int> allRequestedToolsQuantityList =
+          List.from(oldJobModel.allToolsRequestedQuantity);
+
+      emit(state.copyWith(
+          allRequestedToolsList: allRequestedTools,
+          allRequestedToolsQuantityList: allRequestedToolsQuantityList));
       emit(state.copyWith(
           toolsList: listOfTools, status: ToolsRequestStatus.initial));
     } on SetFirebaseDataFailure catch (e) {

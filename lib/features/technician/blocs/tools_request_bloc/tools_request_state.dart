@@ -12,6 +12,8 @@ enum ToolsRequestStatus {
 final class ToolsRequestState extends Equatable {
   const ToolsRequestState({
     this.toolsList = const [],
+    this.allRequestedToolsList = const [],
+    this.allRequestedToolsQuantityList = const [],
     this.selectedToolsList = const [],
     this.selectedToolsQuantityList = const [],
     this.isValid = false,
@@ -19,6 +21,8 @@ final class ToolsRequestState extends Equatable {
     this.errorMessage,
   });
   final List<ToolModel> toolsList;
+  final List<ToolModel> allRequestedToolsList;
+  final List<int> allRequestedToolsQuantityList;
   final List<ToolModel> selectedToolsList;
   final List<int> selectedToolsQuantityList;
   final bool isValid;
@@ -27,6 +31,8 @@ final class ToolsRequestState extends Equatable {
 
   ToolsRequestState copyWith({
     List<ToolModel>? toolsList,
+    List<ToolModel>? allRequestedToolsList,
+    List<int>? allRequestedToolsQuantityList,
     List<ToolModel>? selectedToolsList,
     List<int>? selectedToolsQuantityList,
     bool? isValid,
@@ -35,6 +41,10 @@ final class ToolsRequestState extends Equatable {
   }) {
     return ToolsRequestState(
       toolsList: toolsList ?? this.toolsList,
+      allRequestedToolsList:
+          allRequestedToolsList ?? this.allRequestedToolsList,
+      allRequestedToolsQuantityList:
+          allRequestedToolsQuantityList ?? this.allRequestedToolsQuantityList,
       selectedToolsList: selectedToolsList ?? this.selectedToolsList,
       selectedToolsQuantityList:
           selectedToolsQuantityList ?? this.selectedToolsQuantityList,
@@ -47,6 +57,8 @@ final class ToolsRequestState extends Equatable {
   @override
   List<Object?> get props => [
         toolsList,
+        allRequestedToolsList,
+        allRequestedToolsQuantityList,
         selectedToolsList,
         selectedToolsQuantityList,
         isValid,

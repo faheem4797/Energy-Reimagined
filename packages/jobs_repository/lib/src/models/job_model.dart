@@ -39,6 +39,7 @@ class JobModel extends Equatable {
   final int locationLatitude;
   final int locationLongitude;
   final List<String> allToolsRequested;
+  final List<int> allToolsRequestedQuantity;
   final List<String> currentToolsRequestedIds;
   final List<int> currentToolsRequestedQuantity;
   final String currentToolsRequestQrCode;
@@ -66,6 +67,7 @@ class JobModel extends Equatable {
     required this.locationLatitude,
     required this.locationLongitude,
     required this.allToolsRequested,
+    required this.allToolsRequestedQuantity,
     required this.currentToolsRequestedIds,
     required this.currentToolsRequestedQuantity,
     required this.currentToolsRequestQrCode,
@@ -95,6 +97,7 @@ class JobModel extends Equatable {
     locationLongitude: 0,
     locationLatitude: 0,
     allToolsRequested: [],
+    allToolsRequestedQuantity: [],
     currentToolsRequestedIds: [],
     currentToolsRequestedQuantity: [],
     currentToolsRequestQrCode: '',
@@ -124,6 +127,7 @@ class JobModel extends Equatable {
     int? locationLatitude,
     int? locationLongitude,
     List<String>? allToolsRequested,
+    List<int>? allToolsRequestedQuantity,
     List<String>? currentToolsRequestedIds,
     List<int>? currentToolsRequestedQuantity,
     String? currentToolsRequestQrCode,
@@ -152,6 +156,8 @@ class JobModel extends Equatable {
       locationLatitude: locationLatitude ?? this.locationLatitude,
       locationLongitude: locationLongitude ?? this.locationLongitude,
       allToolsRequested: allToolsRequested ?? this.allToolsRequested,
+      allToolsRequestedQuantity:
+          allToolsRequestedQuantity ?? this.allToolsRequestedQuantity,
       currentToolsRequestedIds:
           currentToolsRequestedIds ?? this.currentToolsRequestedIds,
       currentToolsRequestedQuantity:
@@ -200,6 +206,7 @@ class JobModel extends Equatable {
       'locationLatitude': locationLatitude,
       'locationLongitude': locationLongitude,
       'allToolsRequested': allToolsRequested,
+      'allToolsRequestedQuantity': allToolsRequestedQuantity,
       'currentToolsRequestedIds': currentToolsRequestedIds,
       'currentToolsRequestedQuantity': currentToolsRequestedQuantity,
       'currentToolsRequestQrCode': currentToolsRequestQrCode,
@@ -231,6 +238,8 @@ class JobModel extends Equatable {
       locationLatitude: map['locationLatitude']?.toInt() ?? 0,
       locationLongitude: map['locationLongitude']?.toInt() ?? 0,
       allToolsRequested: List<String>.from(map['allToolsRequested']),
+      allToolsRequestedQuantity:
+          List<int>.from(map['allToolsRequestedQuantity']),
       currentToolsRequestedIds:
           List<String>.from(map['currentToolsRequestedIds']),
       currentToolsRequestedQuantity:
@@ -290,6 +299,10 @@ class JobModel extends Equatable {
     if (allToolsRequested != other.allToolsRequested) {
       addChangedField(
           'allToolsRequested', allToolsRequested, other.allToolsRequested);
+    }
+    if (allToolsRequestedQuantity != other.allToolsRequestedQuantity) {
+      addChangedField('allToolsRequestedQuantity', allToolsRequestedQuantity,
+          other.allToolsRequestedQuantity);
     }
     if (currentToolsRequestedIds != other.currentToolsRequestedIds) {
       addChangedField('currentToolsRequestedIds', currentToolsRequestedIds,
@@ -377,6 +390,7 @@ class JobModel extends Equatable {
       locationLatitude,
       locationLongitude,
       allToolsRequested,
+      allToolsRequestedQuantity,
       currentToolsRequestedIds,
       currentToolsRequestedQuantity,
       currentToolsRequestQrCode,

@@ -31,6 +31,13 @@ class JobsRepository {
             snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
   }
 
+  Stream<JobModel> getCurrentJobStream(String jobId) {
+    return _firebaseFirestore.collection('jobs').doc(jobId).snapshots().map(
+        (doc) => doc.data() == null
+            ? throw const SetFirebaseDataFailure()
+            : JobModel.fromMap(doc.data()!));
+  }
+
   Future<void> setJobData(JobModel job) async {
     try {
       await _firebaseFirestore.collection('jobs').doc(job.id).set(job.toMap());

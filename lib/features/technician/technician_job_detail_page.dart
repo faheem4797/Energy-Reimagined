@@ -1,22 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/before_completion_image_bloc/before_completion_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/tools_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/technician_request_tools.dart';
+import 'package:energy_reimagined/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class TechnicianJobDetailPage extends StatefulWidget {
-  final JobModel jobModel;
-  const TechnicianJobDetailPage({required this.jobModel, super.key});
+  // final JobModel jobModel;
+  const TechnicianJobDetailPage(
+      {
+      // required this.jobModel,
+      super.key});
 
   @override
   State<TechnicianJobDetailPage> createState() =>
@@ -26,235 +31,221 @@ class TechnicianJobDetailPage extends StatefulWidget {
 class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
   @override
   Widget build(BuildContext mainContext) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          widget.jobModel.title,
-          style: const TextStyle(
-            color: ConstColors.whiteColor,
-          ),
-        ),
-        backgroundColor: ConstColors.backgroundDarkColor,
-        iconTheme: const IconThemeData(
-          color: ConstColors.whiteColor,
-        ),
-      ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<RejectJobBloc, RejectJobState>(
-            listener: (context, state) {
-              if (state is RejectJobFailure) {
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(
-                      content: Text(state.errorMessage),
-                    ),
-                  );
-              }
-              if (state is RejectJobSuccess) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          BlocListener<CompleteJobBloc, CompleteJobState>(
-              listener: (context, state) {
-            if (state.status == CompleteJobStatus.failure) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(
-                    content:
-                        Text(state.errorMessage ?? 'Failed to Upload iamge'),
-                  ),
-                );
-            } else if (state.status == CompleteJobStatus.success) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  const SnackBar(
-                    content: Text('Job Completed Successfully'),
-                  ),
-                );
-              Navigator.of(context).pop();
-            }
-          }),
-          BlocListener<BeforeCompletionImageBloc, BeforeCompletionImageState>(
-              listener: (context, state) {
-            if (state.status == BeforeCompletionImageStatus.failure) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(
-                    content:
-                        Text(state.errorMessage ?? 'Failed to Upload Image'),
-                  ),
-                );
-            } else if (state.status == BeforeCompletionImageStatus.success) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  const SnackBar(
-                    content: Text('Uploaded Image Successfully'),
-                  ),
-                );
-              Navigator.of(context).pop();
-            }
-          }),
-        ],
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  height: 20.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Current Status: ',
-                      style: TextStyle(
-                          color: ConstColors.blackColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      widget.jobModel.status == JobStatus.workInProgress
-                          ? 'In Progress'
-                          : widget.jobModel.status == JobStatus.onHold
-                              ? 'On Hold'
-                              : widget.jobModel.status == JobStatus.assigned
-                                  ? 'Assigned'
-                                  : widget.jobModel.status ==
-                                          JobStatus.completed
-                                      ? 'Completed'
-                                      : widget.jobModel.status ==
-                                              JobStatus.pending
-                                          ? 'Pending'
-                                          : widget.jobModel.status ==
-                                                  JobStatus.rejected
-                                              ? 'Rejected'
-                                              : '',
-                      style: TextStyle(
-                        color: ConstColors.blackColor,
-                        fontSize: 16.sp,
+    return BlocBuilder<JobDetailBloc, JobDetailState>(
+      builder: (context, state) {
+        return state.status == JobDetailStatus.loading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : state.status == JobDetailStatus.failure
+                ? const Center(
+                    child: Text("Error Loading Job"),
+                  )
+                : Scaffold(
+                    appBar: AppBar(
+                      centerTitle: true,
+                      title: Text(
+                        state.job.title,
+                        style: const TextStyle(
+                          color: ConstColors.whiteColor,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Job Description',
-                        style: TextStyle(
-                            color: ConstColors.blackColor,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Container(
-                        width: double.infinity,
-                        height: 175.h,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: SingleChildScrollView(
-                              child: Text(widget.jobModel.description)),
-                        )),
-                  ],
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Location',
-                        style: TextStyle(
-                            color: ConstColors.blackColor,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Container(
-                        width: double.infinity,
-                        height: 100.h,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: SingleChildScrollView(
-                              child: Text(widget.jobModel.locationName)),
-                        )),
-                  ],
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Municipality: ',
-                      style: TextStyle(
-                          color: ConstColors.blackColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      widget.jobModel.municipality,
-                      style: TextStyle(
-                        color: ConstColors.blackColor,
-                        fontSize: 16.sp,
+                      backgroundColor: ConstColors.backgroundDarkColor,
+                      iconTheme: const IconThemeData(
+                        color: ConstColors.whiteColor,
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                widget.jobModel.status ==
-                        JobStatus.assigned //Accept job and reject job buttons
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          acceptJobButton(mainContext),
-                          rejectJobButton(),
-                        ],
-                      )
-                    : widget.jobModel.status ==
-                            JobStatus.completed //Completion time and image
-                        ? Column(
+                    body: MultiBlocListener(
+                      listeners: [
+                        BlocListener<RejectJobBloc, RejectJobState>(
+                          listener: (context, state) {
+                            if (state is RejectJobFailure) {
+                              ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.errorMessage),
+                                  ),
+                                );
+                            }
+                            if (state is RejectJobSuccess) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                        ),
+                        BlocListener<CompleteJobBloc, CompleteJobState>(
+                            listener: (context, state) {
+                          if (state.status == CompleteJobStatus.failure) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: Text(state.errorMessage ??
+                                      'Failed to Upload iamge'),
+                                ),
+                              );
+                          } else if (state.status ==
+                              CompleteJobStatus.success) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                const SnackBar(
+                                  content: Text('Job Completed Successfully'),
+                                ),
+                              );
+                            Navigator.of(context).pop();
+                          }
+                        }),
+                        BlocListener<BeforeCompletionImageBloc,
+                                BeforeCompletionImageState>(
+                            listener: (context, state) {
+                          if (state.status ==
+                              BeforeCompletionImageStatus.failure) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: Text(state.errorMessage ??
+                                      'Failed to Upload Image'),
+                                ),
+                              );
+                          } else if (state.status ==
+                              BeforeCompletionImageStatus.success) {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                const SnackBar(
+                                  content: Text('Uploaded Image Successfully'),
+                                ),
+                              );
+                            Navigator.of(context).pop();
+                          }
+                        }),
+                      ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              SizedBox(
+                                height: 20.h,
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Completed on: ',
+                                    'Current Status: ',
                                     style: TextStyle(
                                         color: ConstColors.blackColor,
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    DateFormat('dd-MM-yyyy HH:mm').format(
-                                        DateTime.fromMicrosecondsSinceEpoch(
-                                            widget
-                                                .jobModel.completedTimestamp)),
+                                    state.job.status == JobStatus.workInProgress
+                                        ? 'In Progress'
+                                        : state.job.status == JobStatus.onHold
+                                            ? 'On Hold'
+                                            : state.job.status ==
+                                                    JobStatus.assigned
+                                                ? 'Assigned'
+                                                : state.job.status ==
+                                                        JobStatus.completed
+                                                    ? 'Completed'
+                                                    : state.job.status ==
+                                                            JobStatus.pending
+                                                        ? 'Pending'
+                                                        : state.job.status ==
+                                                                JobStatus
+                                                                    .rejected
+                                                            ? 'Rejected'
+                                                            : '',
+                                    style: TextStyle(
+                                      color: ConstColors.blackColor,
+                                      fontSize: 16.sp,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Job Description',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: ConstColors.blackColor,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold)),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    state.job.description,
+                                  ),
+                                  // Container(
+                                  //     width: double.infinity,
+                                  //     height: 175.h,
+                                  //     decoration: BoxDecoration(
+                                  //       color: Colors.grey[300],
+                                  //       borderRadius: BorderRadius.circular(20.r),
+                                  //     ),
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(16.0),
+                                  //       child: SingleChildScrollView(
+                                  //           child: Text(widget.jobModel.description)),
+                                  //     )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Location',
+                                      style: TextStyle(
+                                          color: ConstColors.blackColor,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold)),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    state.job.locationName,
+                                  ),
+                                  // Container(
+                                  //     width: double.infinity,
+                                  //     height: 100.h,
+                                  //     decoration: BoxDecoration(
+                                  //       color: Colors.grey[300],
+                                  //       borderRadius: BorderRadius.circular(20.r),
+                                  //     ),
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(16.0),
+                                  //       child: SingleChildScrollView(
+                                  //           child: Text(widget.jobModel.locationName)),
+                                  //     )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Municipality: ',
+                                    style: TextStyle(
+                                        color: ConstColors.blackColor,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    state.job.municipality,
                                     style: TextStyle(
                                       color: ConstColors.blackColor,
                                       fontSize: 16.sp,
@@ -262,85 +253,360 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 20.h),
-                              ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(7.r)),
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.fill,
-                                  imageUrl:
-                                      widget.jobModel.afterCompleteImageUrl,
-                                  placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) =>
-                                      const Center(
-                                          child: Text('Error loading image')),
-                                ),
+                              SizedBox(
+                                height: 20.h,
                               ),
-                            ],
-                          )
-                        : widget.jobModel.status == JobStatus.onHold
-                            ? Column(
+                              //
+                              //
+                              //
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      requestToolsButton(mainContext),
-                                      rejectJobButton(),
-                                    ],
+                                  Text(
+                                    'Tools Requested: ',
+                                    style: TextStyle(
+                                        color: ConstColors.blackColor,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(height: 20.h),
-                                  widget.jobModel.beforeCompleteImageUrl == ''
-                                      ? beforeCompletionImageButton()
-                                      : Container(),
+                                  state.job.status == JobStatus.onHold ||
+                                          state.job.status ==
+                                              JobStatus.workInProgress
+                                      ? requestToolsButton(
+                                          mainContext, state.job)
+                                      : const SizedBox(),
                                 ],
-                              )
-                            : widget.jobModel.status == JobStatus.workInProgress
-                                ? Column(
-                                    children: [
-                                      widget.jobModel.beforeCompleteImageUrl ==
-                                              ''
+                              ),
+                              BlocBuilder<ToolsRequestBloc, ToolsRequestState>(
+                                builder: (blocContext, state) {
+                                  return state.status ==
+                                              ToolsRequestStatus.loading ||
+                                          state.status ==
+                                              ToolsRequestStatus.inProgress
+                                      ? const Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : state.status ==
+                                              ToolsRequestStatus.loadingFailure
+                                          ? const Center(
+                                              child: Text(
+                                                  'Error Loading Tools List'),
+                                            )
+                                          : state.allRequestedToolsList.isEmpty
+                                              ? const Text('No Tools Requested')
+                                              : SizedBox(
+                                                  height: 120.h,
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Expanded(
+                                                        child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount: state
+                                                              .allRequestedToolsList
+                                                              .length,
+
+                                                          //state.toolsList.length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            ToolModel tool =
+                                                                state.allRequestedToolsList[
+                                                                    index];
+
+                                                            return Card(
+                                                              color: ConstColors
+                                                                  .backgroundColor,
+                                                              elevation: 4,
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          8,
+                                                                      horizontal:
+                                                                          8),
+                                                              child:
+                                                                  ExpansionTile(
+                                                                expandedCrossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10.0),
+                                                                ),
+                                                                leading:
+                                                                    CircleAvatar(
+                                                                  backgroundImage:
+                                                                      CachedNetworkImageProvider(
+                                                                          tool.imageUrl),
+                                                                ),
+                                                                title: RichText(
+                                                                  text:
+                                                                      TextSpan(
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16,
+                                                                    ),
+                                                                    children: [
+                                                                      TextSpan(
+                                                                        text: tool
+                                                                            .name,
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          color:
+                                                                              ConstColors.whiteColor,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                      TextSpan(
+                                                                        text:
+                                                                            '${'  [${tool.category}'}]',
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          color:
+                                                                              ConstColors.whiteColor,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+
+                                                                subtitle: Text(
+                                                                  'Requested Quantity: ${state.allRequestedToolsQuantityList[index].toString()}',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    color: ConstColors
+                                                                        .whiteColor,
+                                                                  ),
+                                                                ),
+                                                                // trailing: Checkbox(
+                                                                //   activeColor: ConstColors
+                                                                //       .backgroundDarkColor,
+                                                                //   value: isSelected,
+                                                                //   onChanged: (value) {
+                                                                //     if (value!) {
+                                                                //       context
+                                                                //           .read<ToolsRequestBloc>()
+                                                                //           .add(AddSelectedTool(
+                                                                //               tool: tool,
+                                                                //               toolQuantity: 1));
+                                                                //     } else {
+                                                                //       context
+                                                                //           .read<ToolsRequestBloc>()
+                                                                //           .add(RemoveSelectedTool(
+                                                                //               tool: tool));
+                                                                //     }
+                                                                //   },
+                                                                // ),
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            16.0,
+                                                                        vertical:
+                                                                            8),
+                                                                    child: Text(
+                                                                      tool.description,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left,
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: ConstColors
+                                                                            .whiteColor,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            16.0),
+                                                                    child: CachedNetworkImage(
+                                                                        imageUrl:
+                                                                            tool.imageUrl),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                },
+                              ),
+                              SizedBox(height: 20.h),
+
+                              Text(
+                                'Site Evidence - Before Work',
+                                style: TextStyle(
+                                    color: ConstColors.blackColor,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              state.job.beforeCompleteImageUrl == ''
+                                  ? const Text('No image added')
+                                  : CarouselSlider(
+                                      options: CarouselOptions(
+                                        enableInfiniteScroll: false,
+                                      ),
+                                      items: [
+                                        1,
+                                        2,
+                                        3,
+                                      ].map((i) {
+                                        return Builder(
+                                          builder: (BuildContext context) {
+                                            return Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: CachedNetworkImage(
+                                                fit: BoxFit.fill,
+                                                imageUrl: state
+                                                    .job.beforeCompleteImageUrl,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                        child:
+                                                            CircularProgressIndicator()),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    const Center(
+                                                        child: Text(
+                                                            'Error loading image')),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }).toList(),
+                                    ),
+                              SizedBox(height: 20.h),
+
+                              Text(
+                                'Site Evidence - After Work',
+                                style: TextStyle(
+                                    color: ConstColors.blackColor,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              state.job.afterCompleteImageUrl == ''
+                                  ? const Text('No image added')
+                                  : CarouselSlider(
+                                      options: CarouselOptions(
+                                        enableInfiniteScroll: false,
+                                      ),
+                                      items: [
+                                        1,
+                                        2,
+                                        3,
+                                      ].map((i) {
+                                        return Builder(
+                                          builder: (BuildContext context) {
+                                            return Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 5.w),
+                                              child: CachedNetworkImage(
+                                                fit: BoxFit.fill,
+                                                imageUrl: state
+                                                    .job.afterCompleteImageUrl,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                        child:
+                                                            CircularProgressIndicator()),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    const Center(
+                                                        child: Text(
+                                                            'Error loading image')),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }).toList(),
+                                    ),
+                              SizedBox(height: 20.h),
+                              //TODO: ADD PROPER TEXTFIELD SCENARIO
+                              CustomTextFormField(
+                                labelText: 'Work Description',
+                                hintText: '',
+                                suffixIcon: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.add_circle)),
+                              ),
+                              SizedBox(height: 20.h),
+
+                              //
+                              //
+                              state.job.status ==
+                                      JobStatus
+                                          .assigned //Accept job and reject job buttons
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        acceptJobButton(mainContext, state.job),
+                                        rejectJobButton(),
+                                      ],
+                                    )
+                                  // : state.job.status ==
+                                  //         JobStatus
+                                  //             .completed //Completion time and image
+                                  //     ? const Text('Completed')
+                                  : state.job.status == JobStatus.onHold
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            state.job.beforeCompleteImageUrl ==
+                                                    ''
+                                                ? beforeCompletionImageButton()
+                                                : Container(),
+                                            rejectJobButton(),
+                                          ],
+                                        )
+                                      : state.job.status ==
+                                              JobStatus.workInProgress
                                           ? Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                requestToolsButton(mainContext),
-                                                beforeCompletionImageButton(),
+                                                completeJobButton(),
+                                                rejectJobButton(),
                                               ],
                                             )
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                requestToolsButton(mainContext),
-                                              ],
-                                            ),
-                                      SizedBox(height: 20.h),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          completeJobButton(),
-                                          rejectJobButton(),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                SizedBox(
-                  height: 20.h,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      //),
+                                          : Container(),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ));
+        //);
+      },
     );
   }
 
-  ElevatedButton acceptJobButton(BuildContext mainContext) {
+  ElevatedButton acceptJobButton(BuildContext mainContext, JobModel jobModel) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor:
@@ -362,7 +628,7 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
               create: (context) => ToolsRequestBloc(
                   toolsRepository: context.read<ToolsRepository>(),
                   jobsRepository: context.read<JobsRepository>(),
-                  oldJobModel: widget.jobModel,
+                  oldJobModel: jobModel,
                   userId:
                       context.read<AuthenticationBloc>().state.userModel!.id),
               child: const TechnicianRequestToolsPage(),
@@ -469,7 +735,8 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
     );
   }
 
-  ElevatedButton requestToolsButton(BuildContext mainContext) {
+  ElevatedButton requestToolsButton(
+      BuildContext mainContext, JobModel jobModel) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor:
@@ -491,7 +758,7 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
               create: (context) => ToolsRequestBloc(
                   toolsRepository: context.read<ToolsRepository>(),
                   jobsRepository: context.read<JobsRepository>(),
-                  oldJobModel: widget.jobModel,
+                  oldJobModel: jobModel,
                   userId:
                       context.read<AuthenticationBloc>().state.userModel!.id),
               child: const TechnicianRequestToolsPage(),
