@@ -240,21 +240,23 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                   SizedBox(
                                     height: 5.h,
                                   ),
-                                  Text(
-                                    jobDetailState.job.description,
-                                  ),
-                                  // Container(
-                                  //     width: double.infinity,
-                                  //     height: 175.h,
-                                  //     decoration: BoxDecoration(
-                                  //       color: Colors.grey[300],
-                                  //       borderRadius: BorderRadius.circular(20.r),
-                                  //     ),
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(16.0),
-                                  //       child: SingleChildScrollView(
-                                  //           child: Text(widget.jobModel.description)),
-                                  //     )),
+                                  // Text(
+                                  //   jobDetailState.job.description,
+                                  // ),
+                                  Container(
+                                      width: double.infinity,
+                                      // height: 175.h,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: SingleChildScrollView(
+                                            child: Text(jobDetailState
+                                                .job.description)),
+                                      )),
                                 ],
                               ),
                               SizedBox(
@@ -271,9 +273,23 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                   SizedBox(
                                     height: 5.h,
                                   ),
-                                  Text(
-                                    jobDetailState.job.locationName,
-                                  ),
+                                  // Text(
+                                  //   jobDetailState.job.locationName,
+                                  // ),
+                                  Container(
+                                      width: double.infinity,
+                                      // height: 100.h,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: SingleChildScrollView(
+                                            child: Text(jobDetailState
+                                                .job.locationName)),
+                                      )),
                                   // Container(
                                   //     width: double.infinity,
                                   //     height: 100.h,
@@ -364,156 +380,121 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                                     .isEmpty
                                                 ? const Text(
                                                     'No Tools Requested')
-                                                : SizedBox(
-                                                    height: 120.h,
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Expanded(
-                                                          child:
-                                                              ListView.builder(
-                                                            shrinkWrap: true,
-                                                            itemCount: state
-                                                                .allRequestedToolsList
-                                                                .length,
+                                                : ListView.builder(
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    itemCount: state
+                                                        .allRequestedToolsList
+                                                        .length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      ToolModel tool = state
+                                                              .allRequestedToolsList[
+                                                          index];
 
-                                                            //state.toolsList.length,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              ToolModel tool =
-                                                                  state.allRequestedToolsList[
-                                                                      index];
-
-                                                              return Card(
-                                                                color: ConstColors
-                                                                    .backgroundColor,
-                                                                elevation: 4,
-                                                                margin: const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical: 8,
-                                                                    horizontal:
-                                                                        8),
-                                                                child:
-                                                                    ExpansionTile(
-                                                                  expandedCrossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10.0),
-                                                                  ),
-                                                                  leading:
-                                                                      CircleAvatar(
-                                                                    backgroundImage:
-                                                                        CachedNetworkImageProvider(
-                                                                            tool.imageUrl),
-                                                                  ),
-                                                                  title:
-                                                                      RichText(
-                                                                    text:
-                                                                        TextSpan(
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            16,
-                                                                      ),
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text:
-                                                                              tool.name,
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            color:
-                                                                                ConstColors.whiteColor,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text:
-                                                                              '${'  [${tool.category}'}]',
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            color:
-                                                                                ConstColors.whiteColor,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-
-                                                                  subtitle:
-                                                                      Text(
-                                                                    'Requested Quantity: ${state.allRequestedToolsQuantityList[index].toString()}',
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: ConstColors
-                                                                          .whiteColor,
-                                                                    ),
-                                                                  ),
-                                                                  // trailing: Checkbox(
-                                                                  //   activeColor: ConstColors
-                                                                  //       .backgroundDarkColor,
-                                                                  //   value: isSelected,
-                                                                  //   onChanged: (value) {
-                                                                  //     if (value!) {
-                                                                  //       context
-                                                                  //           .read<ToolsRequestBloc>()
-                                                                  //           .add(AddSelectedTool(
-                                                                  //               tool: tool,
-                                                                  //               toolQuantity: 1));
-                                                                  //     } else {
-                                                                  //       context
-                                                                  //           .read<ToolsRequestBloc>()
-                                                                  //           .add(RemoveSelectedTool(
-                                                                  //               tool: tool));
-                                                                  //     }
-                                                                  //   },
-                                                                  // ),
-                                                                  children: [
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                          horizontal:
-                                                                              16.0,
-                                                                          vertical:
-                                                                              8),
-                                                                      child:
-                                                                          Text(
-                                                                        tool.description,
-                                                                        textAlign:
-                                                                            TextAlign.left,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              ConstColors.whiteColor,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .all(
-                                                                          16.0),
-                                                                      child: CachedNetworkImage(
-                                                                          imageUrl:
-                                                                              tool.imageUrl),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            },
+                                                      return Card(
+                                                        color: ConstColors
+                                                            .backgroundColor,
+                                                        elevation: 4,
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 8,
+                                                            horizontal: 8),
+                                                        child: ExpansionTile(
+                                                          expandedCrossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
                                                           ),
+                                                          leading: CircleAvatar(
+                                                            backgroundImage:
+                                                                CachedNetworkImageProvider(
+                                                                    tool.imageUrl),
+                                                          ),
+                                                          title: RichText(
+                                                            text: TextSpan(
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 16,
+                                                              ),
+                                                              children: [
+                                                                TextSpan(
+                                                                  text:
+                                                                      tool.name,
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    color: ConstColors
+                                                                        .whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text:
+                                                                      '${'  [${tool.category}'}]',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    color: ConstColors
+                                                                        .whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          subtitle: Text(
+                                                            'Requested Quantity: ${state.allRequestedToolsQuantityList[index].toString()}',
+                                                            style:
+                                                                const TextStyle(
+                                                              color: ConstColors
+                                                                  .whiteColor,
+                                                            ),
+                                                          ),
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          16.0,
+                                                                      vertical:
+                                                                          8),
+                                                              child: Text(
+                                                                tool.description,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: ConstColors
+                                                                      .whiteColor,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(
+                                                                      16.0),
+                                                              child: CachedNetworkImage(
+                                                                  imageUrl: tool
+                                                                      .imageUrl),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
+                                                      );
+                                                    },
                                                   );
                                   },
                                 ),
@@ -725,7 +706,6 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                                 ),
                               ),
 
-                              //TODO: ADD PROPER TEXTFIELD SCENARIO
                               Visibility(
                                 visible: jobDetailState.job.status !=
                                     JobStatus.assigned,
@@ -850,7 +830,6 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         //                   .userModel!
         //                   .id),
         //         ),
-        //         //TODO: NOT GETTING STREAMBLOC
         //         BlocProvider.value(
         //           value: mainContext.read<TechnicianJobsStreamBloc>(),
         //         ),
@@ -908,46 +887,6 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
       },
     );
   }
-
-  // BlocBuilder<BeforeCompletionImageBloc, BeforeCompletionImageState>
-  //     beforeCompletionImageButton() {
-  //   return BlocBuilder<BeforeCompletionImageBloc, BeforeCompletionImageState>(
-  //     builder: (context, state) {
-  //       return ElevatedButton(
-  //         style: ButtonStyle(
-  //           backgroundColor:
-  //               MaterialStateProperty.all<Color>(ConstColors.backgroundColor),
-  //           padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-  //             const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-  //           ),
-  //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-  //             RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8.0),
-  //             ),
-  //           ),
-  //         ),
-  //         onPressed: state.status == BeforeCompletionImageStatus.inProgress
-  //             ? null
-  //             : () async {
-  //                 await _showAddBeforeCompletionImagePopup(context);
-  //               },
-  //         child: state.status == BeforeCompletionImageStatus.inProgress
-  //             ? Center(
-  //                 child: Padding(
-  //                   padding: EdgeInsets.symmetric(horizontal: 16.w),
-  //                   child: const CircularProgressIndicator(
-  //                     color: ConstColors.whiteColor,
-  //                   ),
-  //                 ),
-  //               )
-  //             : const Text(
-  //                 "Before Image",
-  //                 style: TextStyle(color: ConstColors.whiteColor),
-  //               ),
-  //       );
-  //     },
-  //   );
-  // }
 
   ElevatedButton requestToolsButton(
       BuildContext mainContext, JobModel jobModel) {
@@ -1088,246 +1027,4 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
       },
     );
   }
-
-  // Future<void> _showCompleteJobPopup(BuildContext blocContext) async {
-  //   final formKey = GlobalKey<FormState>();
-  //   return showDialog<void>(
-  //     context: blocContext,
-  //     builder: (BuildContext context) {
-  //       String workDoneDescription = '';
-
-  //       return BlocProvider.value(
-  //         value: blocContext.read<CompleteJobBloc>(),
-  //         child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
-  //           builder: (context, state) {
-  //             return AlertDialog(
-  //               title: const Text(
-  //                 'Upload an image showing the solved issue',
-  //                 textAlign: TextAlign.center,
-  //                 style: TextStyle(fontSize: 16),
-  //               ),
-  //               content: SingleChildScrollView(
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.max,
-  //                   children: [
-  //                     GestureDetector(
-  //                       onTap: () {
-  //                         context
-  //                             .read<CompleteJobBloc>()
-  //                             .add(const AfterCompletionImageChanged());
-  //                       },
-  //                       child: Container(
-  //                           decoration: BoxDecoration(
-  //                               color: ConstColors.greyColor,
-  //                               borderRadius:
-  //                                   BorderRadius.all(Radius.circular(7.r))),
-  //                           height: 200.h,
-  //                           width: double.maxFinite,
-  //                           child: state.imageToolFileBytes == null ||
-  //                                   state.imageToolFileNameFromFilePicker ==
-  //                                       null
-  //                               ? const Center(
-  //                                   child: Column(
-  //                                     crossAxisAlignment:
-  //                                         CrossAxisAlignment.center,
-  //                                     mainAxisAlignment:
-  //                                         MainAxisAlignment.center,
-  //                                     children: [
-  //                                       Icon(Icons.add_a_photo),
-  //                                       Text(
-  //                                         'Upload Image',
-  //                                         //style: kSmallBlackTextStyle,
-  //                                       )
-  //                                     ],
-  //                                   ),
-  //                                 )
-  //                               : ClipRRect(
-  //                                   borderRadius:
-  //                                       BorderRadius.all(Radius.circular(7.r)),
-  //                                   child: Image.memory(
-  //                                     state.imageToolFileBytes!,
-  //                                     fit: BoxFit.fill,
-  //                                   ),
-  //                                 )),
-  //                     ),
-  //                     const SizedBox(height: 10),
-  //                     Form(
-  //                       key: formKey,
-  //                       child: TextFormField(
-  //                         initialValue: workDoneDescription,
-  //                         validator: (value) {
-  //                           if (value == null || value.isEmpty) {
-  //                             return 'Please enter description of the work you have done';
-  //                           }
-  //                           return null;
-  //                         },
-  //                         decoration: const InputDecoration(
-  //                             errorMaxLines: 2, labelText: 'Work Description'),
-  //                         onChanged: (value) {
-  //                           workDoneDescription = value;
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               actions: <Widget>[
-  //                 TextButton(
-  //                   onPressed: () {
-  //                     Navigator.of(context).pop();
-  //                   },
-  //                   child: const Text('Cancel'),
-  //                 ),
-  //                 ElevatedButton(
-  //                   onPressed: () {
-  //                     if (formKey.currentState!.validate()) {
-  //                       checkConnectionFunc(context, () {
-  //                         context.read<CompleteJobBloc>().add(CompleteJob(
-  //                             workDoneDescription: workDoneDescription));
-  //                       });
-  //                       Navigator.of(context).pop();
-  //                     }
-  //                   },
-  //                   child: const Text('Submit'),
-  //                 ),
-  //               ],
-  //             );
-  //           },
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Future<void> _showAddBeforeCompletionImagePopup(
-  //     BuildContext blocContext) async {
-  //   return showDialog<void>(
-  //     context: blocContext,
-  //     builder: (BuildContext context) {
-  //       return BlocProvider.value(
-  //         value: blocContext.read<BeforeCompletionImageBloc>(),
-  //         child: BlocBuilder<BeforeCompletionImageBloc,
-  //             BeforeCompletionImageState>(
-  //           builder: (context, state) {
-  //             return AlertDialog(
-  //               title: const Text(
-  //                 'Upload an image showing the issue',
-  //                 textAlign: TextAlign.center,
-  //                 style: TextStyle(fontSize: 16),
-  //               ),
-  //               content: Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   GestureDetector(
-  //                     onTap: () {
-  //                       context
-  //                           .read<BeforeCompletionImageBloc>()
-  //                           .add(const BeforeCompletionImageChanged());
-  //                     },
-  //                     child: Container(
-  //                         decoration: BoxDecoration(
-  //                             color: ConstColors.greyColor,
-  //                             borderRadius:
-  //                                 BorderRadius.all(Radius.circular(7.r))),
-  //                         height: 200.h,
-  //                         width: double.maxFinite,
-  //                         child: state.imageToolFileBytes == null ||
-  //                                 state.imageToolFileNameFromFilePicker == null
-  //                             ? const Center(
-  //                                 child: Column(
-  //                                   crossAxisAlignment:
-  //                                       CrossAxisAlignment.center,
-  //                                   mainAxisAlignment: MainAxisAlignment.center,
-  //                                   children: [
-  //                                     Icon(Icons.add_a_photo),
-  //                                     Text(
-  //                                       'Upload Image',
-  //                                       //style: kSmallBlackTextStyle,
-  //                                     )
-  //                                   ],
-  //                                 ),
-  //                               )
-  //                             : ClipRRect(
-  //                                 borderRadius:
-  //                                     BorderRadius.all(Radius.circular(7.r)),
-  //                                 child: Image.memory(
-  //                                   state.imageToolFileBytes!,
-  //                                   fit: BoxFit.fill,
-  //                                 ),
-  //                               )),
-  //                   ),
-  //                 ],
-  //               ),
-  //               actions: <Widget>[
-  //                 TextButton(
-  //                   onPressed: () {
-  //                     Navigator.of(context).pop();
-  //                   },
-  //                   child: const Text('Cancel'),
-  //                 ),
-  //                 ElevatedButton(
-  //                   onPressed: () {
-  //                     checkConnectionFunc(context, () {
-  //                       context
-  //                           .read<BeforeCompletionImageBloc>()
-  //                           .add(const UpdateJobWithBeforeImage());
-  //                     });
-  //                     Navigator.of(context).pop();
-  //                   },
-  //                   child: const Text('Submit'),
-  //                 ),
-  //               ],
-  //             );
-  //           },
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Widget imageSelectContainer(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       GestureDetector(
-  //         onTap: () async {
-  //           context
-  //               .read<CompleteJobBloc>()
-  //               .add(const AfterCompletionImageChanged());
-  //         },
-  //         child: BlocBuilder<CompleteJobBloc, CompleteJobState>(
-  //           builder: (context, state) {
-  //             return Container(
-  //                 decoration: BoxDecoration(
-  //                     color: ConstColors.greyColor,
-  //                     borderRadius: BorderRadius.all(Radius.circular(7.r))),
-  //                 height: 200.h,
-  //                 width: double.maxFinite,
-  //                 child: state.imageToolFileBytes == null ||
-  //                         state.imageToolFileNameFromFilePicker == null
-  //                     ? const Center(
-  //                         child: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.center,
-  //                           mainAxisAlignment: MainAxisAlignment.center,
-  //                           children: [
-  //                             Icon(Icons.add_a_photo),
-  //                             Text(
-  //                               'Upload Image',
-  //                               //style: kSmallBlackTextStyle,
-  //                             )
-  //                           ],
-  //                         ),
-  //                       )
-  //                     : ClipRRect(
-  //                         borderRadius: BorderRadius.all(Radius.circular(7.r)),
-  //                         child: Image.memory(
-  //                           state.imageToolFileBytes!,
-  //                           fit: BoxFit.fill,
-  //                         ),
-  //                       ));
-  //           },
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 }

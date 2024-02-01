@@ -17,8 +17,12 @@ class JobsRepository {
         _firebaseStorage = firebaseStorage ?? FirebaseStorage.instance;
 
   Stream<List<JobModel>> get getJobsStream {
-    return _firebaseFirestore.collection('jobs').snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
+    return _firebaseFirestore
+        .collection('jobs')
+        .orderBy('createdTimestamp', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
   }
 
   Stream<List<JobModel>> getUserJobsStream(String userId) {
