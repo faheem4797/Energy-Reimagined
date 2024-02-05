@@ -370,6 +370,7 @@ class AdminJobPage extends StatelessWidget {
                                                                               id: jobs[index].id,
                                                                               title: jobs[index].title,
                                                                               description: jobs[index].description,
+                                                                              category: jobs[index].category,
                                                                               municipality: jobs[index].municipality,
                                                                               status: jobs[index].status,
                                                                               assignedTechnicianId: jobs[index].assignedTechnicianId,

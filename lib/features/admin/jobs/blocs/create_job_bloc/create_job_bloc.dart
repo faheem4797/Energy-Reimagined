@@ -22,6 +22,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
     on<DescriptionChanged>(_descriptionChanged);
     on<LocationChanged>(_locationChanged);
     on<MunicipalityChanged>(_municipalityChanged);
+    on<CategoryChanged>(_categoryChanged);
     on<TechnicianSelected>(_technicianSelected);
   }
 
@@ -68,6 +69,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: state.job.locationName,
           // locationLatitude: state.job.locationLatitude,
           // locationLongitude: state.job.locationLongitude,
+          category: state.job.category,
           municipality: state.job.municipality,
         ),
         displayError: titleValidationStatus == TitleValidationStatus.empty
@@ -91,6 +93,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: state.job.locationName,
           // locationLatitude: state.job.locationLatitude,
           // locationLongitude: state.job.locationLongitude,
+          category: state.job.category,
           municipality: state.job.municipality,
         ),
         displayError:
@@ -121,6 +124,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: event.locationName,
           // locationLatitude: event.locationLatitude,
           // locationLongitude: event.locationLongitude,
+          category: state.job.category,
           municipality: state.job.municipality,
         ),
         displayError: locationValidationStatus == LocationValidationStatus.empty
@@ -128,6 +132,33 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
             : locationValidationStatus == LocationValidationStatus.invalid
                 ? 'Please choose a location on map as well'
                 : null,
+      ),
+    );
+  }
+
+  FutureOr<void> _categoryChanged(
+      CategoryChanged event, Emitter<CreateJobState> emit) {
+    final CategoryValidationStatus categoryValidationStatus = _validateCategory(
+      event.category,
+    );
+
+    emit(
+      state.copyWith(
+        job: state.job.copyWith(
+          category: event.category,
+        ),
+        isValid: _validate(
+          title: state.job.title,
+          description: state.job.description,
+          locationName: state.job.locationName,
+          // locationLatitude: event.locationLatitude,
+          // locationLongitude: event.locationLongitude,
+          category: event.category,
+          municipality: state.job.municipality,
+        ),
+        displayError: categoryValidationStatus == CategoryValidationStatus.empty
+            ? 'Please choose a category'
+            : null,
       ),
     );
   }
@@ -150,6 +181,7 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
           locationName: state.job.locationName,
           // locationLatitude: event.locationLatitude,
           // locationLongitude: event.locationLongitude,
+          category: state.job.category,
           municipality: event.municipality,
         ),
         displayError:
@@ -175,8 +207,10 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
     required String title,
     required String description,
     required String locationName,
+
     // required int locationLongitude,
     // required int locationLatitude,
+    required String category,
     required String municipality,
   }) {
     final TitleValidationStatus titleValidationStatus = _validateTitle(title);
@@ -187,12 +221,15 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
       locationName,
       // locationLatitude, locationLongitude
     );
+    final CategoryValidationStatus categoryValidationStatus =
+        _validateCategory(category);
     final MunicipalityValidationStatus municipalityValidationStatus =
         _validateMunicipality(municipality);
 
     return titleValidationStatus == TitleValidationStatus.valid &&
         descriptionValidationStatus == DescriptionValidationStatus.valid &&
         locationValidationStatus == LocationValidationStatus.valid &&
+        categoryValidationStatus == CategoryValidationStatus.valid &&
         municipalityValidationStatus == MunicipalityValidationStatus.valid;
   }
 
@@ -227,6 +264,16 @@ class CreateJobBloc extends Bloc<CreateJobEvent, CreateJobState> {
     }
   }
 
+  CategoryValidationStatus _validateCategory(
+    String category,
+  ) {
+    if (category.isEmpty) {
+      return CategoryValidationStatus.empty;
+    } else {
+      return CategoryValidationStatus.valid;
+    }
+  }
+
   MunicipalityValidationStatus _validateMunicipality(
     String municipality,
   ) {
@@ -245,3 +292,5 @@ enum DescriptionValidationStatus { empty, valid }
 enum LocationValidationStatus { empty, invalid, valid }
 
 enum MunicipalityValidationStatus { empty, valid }
+
+enum CategoryValidationStatus { empty, valid }

@@ -19,6 +19,16 @@ enum JobStatus {
   rejected,
 }
 
+const List<String> categories = [
+  'Category 1',
+  'Category 2',
+  'Category 3',
+  'Category 4',
+  'Category 5'
+];
+
+const String firstCategory = 'Category 1';
+
 const List<String> municipalities = [
   'Municipality 1',
   'Municipality 2',
@@ -32,6 +42,7 @@ class JobModel extends Equatable {
   final String id;
   final String title;
   final String description;
+  final String category;
   final String municipality;
   final JobStatus status;
   final String assignedTechnicianId;
@@ -60,6 +71,7 @@ class JobModel extends Equatable {
     required this.id,
     required this.title,
     required this.description,
+    required this.category,
     required this.municipality,
     required this.status,
     required this.assignedTechnicianId,
@@ -90,6 +102,7 @@ class JobModel extends Equatable {
     id: '',
     title: '',
     description: '',
+    category: firstCategory,
     municipality: firstMunicipality,
     status: JobStatus.pending,
     assignedTechnicianId: '',
@@ -120,6 +133,7 @@ class JobModel extends Equatable {
     String? id,
     String? title,
     String? description,
+    String? category,
     String? municipality,
     JobStatus? status,
     String? assignedTechnicianId,
@@ -149,6 +163,7 @@ class JobModel extends Equatable {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      category: category ?? this.category,
       municipality: municipality ?? this.municipality,
       status: status ?? this.status,
       assignedTechnicianId: assignedTechnicianId ?? this.assignedTechnicianId,
@@ -199,6 +214,7 @@ class JobModel extends Equatable {
       'id': id,
       'title': title,
       'description': description,
+      'category': category,
       'municipality': municipality,
       'status': _statusToMap(status),
       'assignedTechnicianId': assignedTechnicianId,
@@ -230,6 +246,7 @@ class JobModel extends Equatable {
     return JobModel(
       id: map['id'] ?? '',
       title: map['title'] ?? '',
+      category: map['category'] ?? '',
       description: map['description'] ?? '',
       municipality: map['municipality'] ?? '',
       status: _mapToStatus(map['status']), //JobStatus.fromMap(map['status']),
@@ -280,6 +297,9 @@ class JobModel extends Equatable {
     }
     if (description != other.description) {
       addChangedField('description', description, other.description);
+    }
+    if (category != other.category) {
+      addChangedField('category', category, other.category);
     }
     if (municipality != other.municipality) {
       addChangedField('municipality', municipality, other.municipality);
@@ -383,6 +403,7 @@ class JobModel extends Equatable {
       id,
       title,
       description,
+      category,
       municipality,
       status,
       assignedTechnicianId,

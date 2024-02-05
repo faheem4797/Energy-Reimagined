@@ -252,6 +252,43 @@ class _AdminEditJobPageState extends State<AdminEditJobPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
+                        'Category: ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: ConstColors.blackColor,
+                        ),
+                      ),
+                      BlocBuilder<EditJobBloc, EditJobState>(
+                        buildWhen: (previous, current) =>
+                            previous.job.category != current.job.category,
+                        builder: (context, state) {
+                          return DropdownButton<String>(
+                            value: state.job.category,
+                            onChanged: (category) {
+                              category != null
+                                  ? context
+                                      .read<EditJobBloc>()
+                                      .add(CategoryChanged(category: category))
+                                  : null;
+                            },
+                            items: categories.map((String category) {
+                              return DropdownMenuItem<String>(
+                                value: category,
+                                child: Text(category),
+                              );
+                            }).toList(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
                         'Municipality: ',
                         style: TextStyle(
                           fontSize: 16,
