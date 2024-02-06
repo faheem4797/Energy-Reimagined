@@ -24,9 +24,7 @@ class JobsStreamBloc extends Bloc<JobsStreamEvent, JobsStreamState> {
           selectedStatuses: state.selectedStatuses));
     });
     on<GetJobStream>(_getJobStream);
-    on<ChangeFilterStatus>(
-        _changeFilterStatus); // on<AddFilterStatus>(_addFilterStatus);
-    // on<RemoveFilterStatus>(_removeFilterStatus);
+    on<ChangeFilterStatus>(_changeFilterStatus);
   }
 
   FutureOr<void> _getJobStream(

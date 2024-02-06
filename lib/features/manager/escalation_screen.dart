@@ -6,7 +6,6 @@ import 'package:energy_reimagined/features/technician/blocs/tools_request_bloc/t
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobs_repository/jobs_repository.dart';
-// import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class EscalationsScreen extends StatelessWidget {
@@ -107,26 +106,22 @@ class EscalationsScreen extends StatelessWidget {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      MultiBlocProvider(
-                                                        providers: [
-                                                          BlocProvider(
-                                                            create: (context) => ToolsRequestBloc(
-                                                                toolsRepository:
-                                                                    context.read<
-                                                                        ToolsRepository>(),
-                                                                jobsRepository:
-                                                                    context.read<
-                                                                        JobsRepository>(),
-                                                                oldJobModel:
-                                                                    jobs[index],
-                                                                userId: context
-                                                                    .read<
-                                                                        AuthenticationBloc>()
-                                                                    .state
-                                                                    .userModel!
-                                                                    .id),
-                                                          ),
-                                                        ],
+                                                      BlocProvider(
+                                                        create: (context) => ToolsRequestBloc(
+                                                            toolsRepository:
+                                                                context.read<
+                                                                    ToolsRepository>(),
+                                                            jobsRepository:
+                                                                context.read<
+                                                                    JobsRepository>(),
+                                                            oldJobModel:
+                                                                jobs[index],
+                                                            userId: context
+                                                                .read<
+                                                                    AuthenticationBloc>()
+                                                                .state
+                                                                .userModel!
+                                                                .id),
                                                         child:
                                                             ManagerJobDetailPage(
                                                                 job: jobs[

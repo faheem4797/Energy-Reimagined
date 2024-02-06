@@ -58,20 +58,10 @@ class EditJobBloc extends Bloc<EditJobEvent, EditJobState> {
     emit(state.copyWith(status: EditJobStatus.inProgress));
     try {
       final mapOfUpdatedFields = oldJobModel.getChangedFields(state.job);
-      List<Map<String, dynamic>>? newMapOfUpdatedFields;
-//TODO: CHECKED FLAG COUNTER HERE
-      if (mapOfUpdatedFields.any((map) =>
-          map['field'] == 'status' &&
-          ( //map['newValue'] == 'cancelled' ||
-              map['newValue'] == 'rejected'))) {
-        emit(state.copyWith(
-            job: state.job.copyWith(flagCounter: state.job.flagCounter + 1)));
-        newMapOfUpdatedFields = oldJobModel.getChangedFields(state.job);
-      }
 
       final update = UpdateJobModel(
           id: const Uuid().v1(),
-          updatedFields: newMapOfUpdatedFields ?? mapOfUpdatedFields,
+          updatedFields: mapOfUpdatedFields,
           updatedBy: userId,
           updatedTimeStamp: DateTime.now().microsecondsSinceEpoch);
 
