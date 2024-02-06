@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
-import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/accept_job_bloc/accept_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc/add_after_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
@@ -909,16 +908,19 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
           MaterialPageRoute(
             builder: (context) => MultiBlocProvider(
               providers: [
-                BlocProvider(
-                  create: (context) => ToolsRequestBloc(
-                      toolsRepository: context.read<ToolsRepository>(),
-                      jobsRepository: context.read<JobsRepository>(),
-                      oldJobModel: jobModel,
-                      userId: context
-                          .read<AuthenticationBloc>()
-                          .state
-                          .userModel!
-                          .id),
+                // BlocProvider(
+                //   create: (context) => ToolsRequestBloc(
+                //       toolsRepository: context.read<ToolsRepository>(),
+                //       jobsRepository: context.read<JobsRepository>(),
+                //       oldJobModel: jobModel,
+                //       userId: context
+                //           .read<AuthenticationBloc>()
+                //           .state
+                //           .userModel!
+                //           .id),
+                // ),
+                BlocProvider.value(
+                  value: mainContext.read<ToolsRequestBloc>(),
                 ),
                 BlocProvider.value(
                   value: mainContext.read<TechnicianJobsStreamBloc>(),

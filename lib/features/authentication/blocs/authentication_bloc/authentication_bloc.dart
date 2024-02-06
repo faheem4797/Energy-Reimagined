@@ -40,6 +40,7 @@ class AuthenticationBloc
               await _authenticationRepository.getUser(event.user!.uid);
           String role = currentUser.role;
           bool isRestricted = currentUser.isRestricted;
+          print(role);
           if (isRestricted) {
             emit(const AuthenticationState.unauthenticated(
                 'Your account is restricted'));

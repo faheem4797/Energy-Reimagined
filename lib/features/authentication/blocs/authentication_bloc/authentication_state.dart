@@ -35,7 +35,7 @@ class AuthenticationState extends Equatable {
             userModel: userModel);
   const AuthenticationState.managerAuthenticated(User user, UserModel userModel)
       : this._(
-            status: AuthenticationStatus.adminAuthenticated,
+            status: AuthenticationStatus.managerAuthenticated,
             user: user,
             userModel: userModel);
 

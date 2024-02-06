@@ -51,6 +51,7 @@ class JobModel extends Equatable {
   final int locationLongitude;
   final List<String> allToolsRequested;
   final List<int> allToolsRequestedQuantity;
+  // final String currentToolRequestId;
   final List<String> currentToolsRequestedIds;
   final List<int> currentToolsRequestedQuantity;
   final String currentToolsRequestQrCode;
@@ -80,6 +81,7 @@ class JobModel extends Equatable {
     required this.locationLongitude,
     required this.allToolsRequested,
     required this.allToolsRequestedQuantity,
+    // required this.currentToolRequestId,
     required this.currentToolsRequestedIds,
     required this.currentToolsRequestedQuantity,
     required this.currentToolsRequestQrCode,
@@ -111,6 +113,7 @@ class JobModel extends Equatable {
     locationLatitude: 0,
     allToolsRequested: [],
     allToolsRequestedQuantity: [],
+    // currentToolRequestId: '',
     currentToolsRequestedIds: [],
     currentToolsRequestedQuantity: [],
     currentToolsRequestQrCode: '',
@@ -142,6 +145,7 @@ class JobModel extends Equatable {
     int? locationLongitude,
     List<String>? allToolsRequested,
     List<int>? allToolsRequestedQuantity,
+    // String? currentToolRequestId,
     List<String>? currentToolsRequestedIds,
     List<int>? currentToolsRequestedQuantity,
     String? currentToolsRequestQrCode,
@@ -173,6 +177,7 @@ class JobModel extends Equatable {
       allToolsRequested: allToolsRequested ?? this.allToolsRequested,
       allToolsRequestedQuantity:
           allToolsRequestedQuantity ?? this.allToolsRequestedQuantity,
+      // currentToolRequestId: currentToolRequestId ?? this.currentToolRequestId,
       currentToolsRequestedIds:
           currentToolsRequestedIds ?? this.currentToolsRequestedIds,
       currentToolsRequestedQuantity:
@@ -223,6 +228,7 @@ class JobModel extends Equatable {
       'locationLongitude': locationLongitude,
       'allToolsRequested': allToolsRequested,
       'allToolsRequestedQuantity': allToolsRequestedQuantity,
+      // 'currentToolRequestId': currentToolRequestId,
       'currentToolsRequestedIds': currentToolsRequestedIds,
       'currentToolsRequestedQuantity': currentToolsRequestedQuantity,
       'currentToolsRequestQrCode': currentToolsRequestQrCode,
@@ -257,6 +263,7 @@ class JobModel extends Equatable {
       allToolsRequested: List<String>.from(map['allToolsRequested']),
       allToolsRequestedQuantity:
           List<int>.from(map['allToolsRequestedQuantity']),
+      // currentToolRequestId: map['currentToolRequestId'] ?? '',
       currentToolsRequestedIds:
           List<String>.from(map['currentToolsRequestedIds']),
       currentToolsRequestedQuantity:
@@ -324,6 +331,11 @@ class JobModel extends Equatable {
       addChangedField('allToolsRequestedQuantity', allToolsRequestedQuantity,
           other.allToolsRequestedQuantity);
     }
+    // if (currentToolRequestId != other.currentToolRequestId) {
+    //   addChangedField('currentToolRequestId', currentToolRequestId,
+    //       other.currentToolRequestId);
+    // }
+
     if (currentToolsRequestedIds != other.currentToolsRequestedIds) {
       addChangedField('currentToolsRequestedIds', currentToolsRequestedIds,
           other.currentToolsRequestedIds);
@@ -394,7 +406,7 @@ class JobModel extends Equatable {
 
   @override
   String toString() {
-    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, allToolsRequested: $allToolsRequested, currentToolsRequested: $currentToolsRequestedIds, currentToolsRequestedQuantity: $currentToolsRequestedQuantity, currentToolsRequestQrCode: $currentToolsRequestQrCode, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
+    return 'JobModel(id: $id, title: $title, description: $description, municipality: $municipality, status: $status, assignedTechnicianId: $assignedTechnicianId, locationName: $locationName, locationLatitude: $locationLatitude, locationLongitude: $locationLongitude, allToolsRequested: $allToolsRequested, holdReason: $holdReason, cancelReason: $cancelReason, createdTimestamp: $createdTimestamp, assignedTimestamp: $assignedTimestamp, startedTimestamp: $startedTimestamp, holdTimestamp: $holdTimestamp, completedTimestamp: $completedTimestamp)';
   }
 
   @override
@@ -411,7 +423,7 @@ class JobModel extends Equatable {
       locationLatitude,
       locationLongitude,
       allToolsRequested,
-      allToolsRequestedQuantity,
+      // allToolsRequestedQuantity, currentToolRequestId,
       currentToolsRequestedIds,
       currentToolsRequestedQuantity,
       currentToolsRequestQrCode,

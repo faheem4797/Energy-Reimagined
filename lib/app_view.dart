@@ -9,6 +9,7 @@ import 'package:energy_reimagined/features/admin/tools/blocs/tools_stream_bloc/t
 import 'package:energy_reimagined/features/admin/users/blocs/users_stream_bloc/users_stream_bloc.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/authentication/screens/welcome_screen.dart';
+import 'package:energy_reimagined/features/manager/blocs/manager_nav_bloc/manager_nav_bloc.dart';
 import 'package:energy_reimagined/features/manager/managerdashboard.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_nav_bloc/technician_nav_bloc.dart';
@@ -111,8 +112,12 @@ class AppView extends StatelessWidget {
               child: const AdminBottomNavBar(),
             );
             // const AdminHomeScreen();
-          } else if (state.status == AuthenticationStatus.adminAuthenticated) {
-            return const ManagerDashbaord();
+          } else if (state.status ==
+              AuthenticationStatus.managerAuthenticated) {
+            return BlocProvider(
+              create: (context) => ManagerNavBloc(),
+              child: const ManagerDashbaord(),
+            );
             // const ManagerHomeScreen();
           } else if (state.status == AuthenticationStatus.unauthenticated) {
             return const WelcomeScreen();

@@ -9,6 +9,7 @@ enum ToolRequestStatus {
 
 class ToolRequest extends Equatable {
   final String id;
+  final String jobId;
   final List<String> toolsRequestedIds;
   final List<int> toolsRequestedQuantity;
   final String qrCode;
@@ -17,6 +18,7 @@ class ToolRequest extends Equatable {
   final ToolRequestStatus status;
   const ToolRequest({
     required this.id,
+    required this.jobId,
     required this.toolsRequestedIds,
     required this.toolsRequestedQuantity,
     required this.qrCode,
@@ -29,6 +31,7 @@ class ToolRequest extends Equatable {
   List<Object> get props {
     return [
       id,
+      jobId,
       toolsRequestedIds,
       toolsRequestedQuantity,
       qrCode,
@@ -40,6 +43,7 @@ class ToolRequest extends Equatable {
 
   ToolRequest copyWith({
     String? id,
+    String? jobId,
     List<String>? toolsRequestedIds,
     List<int>? toolsRequestedQuantity,
     String? qrCode,
@@ -49,6 +53,7 @@ class ToolRequest extends Equatable {
   }) {
     return ToolRequest(
       id: id ?? this.id,
+      jobId: jobId ?? this.jobId,
       toolsRequestedIds: toolsRequestedIds ?? this.toolsRequestedIds,
       toolsRequestedQuantity:
           toolsRequestedQuantity ?? this.toolsRequestedQuantity,
@@ -74,6 +79,7 @@ class ToolRequest extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'jobId': jobId,
       'toolsRequestedIds': toolsRequestedIds,
       'toolsRequestedQuantity': toolsRequestedQuantity,
       'qrCode': qrCode,
@@ -86,6 +92,7 @@ class ToolRequest extends Equatable {
   factory ToolRequest.fromMap(Map<String, dynamic> map) {
     return ToolRequest(
       id: map['id'] ?? '',
+      jobId: map['jobId'] ?? '',
       toolsRequestedIds: List<String>.from(map['toolsRequestedIds']),
       toolsRequestedQuantity: List<int>.from(map['toolsRequestedQuantity']),
       qrCode: map['qrCode'] ?? '',
