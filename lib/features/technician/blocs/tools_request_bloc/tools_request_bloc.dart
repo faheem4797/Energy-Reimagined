@@ -132,7 +132,7 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
       LoadToolsList event, Emitter<ToolsRequestState> emit) async {
     try {
       final List<ToolModel> listOfTools = await _toolsRepository.getAllTools();
-      //TODO: HERE
+
       if (oldJobModel.currentToolsRequestedIds.isNotEmpty) {
         // final List<ToolModel> listOfCurrentRequestedTools =
         //     await _toolsRepository

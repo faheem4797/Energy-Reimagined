@@ -28,17 +28,13 @@ class JobsRepository {
 
   Stream<List<JobModel>> get getEscalations {
     // Construct the first query for documents where flagCounter is greater than or equal to 3
-    final query1 = _firebaseFirestore
+    final stream1 = _firebaseFirestore
         .collection('jobs')
         .where('flagCounter', isGreaterThanOrEqualTo: 3)
         .snapshots();
 
-    print(DateTime.now()
-        .subtract(const Duration(days: 1))
-        .microsecondsSinceEpoch);
-
     // Construct the second query for documents where jobStatus is onHold and holdTimeStamp is more than a day old
-    final query2 = _firebaseFirestore
+    final stream2 = _firebaseFirestore
         .collection('jobs')
         .where('status.status', isEqualTo: 'onHold')
         .where('holdTimestamp',
@@ -48,36 +44,28 @@ class JobsRepository {
         .where('holdTimestamp', isNotEqualTo: 0)
         .snapshots();
 
-    // final a = (query2.map((snapshot) =>
-    //     snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList()));
-    // a.contains();
-    // print(a);
+    // Combine the latest emissions from both streams
+    Stream<List<QuerySnapshot<Map<String, dynamic>>>> combinedStream =
+        Rx.combineLatest2(stream1, stream2, (snapshot1, snapshot2) {
+      return [snapshot1, snapshot2];
+    });
 
-    // Merge the two streams using rxdart's merge method
-    Stream<QuerySnapshot<Map<String, dynamic>>> mergedStream =
-        Rx.merge([query1, query2]);
+    // Process the combined stream and return the result
+    return combinedStream.map((snapshotsList) {
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> combinedDocs = [];
+      for (var snapshot in snapshotsList) {
+        combinedDocs.addAll(snapshot.docs);
+      }
+      return combinedDocs.map((doc) => JobModel.fromMap(doc.data())).toList();
+    });
 
-    return mergedStream.map((snapshot) =>
-        snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
-    // return _firebaseFirestore
-    //     .collection('jobs')
-    //     .where('flagCounter', isGreaterThanOrEqualTo: 3)
-    //     .where('status')
-    //     .orderBy('createdTimestamp', descending: true)
-    //     .snapshots()
-    //     .map((snapshot) =>
-    //         snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
+    // // Merge the two streams using rxdart's merge method
+    // Stream<QuerySnapshot<Map<String, dynamic>>> mergedStream =
+    //     Rx.merge([stream1, stream2]);
+
+    // return mergedStream.map((snapshot) =>
+    //     snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
   }
-
-  // Stream<List<JobModel>> getEscalations() {
-  //   return _firebaseFirestore
-  //       .collection('jobs')
-  //       .where('assignedTechnicianId', isEqualTo: userId)
-  //       .orderBy('assignedTimestamp', descending: true)
-  //       .snapshots()
-  //       .map((snapshot) =>
-  //           snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
-  // }
 
   Stream<List<JobModel>> getUserJobsStream(String userId) {
     return _firebaseFirestore

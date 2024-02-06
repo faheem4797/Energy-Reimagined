@@ -17,9 +17,18 @@ class EscalationsBloc extends Bloc<EscalationsEvent, EscalationsState> {
       : _jobsRepository = jobsRepository,
         super(EscalationsState.loading()) {
     _escalationsSubscription = _jobsRepository.getEscalations.listen((jobData) {
-      final newFilteredList = _filterList(jobData, state.selectedStatuses);
+      Set<JobModel> set = Set.from(jobData);
+
+      final escalatedJobsList = set.toList();
+
+      // escalatedJobsList
+      //     .sort((a, b) => b.createdTimestamp.compareTo(a.createdTimestamp));
+
+      final newFilteredList =
+          _filterList(escalatedJobsList, state.selectedStatuses);
+
       add(GetEscalations(
-          escalatedJobs: jobData,
+          escalatedJobs: escalatedJobsList,
           filteredEscalations: newFilteredList,
           selectedStatuses: state.selectedStatuses));
     });
@@ -60,6 +69,10 @@ class EscalationsBloc extends Bloc<EscalationsEvent, EscalationsState> {
       tempFilteredJobs =
           jobData.where((job) => filterSet.contains(job.status)).toList();
     }
+
+    tempFilteredJobs
+        .sort((a, b) => b.createdTimestamp.compareTo(a.createdTimestamp));
+
     return tempFilteredJobs;
   }
 
