@@ -5,6 +5,7 @@ import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_work_description_bloc/add_work_description_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/get_tool_request_bloc/get_tool_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
@@ -168,7 +169,6 @@ class TechnicianDashboard extends StatelessWidget {
                                                                               .state
                                                                               .userModel!
                                                                               .id)),
-
                                                                   BlocProvider(
                                                                       create: (context) => AddAfterImageBloc(
                                                                           jobsRepository: context.read<
@@ -196,7 +196,6 @@ class TechnicianDashboard extends StatelessWidget {
                                                                               .state
                                                                               .userModel!
                                                                               .id)),
-
                                                                   BlocProvider(
                                                                     create: (context) => ToolsRequestBloc(
                                                                         toolsRepository:
@@ -231,9 +230,17 @@ class TechnicianDashboard extends StatelessWidget {
                                                                         .read<
                                                                             TechnicianJobsStreamBloc>(),
                                                                   ),
-
-                                                                  //
-                                                                  //
+                                                                  BlocProvider(
+                                                                    lazy: false,
+                                                                    create: (context) =>
+                                                                        GetToolRequestBloc(
+                                                                      jobsRepository:
+                                                                          context
+                                                                              .read<JobsRepository>(),
+                                                                    )..add(GetToolRequestData(
+                                                                            toolRequestId:
+                                                                                jobs[index].currentToolRequestId)),
+                                                                  ),
                                                                 ],
                                                                 child: TechnicianJobDetailPage(
                                                                     job: jobs[

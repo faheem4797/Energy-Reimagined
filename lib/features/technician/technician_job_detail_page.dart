@@ -7,6 +7,7 @@ import 'package:energy_reimagined/features/technician/blocs/add_after_image_bloc
 import 'package:energy_reimagined/features/technician/blocs/add_before_image_bloc/add_before_image_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/add_work_description_bloc/add_work_description_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/complete_job_bloc/complete_job_bloc.dart';
+import 'package:energy_reimagined/features/technician/blocs/get_tool_request_bloc/get_tool_request_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/job_detail_bloc/job_detail_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/reject_job_bloc/reject_job_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
@@ -903,22 +904,20 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         ),
       ),
       onPressed: () {
+        print('object 1');
+
+        final toolRequestState =
+            context.read<GetToolRequestBloc>().state.toolRequestModel;
+        print(toolRequestState);
+
         Navigator.push(
-          mainContext,
+          context,
           MaterialPageRoute(
             builder: (context) => MultiBlocProvider(
               providers: [
-                // BlocProvider(
-                //   create: (context) => ToolsRequestBloc(
-                //       toolsRepository: context.read<ToolsRepository>(),
-                //       jobsRepository: context.read<JobsRepository>(),
-                //       oldJobModel: jobModel,
-                //       userId: context
-                //           .read<AuthenticationBloc>()
-                //           .state
-                //           .userModel!
-                //           .id),
-                // ),
+                BlocProvider.value(
+                  value: mainContext.read<GetToolRequestBloc>(),
+                ),
                 BlocProvider.value(
                   value: mainContext.read<ToolsRequestBloc>(),
                 ),
@@ -926,10 +925,22 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
                   value: mainContext.read<TechnicianJobsStreamBloc>(),
                 ),
               ],
-              child: const TechnicianRequestToolsPage(),
+              child: TechnicianRequestToolsPage(
+                toolRequestModel: toolRequestState,
+              ),
             ),
           ),
         );
+        print('object 2');
+
+        // final b = mainContext.read<GetToolRequestBloc>();
+        // print(a.state);
+        // print(b.state);
+
+        // final a =
+        //     GetToolRequestBloc(jobsRepository: context.read<JobsRepository>());
+
+        print('object 3');
       },
       child: const Text(
         "Request Tools",

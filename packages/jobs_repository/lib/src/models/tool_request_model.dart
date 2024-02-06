@@ -4,10 +4,13 @@ import 'package:equatable/equatable.dart';
 
 enum ToolRequestStatus {
   pending,
+  cancelled,
   completed,
 }
 
-class ToolRequest extends Equatable {
+//TODO: SET STATUS TO CANCELLED WHEN TECHNICIAN REJECTS A JOB AND THERE IS SOME JOB IN CURRENT STATUS
+
+class ToolRequestModel extends Equatable {
   final String id;
   final String jobId;
   final List<String> toolsRequestedIds;
@@ -16,7 +19,7 @@ class ToolRequest extends Equatable {
   final int requestedTimestamp;
   final int completedTimestamp;
   final ToolRequestStatus status;
-  const ToolRequest({
+  const ToolRequestModel({
     required this.id,
     required this.jobId,
     required this.toolsRequestedIds,
@@ -41,7 +44,18 @@ class ToolRequest extends Equatable {
     ];
   }
 
-  ToolRequest copyWith({
+  static const empty = ToolRequestModel(
+    id: '',
+    jobId: '',
+    toolsRequestedIds: [],
+    toolsRequestedQuantity: [],
+    qrCode: '',
+    requestedTimestamp: 0,
+    completedTimestamp: 0,
+    status: ToolRequestStatus.pending,
+  );
+
+  ToolRequestModel copyWith({
     String? id,
     String? jobId,
     List<String>? toolsRequestedIds,
@@ -51,7 +65,7 @@ class ToolRequest extends Equatable {
     int? completedTimestamp,
     ToolRequestStatus? status,
   }) {
-    return ToolRequest(
+    return ToolRequestModel(
       id: id ?? this.id,
       jobId: jobId ?? this.jobId,
       toolsRequestedIds: toolsRequestedIds ?? this.toolsRequestedIds,
@@ -89,8 +103,8 @@ class ToolRequest extends Equatable {
     };
   }
 
-  factory ToolRequest.fromMap(Map<String, dynamic> map) {
-    return ToolRequest(
+  factory ToolRequestModel.fromMap(Map<String, dynamic> map) {
+    return ToolRequestModel(
       id: map['id'] ?? '',
       jobId: map['jobId'] ?? '',
       toolsRequestedIds: List<String>.from(map['toolsRequestedIds']),
@@ -104,8 +118,8 @@ class ToolRequest extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory ToolRequest.fromJson(String source) =>
-      ToolRequest.fromMap(json.decode(source));
+  factory ToolRequestModel.fromJson(String source) =>
+      ToolRequestModel.fromMap(json.decode(source));
 
   @override
   String toString() {

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/get_tool_request_bloc/get_tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/tool_request_bloc/tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/create_job_bloc/create_job_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/delete_job_bloc/delete_job_bloc.dart';
@@ -323,11 +324,20 @@ class AdminJobPage extends StatelessWidget {
                                                                 Navigator.of(
                                                                         context)
                                                                     .push(MaterialPageRoute(
-                                                                        builder: (context) => BlocProvider(
-                                                                              create: (context) => ToolRequestBloc(
-                                                                                toolsRepository: context.read<ToolsRepository>(),
-                                                                                jobModel: jobs[index],
-                                                                              ),
+                                                                        builder: (context) => MultiBlocProvider(
+                                                                              providers: [
+                                                                                BlocProvider(
+                                                                                  create: (context) => ToolRequestBloc(
+                                                                                    toolsRepository: context.read<ToolsRepository>(),
+                                                                                    jobModel: jobs[index],
+                                                                                  ),
+                                                                                ),
+                                                                                BlocProvider(
+                                                                                  create: (context) => GetToolRequestBloc(
+                                                                                    jobsRepository: context.read<JobsRepository>(),
+                                                                                  )..add(GetToolRequestData(toolRequestId: jobs[index].currentToolRequestId)),
+                                                                                ),
+                                                                              ],
                                                                               child: AdminToolsRequestPage(
                                                                                 jobModel: jobs[index],
                                                                               ),
@@ -377,8 +387,10 @@ class AdminJobPage extends StatelessWidget {
                                                                               locationName: jobs[index].locationName,
                                                                               locationLatitude: jobs[index].locationLatitude,
                                                                               locationLongitude: jobs[index].locationLongitude,
+                                                                              allToolRequestIds: jobs[index].allToolRequestIds,
                                                                               allToolsRequested: jobs[index].allToolsRequested,
                                                                               allToolsRequestedQuantity: jobs[index].allToolsRequestedQuantity,
+                                                                              currentToolRequestId: jobs[index].currentToolRequestId,
                                                                               currentToolsRequestedIds: jobs[index].currentToolsRequestedIds,
                                                                               currentToolsRequestedQuantity: jobs[index].currentToolsRequestedQuantity,
                                                                               currentToolsRequestQrCode: jobs[index].currentToolsRequestQrCode,

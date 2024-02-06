@@ -11,4 +11,6 @@ class BarCodeDetected extends QrCodeScannerEvent {
   final BarcodeCapture capture;
 
   const BarCodeDetected({required this.capture});
+  @override
+  List<Object> get props => [capture];
 }

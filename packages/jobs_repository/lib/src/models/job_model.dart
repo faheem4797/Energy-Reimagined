@@ -49,9 +49,10 @@ class JobModel extends Equatable {
   final String locationName;
   final int locationLatitude;
   final int locationLongitude;
+  final List<String> allToolRequestIds;
   final List<String> allToolsRequested;
   final List<int> allToolsRequestedQuantity;
-  // final String currentToolRequestId;
+  final String currentToolRequestId;
   final List<String> currentToolsRequestedIds;
   final List<int> currentToolsRequestedQuantity;
   final String currentToolsRequestQrCode;
@@ -79,9 +80,10 @@ class JobModel extends Equatable {
     required this.locationName,
     required this.locationLatitude,
     required this.locationLongitude,
+    required this.allToolRequestIds,
     required this.allToolsRequested,
     required this.allToolsRequestedQuantity,
-    // required this.currentToolRequestId,
+    required this.currentToolRequestId,
     required this.currentToolsRequestedIds,
     required this.currentToolsRequestedQuantity,
     required this.currentToolsRequestQrCode,
@@ -111,9 +113,10 @@ class JobModel extends Equatable {
     locationName: '',
     locationLongitude: 0,
     locationLatitude: 0,
+    allToolRequestIds: [],
     allToolsRequested: [],
     allToolsRequestedQuantity: [],
-    // currentToolRequestId: '',
+    currentToolRequestId: '',
     currentToolsRequestedIds: [],
     currentToolsRequestedQuantity: [],
     currentToolsRequestQrCode: '',
@@ -143,9 +146,10 @@ class JobModel extends Equatable {
     String? locationName,
     int? locationLatitude,
     int? locationLongitude,
+    List<String>? allToolRequestIds,
     List<String>? allToolsRequested,
     List<int>? allToolsRequestedQuantity,
-    // String? currentToolRequestId,
+    String? currentToolRequestId,
     List<String>? currentToolsRequestedIds,
     List<int>? currentToolsRequestedQuantity,
     String? currentToolsRequestQrCode,
@@ -174,10 +178,11 @@ class JobModel extends Equatable {
       locationName: locationName ?? this.locationName,
       locationLatitude: locationLatitude ?? this.locationLatitude,
       locationLongitude: locationLongitude ?? this.locationLongitude,
+      allToolRequestIds: allToolRequestIds ?? this.allToolRequestIds,
       allToolsRequested: allToolsRequested ?? this.allToolsRequested,
       allToolsRequestedQuantity:
           allToolsRequestedQuantity ?? this.allToolsRequestedQuantity,
-      // currentToolRequestId: currentToolRequestId ?? this.currentToolRequestId,
+      currentToolRequestId: currentToolRequestId ?? this.currentToolRequestId,
       currentToolsRequestedIds:
           currentToolsRequestedIds ?? this.currentToolsRequestedIds,
       currentToolsRequestedQuantity:
@@ -226,9 +231,10 @@ class JobModel extends Equatable {
       'locationName': locationName,
       'locationLatitude': locationLatitude,
       'locationLongitude': locationLongitude,
+      'allToolRequestIds': allToolRequestIds,
       'allToolsRequested': allToolsRequested,
       'allToolsRequestedQuantity': allToolsRequestedQuantity,
-      // 'currentToolRequestId': currentToolRequestId,
+      'currentToolRequestId': currentToolRequestId,
       'currentToolsRequestedIds': currentToolsRequestedIds,
       'currentToolsRequestedQuantity': currentToolsRequestedQuantity,
       'currentToolsRequestQrCode': currentToolsRequestQrCode,
@@ -260,10 +266,11 @@ class JobModel extends Equatable {
       locationName: map['locationName'] ?? '',
       locationLatitude: map['locationLatitude']?.toInt() ?? 0,
       locationLongitude: map['locationLongitude']?.toInt() ?? 0,
+      allToolRequestIds: List<String>.from(map['allToolRequestIds']),
       allToolsRequested: List<String>.from(map['allToolsRequested']),
       allToolsRequestedQuantity:
           List<int>.from(map['allToolsRequestedQuantity']),
-      // currentToolRequestId: map['currentToolRequestId'] ?? '',
+      currentToolRequestId: map['currentToolRequestId'] ?? '',
       currentToolsRequestedIds:
           List<String>.from(map['currentToolsRequestedIds']),
       currentToolsRequestedQuantity:
@@ -323,6 +330,10 @@ class JobModel extends Equatable {
       addChangedField('locationName', locationName, other.locationName);
     }
 
+    if (allToolRequestIds != other.allToolRequestIds) {
+      addChangedField(
+          'allToolRequestIds', allToolRequestIds, other.allToolRequestIds);
+    }
     if (allToolsRequested != other.allToolsRequested) {
       addChangedField(
           'allToolsRequested', allToolsRequested, other.allToolsRequested);
@@ -331,10 +342,10 @@ class JobModel extends Equatable {
       addChangedField('allToolsRequestedQuantity', allToolsRequestedQuantity,
           other.allToolsRequestedQuantity);
     }
-    // if (currentToolRequestId != other.currentToolRequestId) {
-    //   addChangedField('currentToolRequestId', currentToolRequestId,
-    //       other.currentToolRequestId);
-    // }
+    if (currentToolRequestId != other.currentToolRequestId) {
+      addChangedField('currentToolRequestId', currentToolRequestId,
+          other.currentToolRequestId);
+    }
 
     if (currentToolsRequestedIds != other.currentToolsRequestedIds) {
       addChangedField('currentToolsRequestedIds', currentToolsRequestedIds,
@@ -422,8 +433,10 @@ class JobModel extends Equatable {
       locationName,
       locationLatitude,
       locationLongitude,
+      allToolRequestIds,
       allToolsRequested,
-      // allToolsRequestedQuantity, currentToolRequestId,
+      allToolsRequestedQuantity,
+      currentToolRequestId,
       currentToolsRequestedIds,
       currentToolsRequestedQuantity,
       currentToolsRequestQrCode,

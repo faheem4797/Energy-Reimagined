@@ -32,6 +32,7 @@ class TechnicianQRCodePage extends StatelessWidget {
             Future.delayed(const Duration(seconds: 2), () {
               Navigator.of(context)
                 ..pop()
+                ..pop()
                 ..pop();
             });
           }

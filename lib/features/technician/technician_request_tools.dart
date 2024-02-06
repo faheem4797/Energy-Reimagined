@@ -13,11 +13,8 @@ import 'package:jobs_repository/jobs_repository.dart';
 import 'package:tools_repository/tools_repository.dart';
 
 class TechnicianRequestToolsPage extends StatelessWidget {
-  // final JobModel jobModel;
-  const TechnicianRequestToolsPage(
-      {
-      //required this.jobModel,
-      super.key});
+  final ToolRequestModel toolRequestModel;
+  const TechnicianRequestToolsPage({required this.toolRequestModel, super.key});
 
   Future<void> _showToolsPopup(BuildContext blocContext) async {
     return showDialog<void>(
@@ -119,9 +116,9 @@ class TechnicianRequestToolsPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       checkConnectionFunc(context, () {
-                        context
-                            .read<ToolsRequestBloc>()
-                            .add(RequestSelectedTools());
+                        context.read<ToolsRequestBloc>().add(
+                            RequestSelectedTools(
+                                toolRequestModel: toolRequestModel));
                       });
                       Navigator.of(context).pop();
                     },
@@ -360,6 +357,8 @@ class TechnicianRequestToolsPage extends StatelessWidget {
                                                                     .read<
                                                                         ToolsRequestBloc>()
                                                                     .oldJobModel,
+                                                                toolRequestModel:
+                                                                    toolRequestModel,
                                                                 userId: context
                                                                     .read<
                                                                         AuthenticationBloc>()

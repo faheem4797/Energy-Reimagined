@@ -13,10 +13,12 @@ part 'qr_code_scanner_state.dart';
 class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
   final JobsRepository _jobsRepository;
   final JobModel jobModel;
+  final ToolRequestModel toolRequestModel;
   final String userId;
   QrCodeScannerBloc(
       {required JobsRepository jobsRepository,
       required this.jobModel,
+      required this.toolRequestModel,
       required this.userId})
       : _jobsRepository = jobsRepository,
         super(QrCodeScannerInitial()) {
@@ -33,10 +35,17 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
         emit(QrCodeScannerLoading());
 
         try {
+          //TODO: REMOVE THE SAME QUANTITY OF TOOLS FROM TOOLS COLLECTION SEEING THE CURRENT QUANTITY AND THEIR IDS
+
           final currentTime = DateTime.now().microsecondsSinceEpoch;
+          ToolRequestModel newToolRequestModel = toolRequestModel.copyWith(
+              status: ToolRequestStatus.completed,
+              completedTimestamp: currentTime);
           JobModel newJobModel = jobModel.copyWith(
+            currentToolRequestId: '',
             currentToolsRequestQrCode: '',
             currentToolsRequestedIds: [],
+            currentToolsRequestedQuantity: [],
             // allToolsRequested: newAllRequestedToolsList,
             status: JobStatus.workInProgress,
             startedTimestamp: currentTime,
@@ -45,13 +54,16 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
           );
 
           final mapOfUpdatedFields = jobModel.getChangedFields(newJobModel);
-          final update = UpdateJobModel(
+          final updatedJobModel = UpdateJobModel(
               id: const Uuid().v1(),
               updatedFields: mapOfUpdatedFields,
               updatedBy: userId,
               updatedTimeStamp: currentTime);
 
-          await _jobsRepository.updateJobData(newJobModel, jobModel, update);
+          await _jobsRepository.updateJobData(
+              newJobModel, jobModel, updatedJobModel);
+          await _jobsRepository.setToolRequestData(newToolRequestModel);
+
           emit(QrCodeScannerSuccess());
         } on SetFirebaseDataFailure catch (e) {
           emit(QrCodeScannerFailure(errorMessage: e.message));

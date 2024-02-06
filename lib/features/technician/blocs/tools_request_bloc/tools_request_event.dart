@@ -7,7 +7,12 @@ sealed class ToolsRequestEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class RequestSelectedTools extends ToolsRequestEvent {}
+final class RequestSelectedTools extends ToolsRequestEvent {
+  final job_repository.ToolRequestModel toolRequestModel;
+  const RequestSelectedTools({required this.toolRequestModel});
+  @override
+  List<Object> get props => [toolRequestModel];
+}
 
 final class LoadToolsList extends ToolsRequestEvent {}
 

@@ -13,10 +13,12 @@ class TechnicianQrCodeBloc
     extends Bloc<TechnicianQrCodeEvent, TechnicianQrCodeState> {
   final JobsRepository _jobsRepository;
   final JobModel jobModel;
+  final ToolRequestModel toolRequestModel;
   final String userId;
   TechnicianQrCodeBloc(
       {required JobsRepository jobsRepository,
       required this.jobModel,
+      required this.toolRequestModel,
       required this.userId})
       : _jobsRepository = jobsRepository,
         super(TechnicianQrCodeInitial()) {
@@ -29,9 +31,14 @@ class TechnicianQrCodeBloc
 
     try {
       final currentTime = DateTime.now().microsecondsSinceEpoch;
+      print(toolRequestModel);
+      ToolRequestModel newToolRequestModel = toolRequestModel.copyWith(
+          status: ToolRequestStatus.completed, completedTimestamp: currentTime);
       JobModel newJobModel = jobModel.copyWith(
+        currentToolRequestId: '',
         currentToolsRequestQrCode: '',
         currentToolsRequestedIds: [],
+        currentToolsRequestedQuantity: [],
         status: JobStatus.workInProgress,
         startedTimestamp: currentTime,
       );
@@ -44,6 +51,8 @@ class TechnicianQrCodeBloc
           updatedTimeStamp: currentTime);
 
       await _jobsRepository.updateJobData(newJobModel, jobModel, update);
+      await _jobsRepository.setToolRequestData(newToolRequestModel);
+
       emit(TechnicianQrCodeSuccess());
     } on SetFirebaseDataFailure catch (e) {
       emit(TechnicianQrCodeFailure(errorMessage: e.message));

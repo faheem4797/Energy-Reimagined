@@ -34,6 +34,7 @@ class RejectJobBloc extends Bloc<RejectJobEvent, RejectJobState> {
         status: JobStatus.rejected,
         flagCounter: oldJobModel.flagCounter + 1,
       );
+      //TODO: SEND NOTIFICATION TO MANAGER IF FLAGCOUNTER >= 3
 
       final mapOfUpdatedFields = oldJobModel.getChangedFields(newJobModel);
       final update = UpdateJobModel(

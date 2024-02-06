@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:energy_reimagined/constants/colors.dart';
+import 'package:energy_reimagined/features/admin/jobs/blocs/get_tool_request_bloc/get_tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/qr_code_scanner_bloc/qr_code_scanner_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/blocs/tool_request_bloc/tool_request_bloc.dart';
 import 'package:energy_reimagined/features/admin/jobs/screens/admin_qrcode_scanner_page.dart';
@@ -28,153 +29,187 @@ class AdminToolsRequestPage extends StatelessWidget {
         ),
         backgroundColor: ConstColors.backgroundDarkColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: BlocBuilder<ToolRequestBloc, ToolRequestState>(
-          builder: (context, state) {
-            if (state is ToolRequestInitial) {
-              return const Center(
-                child: CircularProgressIndicator(),
+      body: BlocListener<GetToolRequestBloc, GetToolRequestState>(
+        listener: (context, state) {
+          if (state is GetToolRequestFailure) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                ),
               );
-            } else if (state is ToolRequestFailure) {
-              return Center(
-                child: Text(state.errorMessage),
-              );
-            } else if (state is ToolRequestSuccess) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Tools List",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                ConstColors.foregroundColor),
-                            padding:
-                                MaterialStateProperty.all<EdgeInsetsGeometry>(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 10),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: BlocBuilder<ToolRequestBloc, ToolRequestState>(
+            builder: (context, state) {
+              if (state is ToolRequestInitial) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is ToolRequestFailure) {
+                return Center(
+                  child: Text(state.errorMessage),
+                );
+              } else if (state is ToolRequestSuccess) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Tools List",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                      create: (context) => QrCodeScannerBloc(
-                                        jobsRepository:
-                                            context.read<JobsRepository>(),
-                                        jobModel: jobModel,
-                                        userId: context
-                                            .read<AuthenticationBloc>()
-                                            .state
-                                            .userModel!
-                                            .id,
-                                      ),
-                                      child: const AdminQRCodeScannerPage(),
-                                    )));
-                          },
-                          child: const Text(
-                            "Scan QR Code",
-                            style: TextStyle(color: ConstColors.blackColor),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.toolsList.length,
-                      itemBuilder: (context, index) {
-                        final bool isUnavailable =
-                            state.toolsList[index].quantity == 0;
-                        return Stack(
-                          children: [
-                            Card(
-                                color: ConstColors.backgroundColor,
-                                elevation: 4,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        state.toolsList[index].imageUrl),
+                          BlocBuilder<GetToolRequestBloc, GetToolRequestState>(
+                            builder: (context, state) {
+                              return ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          ConstColors.foregroundColor),
+                                  padding: MaterialStateProperty.all<
+                                      EdgeInsetsGeometry>(
+                                    const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
                                   ),
-                                  title: RichText(
-                                    text: TextSpan(
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: state.toolsList[index].name,
-                                          style: const TextStyle(
-                                            color: ConstColors.whiteColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              '${'  [${state.toolsList[index].category}'}]',
-                                          style: const TextStyle(
-                                            color: ConstColors.whiteColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    'Quantity Requested: ${state.toolsListQuantity[index].toString()}',
-                                    style: const TextStyle(
-                                      color: ConstColors.whiteColor,
-                                    ),
-                                  ),
-                                )),
-                            if (isUnavailable)
-                              Positioned(
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: const Banner(
-                                    message: 'Unavailable',
-                                    location: BannerLocation.topEnd,
-                                    color: ConstColors.redColor,
-                                    textStyle: TextStyle(
-                                      color: ConstColors.whiteColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
                                     ),
                                   ),
                                 ),
-                              ),
-                          ],
-                        );
-                      },
+                                onPressed: state is GetToolRequestSuccess
+                                    ? () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BlocProvider(
+                                                      create: (context) =>
+                                                          QrCodeScannerBloc(
+                                                        jobsRepository:
+                                                            context.read<
+                                                                JobsRepository>(),
+                                                        jobModel: jobModel,
+                                                        toolRequestModel: state
+                                                            .toolRequestModel,
+                                                        userId: context
+                                                            .read<
+                                                                AuthenticationBloc>()
+                                                            .state
+                                                            .userModel!
+                                                            .id,
+                                                      ),
+                                                      child:
+                                                          const AdminQRCodeScannerPage(),
+                                                    )));
+                                      }
+                                    : null,
+                                child: state is GetToolRequestInitial
+                                    ? const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : const Text(
+                                        "Scan QR Code",
+                                        style: TextStyle(
+                                            color: ConstColors.blackColor),
+                                      ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              );
-            } else {
-              return Container();
-            }
-          },
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: state.toolsList.length,
+                        itemBuilder: (context, index) {
+                          final bool isUnavailable =
+                              state.toolsList[index].quantity == 0;
+                          return Stack(
+                            children: [
+                              Card(
+                                  color: ConstColors.backgroundColor,
+                                  elevation: 4,
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              state.toolsList[index].imageUrl),
+                                    ),
+                                    title: RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: state.toolsList[index].name,
+                                            style: const TextStyle(
+                                              color: ConstColors.whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '${'  [${state.toolsList[index].category}'}]',
+                                            style: const TextStyle(
+                                              color: ConstColors.whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      'Quantity Requested: ${state.toolsListQuantity[index].toString()}',
+                                      style: const TextStyle(
+                                        color: ConstColors.whiteColor,
+                                      ),
+                                    ),
+                                  )),
+                              if (isUnavailable)
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Banner(
+                                      message: 'Unavailable',
+                                      location: BannerLocation.topEnd,
+                                      color: ConstColors.redColor,
+                                      textStyle: TextStyle(
+                                        color: ConstColors.whiteColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
       ),
     );
