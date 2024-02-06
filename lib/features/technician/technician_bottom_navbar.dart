@@ -31,8 +31,7 @@ class TechnicianBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TechnicianNavBloc, TechnicianNavState>(
-      listener: (context, state) {},
+    return BlocBuilder<TechnicianNavBloc, TechnicianNavState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

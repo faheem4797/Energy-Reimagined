@@ -2,26 +2,30 @@ import 'package:energy_reimagined/constants/colors.dart';
 import 'package:energy_reimagined/constants/helper_functions.dart';
 import 'package:energy_reimagined/features/authentication/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:energy_reimagined/features/manager/blocs/manager_nav_bloc/manager_nav_bloc.dart';
+import 'package:energy_reimagined/features/manager/escalation_screen.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
   BottomNavigationBarItem(
-    icon: Icon(Icons.work),
-    label: 'Jobs',
+    icon: Icon(Icons.assessment),
+    label: 'Report',
   ),
   BottomNavigationBarItem(
-    icon: Icon(Icons.chat),
-    label: 'Chat',
+    icon: Icon(Icons.timer),
+    label: 'Escalations',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.handyman),
+    label: 'Tools',
   ),
 ];
 
 List<Widget> bottomNavScreen = <Widget>[
-  const Placeholder(), const Placeholder(),
-  // const AdminUserPage(),
-  // const AdminToolPage(),
-  // const AdminJobPage(),
+  const Placeholder(),
+  const EscalationsScreen(),
+  const Placeholder(),
 ];
 
 class ManagerDashbaord extends StatefulWidget {
@@ -32,14 +36,9 @@ class ManagerDashbaord extends StatefulWidget {
 }
 
 class _ManagerDashbaordState extends State<ManagerDashbaord> {
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  //User? _user;
-
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ManagerNavBloc, ManagerNavState>(
-      listener: (context, state) {},
+    return BlocBuilder<ManagerNavBloc, ManagerNavState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

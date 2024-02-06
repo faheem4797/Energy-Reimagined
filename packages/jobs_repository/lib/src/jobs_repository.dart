@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
 class JobsRepository {
@@ -24,6 +25,59 @@ class JobsRepository {
         .map((snapshot) =>
             snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
   }
+
+  Stream<List<JobModel>> get getEscalations {
+    // Construct the first query for documents where flagCounter is greater than or equal to 3
+    final query1 = _firebaseFirestore
+        .collection('jobs')
+        .where('flagCounter', isGreaterThanOrEqualTo: 3)
+        .snapshots();
+
+    print(DateTime.now()
+        .subtract(const Duration(days: 1))
+        .microsecondsSinceEpoch);
+
+    // Construct the second query for documents where jobStatus is onHold and holdTimeStamp is more than a day old
+    final query2 = _firebaseFirestore
+        .collection('jobs')
+        .where('status.status', isEqualTo: 'onHold')
+        .where('holdTimestamp',
+            isLessThan: DateTime.now()
+                .subtract(const Duration(days: 1))
+                .microsecondsSinceEpoch)
+        .where('holdTimestamp', isNotEqualTo: 0)
+        .snapshots();
+
+    // final a = (query2.map((snapshot) =>
+    //     snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList()));
+    // a.contains();
+    // print(a);
+
+    // Merge the two streams using rxdart's merge method
+    Stream<QuerySnapshot<Map<String, dynamic>>> mergedStream =
+        Rx.merge([query1, query2]);
+
+    return mergedStream.map((snapshot) =>
+        snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
+    // return _firebaseFirestore
+    //     .collection('jobs')
+    //     .where('flagCounter', isGreaterThanOrEqualTo: 3)
+    //     .where('status')
+    //     .orderBy('createdTimestamp', descending: true)
+    //     .snapshots()
+    //     .map((snapshot) =>
+    //         snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
+  }
+
+  // Stream<List<JobModel>> getEscalations() {
+  //   return _firebaseFirestore
+  //       .collection('jobs')
+  //       .where('assignedTechnicianId', isEqualTo: userId)
+  //       .orderBy('assignedTimestamp', descending: true)
+  //       .snapshots()
+  //       .map((snapshot) =>
+  //           snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList());
+  // }
 
   Stream<List<JobModel>> getUserJobsStream(String userId) {
     return _firebaseFirestore
