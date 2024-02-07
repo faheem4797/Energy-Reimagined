@@ -904,11 +904,8 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
         ),
       ),
       onPressed: () {
-        print('object 1');
-
         final toolRequestState =
             context.read<GetToolRequestBloc>().state.toolRequestModel;
-        print(toolRequestState);
 
         Navigator.push(
           context,
@@ -931,16 +928,6 @@ class _TechnicianJobDetailPageState extends State<TechnicianJobDetailPage> {
             ),
           ),
         );
-        print('object 2');
-
-        // final b = mainContext.read<GetToolRequestBloc>();
-        // print(a.state);
-        // print(b.state);
-
-        // final a =
-        //     GetToolRequestBloc(jobsRepository: context.read<JobsRepository>());
-
-        print('object 3');
       },
       child: const Text(
         "Request Tools",

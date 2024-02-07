@@ -353,6 +353,9 @@ class TechnicianRequestToolsPage extends StatelessWidget {
                                                                 jobsRepository:
                                                                     context.read<
                                                                         JobsRepository>(),
+                                                                toolsRepository:
+                                                                    context.read<
+                                                                        ToolsRepository>(),
                                                                 jobModel: blocContext
                                                                     .read<
                                                                         ToolsRequestBloc>()

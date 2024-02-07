@@ -3,17 +3,17 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:jobs_repository/jobs_repository.dart';
+import 'package:tools_repository/tools_repository.dart';
 
 part 'get_tool_request_event.dart';
 part 'get_tool_request_state.dart';
 
 class GetToolRequestBloc
     extends Bloc<GetToolRequestEvent, GetToolRequestState> {
-  final JobsRepository _jobsRepository;
+  final ToolsRepository _toolsRepository;
 
-  GetToolRequestBloc({required JobsRepository jobsRepository})
-      : _jobsRepository = jobsRepository,
+  GetToolRequestBloc({required ToolsRepository toolsRepository})
+      : _toolsRepository = toolsRepository,
         super(const GetToolRequestState()) {
     on<GetToolRequestData>(_getToolRequestData);
   }
@@ -27,7 +27,7 @@ class GetToolRequestBloc
     }
     try {
       final toolData =
-          await _jobsRepository.getToolRequestData(event.toolRequestId);
+          await _toolsRepository.getToolRequestData(event.toolRequestId);
       emit(GetToolRequestState(
               toolRequestModel: toolData, status: GetToolRequestStatus.success)
           // GetToolRequestSuccess(toolRequestModel: toolData)

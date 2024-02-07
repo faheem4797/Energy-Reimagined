@@ -334,7 +334,7 @@ class AdminJobPage extends StatelessWidget {
                                                                                 ),
                                                                                 BlocProvider(
                                                                                   create: (context) => GetToolRequestBloc(
-                                                                                    jobsRepository: context.read<JobsRepository>(),
+                                                                                    toolsRepository: context.read<ToolsRepository>(),
                                                                                   )..add(GetToolRequestData(toolRequestId: jobs[index].currentToolRequestId)),
                                                                                 ),
                                                                               ],

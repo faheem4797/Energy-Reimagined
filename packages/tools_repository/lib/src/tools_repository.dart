@@ -20,6 +20,13 @@ class ToolsRepository {
         snapshot.docs.map((doc) => ToolModel.fromMap(doc.data())).toList());
   }
 
+  Stream<List<ToolRequestModel>> get getToolRequestsStream {
+    return _firebaseFirestore.collection('toolRequests').snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => ToolRequestModel.fromMap(doc.data()))
+            .toList());
+  }
+
   Future<List<ToolModel>> getAllTools() async {
     try {
       return await _firebaseFirestore.collection('tools').get().then(
@@ -42,6 +49,33 @@ class ToolsRepository {
           .then((toolsSnapshot) => toolsSnapshot.docs
               .map((doc) => ToolModel.fromMap(doc.data()))
               .toList());
+    } on FirebaseException catch (e) {
+      throw SetFirebaseDataFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SetFirebaseDataFailure();
+    }
+  }
+
+  Future<ToolRequestModel> getToolRequestData(String toolRequestId) async {
+    try {
+      return await _firebaseFirestore
+          .collection('toolRequests')
+          .doc(toolRequestId)
+          .get()
+          .then((value) => ToolRequestModel.fromMap(value.data()!));
+    } on FirebaseException catch (e) {
+      throw SetFirebaseDataFailure.fromCode(e.code);
+    } catch (_) {
+      throw const SetFirebaseDataFailure();
+    }
+  }
+
+  Future<void> setToolRequestData(ToolRequestModel toolRequest) async {
+    try {
+      await _firebaseFirestore
+          .collection('toolRequests')
+          .doc(toolRequest.id)
+          .set(toolRequest.toMap());
     } on FirebaseException catch (e) {
       throw SetFirebaseDataFailure.fromCode(e.code);
     } catch (_) {

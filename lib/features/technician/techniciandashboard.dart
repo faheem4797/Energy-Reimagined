@@ -234,9 +234,9 @@ class TechnicianDashboard extends StatelessWidget {
                                                                     lazy: false,
                                                                     create: (context) =>
                                                                         GetToolRequestBloc(
-                                                                      jobsRepository:
+                                                                      toolsRepository:
                                                                           context
-                                                                              .read<JobsRepository>(),
+                                                                              .read<ToolsRepository>(),
                                                                     )..add(GetToolRequestData(
                                                                             toolRequestId:
                                                                                 jobs[index].currentToolRequestId)),

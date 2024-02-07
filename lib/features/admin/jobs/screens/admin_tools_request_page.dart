@@ -8,6 +8,7 @@ import 'package:energy_reimagined/features/authentication/blocs/authentication_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobs_repository/jobs_repository.dart';
+import 'package:tools_repository/tools_repository.dart';
 
 class AdminToolsRequestPage extends StatelessWidget {
   final JobModel jobModel;
@@ -98,6 +99,9 @@ class AdminToolsRequestPage extends StatelessWidget {
                                                         jobsRepository:
                                                             context.read<
                                                                 JobsRepository>(),
+                                                        toolsRepository:
+                                                            context.read<
+                                                                ToolsRepository>(),
                                                         jobModel: jobModel,
                                                         toolRequestModel: state
                                                             .toolRequestModel,

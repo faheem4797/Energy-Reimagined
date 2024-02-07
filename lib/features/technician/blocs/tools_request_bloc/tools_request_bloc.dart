@@ -78,16 +78,15 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
         // print(newAllRequestedToolsQuantityList);
 
         if (oldJobModel.currentToolRequestId != '') {
-          job_repository.ToolRequestModel newToolRequestModel =
-              job_repository.ToolRequestModel(
-                  id: oldJobModel.currentToolRequestId,
-                  jobId: oldJobModel.id,
-                  toolsRequestedIds: newSelectedToolsList,
-                  toolsRequestedQuantity: state.selectedToolsQuantityList,
-                  qrCode: oldJobModel.currentToolsRequestQrCode,
-                  requestedTimestamp: currentTime,
-                  completedTimestamp: 0,
-                  status: job_repository.ToolRequestStatus.pending);
+          ToolRequestModel newToolRequestModel = ToolRequestModel(
+              id: oldJobModel.currentToolRequestId,
+              jobId: oldJobModel.id,
+              toolsRequestedIds: newSelectedToolsList,
+              toolsRequestedQuantity: state.selectedToolsQuantityList,
+              qrCode: oldJobModel.currentToolsRequestQrCode,
+              requestedTimestamp: currentTime,
+              completedTimestamp: 0,
+              status: ToolRequestStatus.pending);
           job_repository.JobModel newJobModel = oldJobModel.copyWith(
             currentToolsRequestedIds: newSelectedToolsList,
             currentToolsRequestedQuantity: state.selectedToolsQuantityList,
@@ -105,7 +104,7 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
               updatedTimeStamp: currentTime);
 
           await _jobsRepository.updateJobData(newJobModel, oldJobModel, update);
-          await _jobsRepository.setToolRequestData(newToolRequestModel);
+          await _toolsRepository.setToolRequestData(newToolRequestModel);
 
           emit(state.copyWith(
             status: ToolsRequestStatus.success,
@@ -117,16 +116,15 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
               List.from(oldJobModel.allToolRequestIds);
           newAllToolRequestIds.add(newToolRequestId);
 
-          job_repository.ToolRequestModel newToolRequestModel =
-              job_repository.ToolRequestModel(
-                  id: newToolRequestId,
-                  jobId: oldJobModel.id,
-                  toolsRequestedIds: newSelectedToolsList,
-                  toolsRequestedQuantity: state.selectedToolsQuantityList,
-                  qrCode: newToolRequestQrCode,
-                  requestedTimestamp: currentTime,
-                  completedTimestamp: 0,
-                  status: job_repository.ToolRequestStatus.pending);
+          ToolRequestModel newToolRequestModel = ToolRequestModel(
+              id: newToolRequestId,
+              jobId: oldJobModel.id,
+              toolsRequestedIds: newSelectedToolsList,
+              toolsRequestedQuantity: state.selectedToolsQuantityList,
+              qrCode: newToolRequestQrCode,
+              requestedTimestamp: currentTime,
+              completedTimestamp: 0,
+              status: ToolRequestStatus.pending);
 
           job_repository.JobModel newJobModel = oldJobModel.copyWith(
             currentToolRequestId: newToolRequestId,
@@ -149,7 +147,7 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
               updatedTimeStamp: currentTime);
 
           await _jobsRepository.updateJobData(newJobModel, oldJobModel, update);
-          await _jobsRepository.setToolRequestData(newToolRequestModel);
+          await _toolsRepository.setToolRequestData(newToolRequestModel);
 
           emit(state.copyWith(
             status: ToolsRequestStatus.success,
@@ -157,10 +155,9 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
         }
       } else {
         //TODO: SHOULD BE TREATED AS CANCELLED
-        job_repository.ToolRequestModel newToolRequestModel =
-            event.toolRequestModel.copyWith(
-                completedTimestamp: currentTime,
-                status: job_repository.ToolRequestStatus.completed);
+        ToolRequestModel newToolRequestModel = event.toolRequestModel.copyWith(
+            completedTimestamp: currentTime,
+            status: ToolRequestStatus.completed);
 
         job_repository.JobModel newJobModel = oldJobModel.copyWith(
           currentToolRequestId: '',
@@ -181,7 +178,7 @@ class ToolsRequestBloc extends Bloc<ToolsRequestEvent, ToolsRequestState> {
             updatedTimeStamp: currentTime);
 
         await _jobsRepository.updateJobData(newJobModel, oldJobModel, update);
-        await _jobsRepository.setToolRequestData(newToolRequestModel);
+        await _toolsRepository.setToolRequestData(newToolRequestModel);
 
         emit(state.copyWith(status: ToolsRequestStatus.success));
       }

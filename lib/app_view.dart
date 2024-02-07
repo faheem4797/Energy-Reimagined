@@ -12,6 +12,7 @@ import 'package:energy_reimagined/features/authentication/screens/welcome_screen
 import 'package:energy_reimagined/features/manager/blocs/escalations_bloc/escalations_bloc.dart';
 import 'package:energy_reimagined/features/manager/blocs/manager_nav_bloc/manager_nav_bloc.dart';
 import 'package:energy_reimagined/features/manager/blocs/reports_bloc/reports_bloc.dart';
+import 'package:energy_reimagined/features/manager/blocs/tools_bloc/tools_bloc.dart';
 import 'package:energy_reimagined/features/manager/managerdashboard.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_jobs_stream_bloc/technician_jobs_stream_bloc.dart';
 import 'package:energy_reimagined/features/technician/blocs/technician_nav_bloc/technician_nav_bloc.dart';
@@ -123,6 +124,10 @@ class AppView extends StatelessWidget {
                 BlocProvider(
                   create: (context) => EscalationsBloc(
                       jobsRepository: context.read<JobsRepository>()),
+                ),
+                BlocProvider(
+                  create: (context) => ToolsBloc(
+                      toolsRepository: context.read<ToolsRepository>()),
                 ),
                 BlocProvider(
                   create: (context) => ReportsBloc(

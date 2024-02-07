@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:jobs_repository/jobs_repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
@@ -254,33 +253,6 @@ class JobsRepository {
   //     throw const SetFirebaseDataFailure();
   //   }
   // }
-
-  Future<ToolRequestModel> getToolRequestData(String toolRequestId) async {
-    try {
-      return await _firebaseFirestore
-          .collection('toolRequests')
-          .doc(toolRequestId)
-          .get()
-          .then((value) => ToolRequestModel.fromMap(value.data()!));
-    } on FirebaseException catch (e) {
-      throw SetFirebaseDataFailure.fromCode(e.code);
-    } catch (_) {
-      throw const SetFirebaseDataFailure();
-    }
-  }
-
-  Future<void> setToolRequestData(ToolRequestModel toolRequest) async {
-    try {
-      await _firebaseFirestore
-          .collection('toolRequests')
-          .doc(toolRequest.id)
-          .set(toolRequest.toMap());
-    } on FirebaseException catch (e) {
-      throw SetFirebaseDataFailure.fromCode(e.code);
-    } catch (_) {
-      throw const SetFirebaseDataFailure();
-    }
-  }
 
   Future<void> updateJobData(JobModel currentJobModel, JobModel oldJobModel,
       UpdateJobModel updateModel) async {

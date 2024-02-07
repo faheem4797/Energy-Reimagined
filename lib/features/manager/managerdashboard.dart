@@ -4,6 +4,7 @@ import 'package:energy_reimagined/features/authentication/blocs/authentication_b
 import 'package:energy_reimagined/features/manager/blocs/manager_nav_bloc/manager_nav_bloc.dart';
 import 'package:energy_reimagined/features/manager/escalation_screen.dart';
 import 'package:energy_reimagined/features/manager/reports_screen.dart';
+import 'package:energy_reimagined/features/manager/tools_screen.dart';
 import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +27,7 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
 List<Widget> bottomNavScreen = <Widget>[
   const ReportsScreen(),
   const EscalationsScreen(),
-  const Placeholder(),
+  const ToolsScreen(),
 ];
 
 class ManagerDashbaord extends StatefulWidget {
