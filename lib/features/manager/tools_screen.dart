@@ -5,7 +5,7 @@ import 'package:energy_reimagined/widgets/pop_scoop_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({super.key});
@@ -83,30 +83,75 @@ class ToolsScreen extends StatelessWidget {
                                 child: ListView.builder(
                                   itemCount: state.allTools?.length,
                                   itemBuilder: (context, index) {
+                                    Map<String, int> toolQuantities = {};
+                                    for (var toolDataModel in state.allTools!) {
+                                      for (var i = 0;
+                                          i < state.listOfToolRequests!.length;
+                                          i++) {
+                                        var toolRequestModel =
+                                            state.listOfToolRequests![i];
+
+                                        int index = toolRequestModel
+                                            .toolsRequestedIds
+                                            .indexOf(toolDataModel.id);
+                                        if (index != -1) {
+                                          int requestedQuantity =
+                                              toolRequestModel
+                                                      .toolsRequestedQuantity[
+                                                  index];
+                                          toolQuantities.update(
+                                            toolDataModel.id,
+                                            (value) =>
+                                                value + requestedQuantity,
+                                            ifAbsent: () => requestedQuantity,
+                                          );
+                                        }
+
+                                        // if (toolRequestModel.toolsRequestedIds
+                                        //     .contains(toolDataModel.id)) {
+                                        //   // Tool ID found in the request, add quantity to the total
+                                        //   print(i);
+                                        //   print(toolRequestModel
+                                        //       .toolsRequestedIds);
+                                        //   print(toolRequestModel
+                                        //       .toolsRequestedQuantity);
+                                        //   int requestedQuantity =
+                                        //       toolRequestModel
+                                        //           .toolsRequestedQuantity[i];
+                                        //   toolQuantities.update(
+                                        //       toolDataModel.id,
+                                        //       (value) =>
+                                        //           value + requestedQuantity,
+                                        //       ifAbsent: () =>
+                                        //           requestedQuantity);
+                                        // }
+                                      }
+                                    }
+
                                     final tool = state.allTools![index];
-                                    final toolRequests = state
-                                        .filteredListOfToolRequests!
-                                        .where((element) =>
-                                            element.toolsRequestedIds.contains(
-                                                state.allTools![index].id))
-                                        .toList();
-                                    print(state.allTools![index].id);
-                                    print(toolRequests.length);
-                                    var requestedQuantity;
-                                    var requestedTimestamp;
-                                    var completedTimestamp;
-                                    toolRequests.forEach((element) {
-                                      final a = (element.toolsRequestedIds
-                                          .indexOf(state.allTools![index].id));
-                                      requestedQuantity =
-                                          element.toolsRequestedQuantity[a];
-                                      requestedTimestamp =
-                                          element.requestedTimestamp;
-                                      completedTimestamp =
-                                          element.completedTimestamp;
-                                      print(element.toolsRequestedIds);
-                                      print(element.toolsRequestedQuantity);
-                                    });
+                                    // final toolRequests = state
+                                    //     .filteredListOfToolRequests!
+                                    //     .where((element) =>
+                                    //         element.toolsRequestedIds.contains(
+                                    //             state.allTools![index].id))
+                                    //     .toList();
+                                    // print(state.allTools![index].id);
+                                    // print(toolRequests.length);
+                                    // var requestedQuantity;
+                                    // var requestedTimestamp;
+                                    // var completedTimestamp;
+                                    // toolRequests.forEach((element) {
+                                    //   final a = (element.toolsRequestedIds
+                                    //       .indexOf(state.allTools![index].id));
+                                    //   requestedQuantity =
+                                    //       element.toolsRequestedQuantity[a];
+                                    //   requestedTimestamp =
+                                    //       element.requestedTimestamp;
+                                    //   completedTimestamp =
+                                    //       element.completedTimestamp;
+                                    //   // print(element.toolsRequestedIds);
+                                    //   // print(element.toolsRequestedQuantity);
+                                    // });
 
                                     // final bool isOnHold =
                                     //     jobs[index].status == JobStatus.onHold;
@@ -196,18 +241,25 @@ class ToolsScreen extends StatelessWidget {
                                                 ),
                                               ),
                                               children: [
-                                                Text(
-                                                    'Requested Quantity:$requestedQuantity'),
-                                                requestedTimestamp == null
-                                                    ? Text('')
-                                                    : Text(
-                                                        'Requested Time:${DateFormat('dd-MM-yyyy HH:mm').format(DateTime.fromMicrosecondsSinceEpoch(requestedTimestamp))}',
-                                                      ),
-                                                completedTimestamp == null
-                                                    ? Text('')
-                                                    : Text(
-                                                        'Completed Time:${DateFormat('dd-MM-yyyy HH:mm').format(DateTime.fromMicrosecondsSinceEpoch(completedTimestamp))}',
-                                                      ),
+                                                toolQuantities
+                                                        .containsKey(tool.id)
+                                                    ? Text(
+                                                        'Requested Quantity is: ${toolQuantities[tool.id]}')
+                                                    : const Text(
+                                                        'No tools Requested'),
+
+                                                // Text(
+                                                //     'Requested Quantity:$requestedQuantity'),
+                                                // requestedTimestamp == null
+                                                //     ? Text('')
+                                                //     : Text(
+                                                //         'Requested Time:${DateFormat('dd-MM-yyyy HH:mm').format(DateTime.fromMicrosecondsSinceEpoch(requestedTimestamp))}',
+                                                //       ),
+                                                // completedTimestamp == null
+                                                //     ? Text('')
+                                                //     : Text(
+                                                //         'Completed Time:${DateFormat('dd-MM-yyyy HH:mm').format(DateTime.fromMicrosecondsSinceEpoch(completedTimestamp))}',
+                                                //       ),
 
                                                 // Padding(
                                                 //   padding: const EdgeInsets
