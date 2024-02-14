@@ -244,9 +244,21 @@ class ToolsScreen extends StatelessWidget {
                                                 toolQuantities
                                                         .containsKey(tool.id)
                                                     ? Text(
-                                                        'Requested Quantity is: ${toolQuantities[tool.id]}')
+                                                        'Total Requested Quantity: ${toolQuantities[tool.id]}',
+                                                        style: const TextStyle(
+                                                          color: ConstColors
+                                                              .whiteColor,
+                                                        ),
+                                                      )
                                                     : const Text(
-                                                        'No tools Requested'),
+                                                        'No tools Requested',
+                                                        style: TextStyle(
+                                                          color: ConstColors
+                                                              .whiteColor,
+                                                        ),
+                                                      ),
+
+                                                SizedBox(height: 5.h),
 
                                                 // Text(
                                                 //     'Requested Quantity:$requestedQuantity'),
