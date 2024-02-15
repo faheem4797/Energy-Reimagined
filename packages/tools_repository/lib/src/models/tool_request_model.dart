@@ -8,7 +8,7 @@ enum ToolRequestStatus {
   completed,
 }
 
-//TODO: SET STATUS TO CANCELLED WHEN TECHNICIAN REJECTS A JOB AND THERE IS SOME JOB IN CURRENT STATUS
+//TODO: SET STATUS TO CANCELLED WHEN TECHNICIAN REJECTS A JOB AND THERE IS SOME ToolRequest IN PENDING STATUS regarding that job
 
 class ToolRequestModel extends Equatable {
   final String id;

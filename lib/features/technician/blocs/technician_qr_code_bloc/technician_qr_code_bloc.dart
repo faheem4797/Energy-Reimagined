@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:jobs_repository/jobs_repository.dart';
-import 'package:tools_repository/tools_repository.dart' as tools_Repository;
+import 'package:tools_repository/tools_repository.dart' as tools_repository;
 import 'package:uuid/uuid.dart';
 
 part 'technician_qr_code_event.dart';
@@ -13,13 +13,13 @@ part 'technician_qr_code_state.dart';
 class TechnicianQrCodeBloc
     extends Bloc<TechnicianQrCodeEvent, TechnicianQrCodeState> {
   final JobsRepository _jobsRepository;
-  final tools_Repository.ToolsRepository _toolsRepository;
+  final tools_repository.ToolsRepository _toolsRepository;
   final JobModel jobModel;
-  final tools_Repository.ToolRequestModel toolRequestModel;
+  final tools_repository.ToolRequestModel toolRequestModel;
   final String userId;
   TechnicianQrCodeBloc(
       {required JobsRepository jobsRepository,
-      required tools_Repository.ToolsRepository toolsRepository,
+      required tools_repository.ToolsRepository toolsRepository,
       required this.jobModel,
       required this.toolRequestModel,
       required this.userId})
@@ -35,9 +35,9 @@ class TechnicianQrCodeBloc
 
     try {
       final currentTime = DateTime.now().microsecondsSinceEpoch;
-      tools_Repository.ToolRequestModel newToolRequestModel =
+      tools_repository.ToolRequestModel newToolRequestModel =
           toolRequestModel.copyWith(
-              status: tools_Repository.ToolRequestStatus.completed,
+              status: tools_repository.ToolRequestStatus.completed,
               completedTimestamp: currentTime);
       JobModel newJobModel = jobModel.copyWith(
         currentToolRequestId: '',
@@ -57,6 +57,11 @@ class TechnicianQrCodeBloc
 
       await _jobsRepository.updateJobData(newJobModel, jobModel, update);
       await _toolsRepository.setToolRequestData(newToolRequestModel);
+      for (var i = 0; i < toolRequestModel.toolsRequestedIds.length; i++) {
+        String toolId = toolRequestModel.toolsRequestedIds[i];
+        int toolQuantity = toolRequestModel.toolsRequestedQuantity[i];
+        await _toolsRepository.updateToolQuantity(toolQuantity, toolId);
+      }
 
       emit(TechnicianQrCodeSuccess());
     } on SetFirebaseDataFailure catch (e) {

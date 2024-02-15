@@ -141,6 +141,29 @@ class ToolsRepository {
     }
   }
 
+  Future<void> updateToolQuantity(int quantity, String toolId) async {
+    try {
+      final toolModel = await _firebaseFirestore
+          .collection('tools')
+          .doc(toolId)
+          .get()
+          .then((value) => ToolModel.fromMap(value.data()!));
+      int newToolQuantity = (toolModel.quantity - quantity) < 0
+          ? 0
+          : toolModel.quantity - quantity;
+      await _firebaseFirestore
+          .collection('tools')
+          .doc(toolId)
+          .update({'quantity': newToolQuantity});
+    } on FirebaseException catch (e) {
+      developers.log(e.code);
+      throw SetFirebaseDataFailure.fromCode(e.code);
+    } catch (_) {
+      developers.log(_.toString());
+      throw const SetFirebaseDataFailure();
+    }
+  }
+
   Future<void> deleteTool(ToolModel tool) async {
     try {
       await _firebaseFirestore.collection('tools').doc(tool.id).delete();

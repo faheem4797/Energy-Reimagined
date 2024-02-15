@@ -39,8 +39,6 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
         emit(QrCodeScannerLoading());
 
         try {
-          //TODO: REMOVE THE SAME QUANTITY OF TOOLS FROM TOOLS COLLECTION SEEING THE CURRENT QUANTITY AND THEIR IDS
-
           final currentTime = DateTime.now().microsecondsSinceEpoch;
           tools_repository.ToolRequestModel newToolRequestModel =
               toolRequestModel.copyWith(
@@ -68,6 +66,11 @@ class QrCodeScannerBloc extends Bloc<QrCodeScannerEvent, QrCodeScannerState> {
           await _jobsRepository.updateJobData(
               newJobModel, jobModel, updatedJobModel);
           await _toolsRepository.setToolRequestData(newToolRequestModel);
+          for (var i = 0; i < toolRequestModel.toolsRequestedIds.length; i++) {
+            String toolId = toolRequestModel.toolsRequestedIds[i];
+            int toolQuantity = toolRequestModel.toolsRequestedQuantity[i];
+            await _toolsRepository.updateToolQuantity(toolQuantity, toolId);
+          }
 
           emit(QrCodeScannerSuccess());
         } on SetFirebaseDataFailure catch (e) {
