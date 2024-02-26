@@ -109,7 +109,7 @@ class JobsRepository {
 
   //     final jobSnapshot = await jobUploadTask.whenComplete(() => {});
   //     final String jobUrlDownload = await jobSnapshot.ref.getDownloadURL();
-  //     //TODO: CHECK THIS LATER
+
   //     if (job.afterCompleteImageUrl != '') {
   //       await FirebaseStorage.instance
   //           .refFromURL(job.afterCompleteImageUrl)

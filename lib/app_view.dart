@@ -74,19 +74,6 @@ class AppView extends StatelessWidget {
               child: const TechnicianBottomNavBar(),
               //const TechnicianDashboard(),
             );
-            // return MultiBlocProvider(providers: [
-            //   BlocProvider(
-            //     lazy: false,
-            //     create: (context) => UserBloc(
-            //       userDataRepository: UserDataRepository(
-            //           userId:
-            //               context.read<AuthenticationBloc>().state.user!.uid),
-            //     ),
-            //     child: const HomeScreen(),
-            //   ),
-            // ], child: Container()
-            //     //const HomeScreen(),
-            //     );
           } else if (state.status == AuthenticationStatus.adminAuthenticated) {
             return MultiBlocProvider(
               providers: [
