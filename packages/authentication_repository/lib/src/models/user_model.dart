@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
   final String id;
+  final String deviceToken;
   final String firstName;
   final String lastName;
   final bool isRestricted;
@@ -14,6 +15,7 @@ class UserModel extends Equatable {
 
   const UserModel({
     required this.id,
+    required this.deviceToken,
     required this.firstName,
     required this.lastName,
     required this.isRestricted,
@@ -25,6 +27,7 @@ class UserModel extends Equatable {
 
   static const empty = UserModel(
       id: '',
+      deviceToken: '',
       firstName: '',
       lastName: '',
       email: '',
@@ -35,6 +38,7 @@ class UserModel extends Equatable {
 
   UserModel copyWith({
     String? id,
+    String? deviceToken,
     String? firstName,
     String? lastName,
     bool? isRestricted,
@@ -45,6 +49,7 @@ class UserModel extends Equatable {
   }) {
     return UserModel(
       id: id ?? this.id,
+      deviceToken: deviceToken ?? this.deviceToken,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       isRestricted: isRestricted ?? this.isRestricted,
@@ -58,6 +63,7 @@ class UserModel extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'deviceToken': deviceToken,
       'firstName': firstName,
       'lastName': lastName,
       'isRestricted': isRestricted,
@@ -71,6 +77,7 @@ class UserModel extends Equatable {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
+      deviceToken: map['deviceToken'] ?? '',
       firstName: map['firstName'] ?? '',
       lastName: map['lastName'] ?? '',
       isRestricted: map['isRestricted'] ?? false,
@@ -92,13 +99,14 @@ class UserModel extends Equatable {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, firstName: $firstName, lastName: $lastName, isRestricted: $isRestricted, email: $email, employeeNumber: $employeeNumber, role: $role, createdAt: $createdAt)';
+    return 'UserModel(id: $id, deviceToken: $deviceToken, firstName: $firstName, lastName: $lastName, isRestricted: $isRestricted, email: $email, employeeNumber: $employeeNumber, role: $role, createdAt: $createdAt)';
   }
 
   @override
   List<Object> get props {
     return [
       id,
+      deviceToken,
       firstName,
       lastName,
       isRestricted,

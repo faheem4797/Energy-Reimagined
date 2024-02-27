@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
 
 class NotificationServices {
   //initialising firebase message plugin
@@ -173,5 +175,42 @@ class NotificationServices {
       badge: true,
       sound: true,
     );
+  }
+
+  static void sendNotification(
+      String deviceToken, String title, String body, String type) async {
+    // send notification from one device to another
+
+    var data = {
+      'to': deviceToken,
+      'notification': {
+        'title': title,
+        'body': body,
+      },
+      // 'android': {
+      //   'notification': {
+      //     'notification_count': 23,
+      //   },
+      // },
+      'data': {
+        'type': type,
+      }
+    };
+
+    await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        body: jsonEncode(data),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              'key=AAAAhrGbxu8:APA91bElwyv4INkCX-9BeNYnyyoUVfvyV6UeprZZSQvK_dIzYYcz5dUIq7-mOqowx0-vsdUsWKCZYXSgTJvMsWSysFwOalUMaAf3KVE7X2tbNn5T9BextMj9V2dM8Qf5aitT_hD5xqfB'
+        }).then((value) {
+      if (kDebugMode) {
+        print(value.body.toString());
+      }
+    }).onError((error, stackTrace) {
+      if (kDebugMode) {
+        print(error);
+      }
+    });
   }
 }

@@ -35,6 +35,7 @@ class AuthenticationBloc
       Emitter<AuthenticationState> emit) async {
     try {
       if (event.user != null) {
+        //TODO: ADD DEVICE TOKEN FOR FCM HERE
         try {
           final currentUser =
               await _authenticationRepository.getUser(event.user!.uid);
