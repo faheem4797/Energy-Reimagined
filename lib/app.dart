@@ -68,7 +68,9 @@ class _MyAppState extends State<MyApp> {
             ),
             BlocProvider(
               create: (_) => AuthenticationBloc(
-                  authenticationRepository: widget._authenticationRepository),
+                authenticationRepository: widget._authenticationRepository,
+                notificationServices: notificationServices,
+              ),
             ),
           ],
           child: const AppView(),

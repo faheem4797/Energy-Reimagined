@@ -144,6 +144,9 @@ class AdminUserPage extends StatelessWidget {
                                                             oldUserModel: UserModel(
                                                                 id: users[index]
                                                                     .id,
+                                                                deviceToken:
+                                                                    users[index]
+                                                                        .deviceToken,
                                                                 firstName:
                                                                     users[index]
                                                                         .firstName,
@@ -153,9 +156,8 @@ class AdminUserPage extends StatelessWidget {
                                                                 isRestricted:
                                                                     users[index]
                                                                         .isRestricted,
-                                                                email:
-                                                                    users[index]
-                                                                        .email,
+                                                                email: users[index]
+                                                                    .email,
                                                                 employeeNumber:
                                                                     users[index]
                                                                         .employeeNumber,
@@ -165,8 +167,7 @@ class AdminUserPage extends StatelessWidget {
                                                                     users[index]
                                                                         .createdAt),
                                                             authenticationRepository:
-                                                                context
-                                                                    .read<AuthenticationRepository>()),
+                                                                context.read<AuthenticationRepository>()),
                                                         child:
                                                             const AdminEditUserPage(),
                                                       )),
